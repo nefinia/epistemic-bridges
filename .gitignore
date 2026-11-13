@@ -1,0 +1,8 @@
+# Player answers are free text: never commit them.
+data/*.json
+data/*.jsonl
+!data/pairs.json
+results/
+__pycache__/
+.venv/
+.env
