@@ -10,6 +10,12 @@ Play: [mapideas.org/bridges](https://mapideas.org/bridges)
 
 Built for the Apart Research AI x Epistemics sprint, November 2026.
 
+## Why
+
+Bridges comes from the [Map of Ideas](https://mapideas.org), a map of how concepts and debates relate to one another. Tools built on what is already written, like Wikipedia or AI models, tend to converge on what is already known. The map tries to keep room for opposing views and contrasts, and to make them visible, so that new spaces can open between ideas.
+
+Bridges is a first test of that. It starts from random pairs of simple concepts, so anyone can play without knowing a particular topic, and looks at where new connections appear and whether AI helps people reach them.
+
 ## Where it comes from
 
 This follows [False Epistemic Redundancy](https://apartresearch.com/project/false-epistemic-redundancy-do-ai-ensembles-share-a-blind-spot-b50u) ([code](https://github.com/nefinia/epistemic-fingerprints)), which found that reasoning personas made AI answers look more diverse while they still missed the same cause. Bridges asks the same question about creating ideas instead of checking them.
@@ -63,6 +69,13 @@ pip install -r requirements.txt
 python generate/generate.py --model Qwen/Qwen2.5-7B-Instruct --n 10 --langs en es fr
 python analysis/diversity.py --with-ends
 ```
+
+## What existed before the sprint
+
+- The Bridges game itself, built before the sprint started on 13 November 2026. Its code is in [nefinia/themap](https://github.com/nefinia/themap/tree/main/bridges).
+- From False Epistemic Redundancy: the four personas (written by Anya Habana), the Modal server, and the clustering and distance settings used in the analysis.
+
+Everything else in this repo was written during the sprint.
 
 ## Status
 
