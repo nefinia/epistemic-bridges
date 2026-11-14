@@ -54,7 +54,7 @@ AI helps run the code; it never judges creativity.
 - **Direction:** whether a → b and b → a lead to different paths.
 - **Human judgement:** a sample rated blind, so that rare answers which make no sense do not count as creative.
 
-The measures, settings and references are in [docs/methods.md](docs/methods.md).
+The measures, settings and references are in [docs/methods.md](docs/methods.md). Related work and next steps are in [docs/context-and-next.md](docs/context-and-next.md).
 
 ## In this repo
 
