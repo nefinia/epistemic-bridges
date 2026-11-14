@@ -4,7 +4,8 @@
    numbered steps, bold titles, a closing summary). Here that scaffolding is removed before
    measuring: markdown and list markers go, and sentences that only talk about the task
    (announcing, framing or summing up the connection) are dropped. Then each answer is cut
-   to 40 words and measured as in the main analysis. If chat models still reach little of
+   to 40 words and measured as in the main analysis. The same cleaning is applied to the
+   players' answers, so both sides are treated alike. If chat models still reach little of
    the human map, the narrowing is in the ideas.
 
 2. Warm-up and bridges, for people. For each English player: their warm-up score (DAT),
@@ -68,7 +69,7 @@ def main() -> None:
     df = pd.concat([h, a], ignore_index=True)
     df["final"] = df["final"].fillna("").astype(str)
     df = df[df["final"].str.strip() != ""].reset_index(drop=True)
-    df["stripped"] = [s if m == "people" else strip_scaffolding(s) for s, m in zip(df["final"], df["model"])]
+    df["stripped"] = df["final"].apply(strip_scaffolding)  # the same cleaning for people and models
 
     from sentence_transformers import SentenceTransformer
     st = SentenceTransformer(str(args.tools / "all-MiniLM-L6-v2"))
@@ -91,7 +92,10 @@ def main() -> None:
     res = pd.DataFrame(rows).groupby(["model", "kind", "version"])[["precision", "recall"]].mean().unstack("version")
     res.columns = [f"{m} ({v})" for m, v in res.columns]
     ai = df["model"] != "people"
-    kept = (df.loc[ai, "stripped"].str.split().str.len() / df.loc[ai, "final"].str.split().str.len()).groupby(df.loc[ai, "model_kind"]).median()
+    share = df["stripped"].str.split().str.len() / df["final"].str.split().str.len()
+    kept = share.groupby(df["model_kind"]).median()
+    changed = (df["stripped"].str.split().str.join(" ") != df["final"].str.split().str.join(" ")).groupby(df["model_kind"]).mean()
+    print("share of answers changed by the cleaning:", changed.round(2).to_dict())
     out = ROOT / "results" / "paper"
     out.mkdir(parents=True, exist_ok=True)
     res.to_csv(out / "style_check.csv")
