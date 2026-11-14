@@ -30,6 +30,9 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from coverage import precision_recall  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from plotstyle import dots  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 LEVEL = {"cc": "concrete-concrete", "ca": "concrete-abstract", "aa": "abstract-abstract"}
 HUBS = {"c1": r"reflect", "c2": r"hour ?glass|sand", "c3": r"whisper|murmur", "c4": r"itsy|web|weav",
@@ -147,7 +150,7 @@ def figure(levels, anch_pair):
     axes[0].set_ylim(0, 0.8)
     for kind, color, name, off in (("people", INK, "People", -0.2), ("base", BLUE, "Base models", 0.0), ("chat", ORANGE, "Chat models", 0.2)):
         s = anch_pair.loc[kind].reindex(order)
-        axes[1].scatter(x + off, s.values, color=color, s=34, edgecolor="white", linewidth=1, label=name, zorder=3)
+        dots(axes[1], x + off, s.values, color=color, s=34, edgecolor="white", linewidth=1, label=name, zorder=3)
     axes[1].axhline(0, color=MUTED, linewidth=0.8)
     axes[1].set_ylabel("Closer to the starting idea (+)"); axes[1].set_title("Pull of the starting idea", fontsize=9, color=INK)
     axes[1].legend(frameon=False, fontsize=7.5, loc="upper right"); axes[1].grid(axis="x", visible=False)

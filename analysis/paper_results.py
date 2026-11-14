@@ -23,6 +23,9 @@ from sklearn.metrics.pairwise import cosine_distances, cosine_similarity
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from coverage import precision_recall  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from plotstyle import dots  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 RNG = np.random.default_rng(0)
 
@@ -194,7 +197,7 @@ def figures(models, cond, temps, hum, figs: Path) -> None:
     fig, ax = plt.subplots(figsize=(5.2, 3.6))
     for kind, color, label in (("base", BLUE, "Base model (continues text)"), ("chat", ORANGE, "Chat model")):
         s = models[models["kind"] == kind]
-        ax.scatter(s["recall"], s["precision"], s=36, color=color, edgecolor="white", linewidth=1.5, label=label, zorder=3)
+        dots(ax, s["recall"], s["precision"], s=36, color=color, edgecolor="white", linewidth=1.5, label=label, zorder=3)
     offsets = {"Qwen2.5 3B": (-62, -3), "Qwen2.5 1.5B": (6, 4), "Phi-3 mini": (6, -2), "Zephyr 7B": (-58, -6),
                "Qwen2.5 0.5B": (6, -8), "OLMo 2 7B": (-58, 2), "Vicuna 7B": (6, 3)}
     for _, r in models.iterrows():
@@ -212,9 +215,9 @@ def figures(models, cond, temps, hum, figs: Path) -> None:
     ax.plot(q["size_b"], q["recall"], color=ORANGE, linewidth=2, marker="o", markersize=6, markeredgecolor="white",
             label="Qwen2.5 chat")
     b = models[models["name"] == "Qwen2.5 7B base"]
-    ax.scatter(b["size_b"], b["recall"], color=BLUE, s=40, edgecolor="white", linewidth=1.5, zorder=3, label="Qwen2.5 7B base")
+    dots(ax, b["size_b"], b["recall"], color=BLUE, s=40, edgecolor="white", linewidth=1.5, zorder=3, label="Qwen2.5 7B base")
     q3 = models[models["name"] == "Qwen3 8B"]
-    ax.scatter(q3["size_b"], q3["recall"], color=AQUA, s=40, marker="D", edgecolor="white", linewidth=1.5, zorder=3,
+    dots(ax, q3["size_b"], q3["recall"], color=AQUA, s=40, marker="D", edgecolor="white", linewidth=1.5, zorder=3,
                label="Qwen3 8B (2025)")
     ax.set_xscale("log"); ax.set_xticks([0.5, 1.5, 3, 7, 14]); ax.set_xticklabels(["0.5", "1.5", "3", "7", "14"])
     ax.set_xlabel("Parameters (billions)"); ax.set_ylabel("Share of the human map reached")
@@ -234,11 +237,11 @@ def figures(models, cond, temps, hum, figs: Path) -> None:
     y = np.arange(len(deltas))
     colors = [BLUE if r == "fer" else ORANGE for r in deltas["run"]]
     ax.hlines(y, deltas["lo"], deltas["hi"], color=GRID, linewidth=3)
-    ax.scatter(deltas["delta"], y, color=colors, s=30, zorder=3, edgecolor="white", linewidth=1)
+    dots(ax, deltas["delta"], y, color=colors, s=30, zorder=3, edgecolor="white", linewidth=1)
     ax.axvline(0, color=MUTED, linewidth=0.8)
     ax.set_yticks(y); ax.set_yticklabels(deltas["condition"].str.replace("_", " "))
     ax.set_xlabel("Change in share of the map reached, against no persona\n(dot: mean; bar: range across models)")
-    ax.scatter([], [], color=BLUE, label="Investigative (FER)"); ax.scatter([], [], color=ORANGE, label="Creative")
+    dots(ax, [], [], color=BLUE, label="Investigative (FER)"); dots(ax, [], [], color=ORANGE, label="Creative")
     ax.legend(frameon=False, fontsize=8, loc="lower right"); ax.grid(axis="y", visible=False)
     save(fig, "fig3_conditions")
 

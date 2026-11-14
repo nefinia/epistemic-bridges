@@ -24,6 +24,9 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from coverage import precision_recall  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from plotstyle import dots  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 FOCUS = "Qwen/Qwen2.5-7B-Instruct"
 BASE = "Qwen/Qwen2.5-7B"
@@ -106,13 +109,13 @@ def draw(res: pd.DataFrame) -> None:
     fig, ax = plt.subplots(figsize=(6.6, 4.6))
 
     others = res[(res["kind"] == "model") & ~res["group"].isin([FOCUS, BASE])]
-    ax.scatter(others["recall"], others["precision"], s=18, color=FAINT, zorder=2, label="Other models, no persona")
+    dots(ax, others["recall"], others["precision"], s=18, color=FAINT, zorder=2, label="Other models, no persona")
 
     t = res[res["kind"] == "temp"].copy()
     t["T"] = t["group"].str[2:].astype(float)
     t = t.sort_values("T")
     ax.plot(t["recall"], t["precision"], color=MUTED, linewidth=1.2, linestyle=(0, (3, 2)), zorder=2)
-    ax.scatter(t["recall"], t["precision"], s=10, color=MUTED, zorder=3)
+    dots(ax, t["recall"], t["precision"], s=10, color=MUTED, zorder=3)
     hot = t.iloc[-1]
     ax.annotate("more randomness\n(temperature up to 2.0)", (hot["recall"], hot["precision"]), xytext=(8, 2),
                 textcoords="offset points", fontsize=7.5, color=MUTED, ha="left")
@@ -125,20 +128,20 @@ def draw(res: pd.DataFrame) -> None:
     for c in CREATIVE:
         arrow(FOCUS, c, AQUA)
 
-    ax.scatter(g.loc[BASE, "recall"], g.loc[BASE, "precision"], s=60, color=BLUE, edgecolor="white", linewidth=1.5, zorder=5)
+    dots(ax, g.loc[BASE, "recall"], g.loc[BASE, "precision"], s=60, color=BLUE, edgecolor="white", linewidth=1.5, zorder=5)
     ax.annotate("Qwen2.5 7B\nbefore chat training", (g.loc[BASE, "recall"], g.loc[BASE, "precision"]), xytext=(0, 12),
                 textcoords="offset points", fontsize=8, color=INK, ha="center")
-    ax.scatter(g.loc[FOCUS, "recall"], g.loc[FOCUS, "precision"], s=60, color=ORANGE, edgecolor="white", linewidth=1.5, zorder=5)
+    dots(ax, g.loc[FOCUS, "recall"], g.loc[FOCUS, "precision"], s=60, color=ORANGE, edgecolor="white", linewidth=1.5, zorder=5)
     ax.annotate("after chat training", (g.loc[FOCUS, "recall"], g.loc[FOCUS, "precision"]), xytext=(0.15, 0.655),
                 textcoords="data", fontsize=8, color=INK, ha="left", va="center",
                 arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6, shrinkA=2, shrinkB=5))
     offsets = {"ordinary_life": (0, -13, "center"), "playful": (6, -3, "left")}
     for c, label in CREATIVE.items():
-        ax.scatter(g.loc[c, "recall"], g.loc[c, "precision"], s=40, color=AQUA, edgecolor="white", linewidth=1.2, zorder=5)
+        dots(ax, g.loc[c, "recall"], g.loc[c, "precision"], s=40, color=AQUA, edgecolor="white", linewidth=1.2, zorder=5)
         dx, dy, ha = offsets.get(c, (6, -3, "left"))
         ax.annotate(label, (g.loc[c, "recall"], g.loc[c, "precision"]), xytext=(dx, dy), textcoords="offset points",
                     fontsize=7.5, color=INK, ha=ha)
-    ax.scatter(g.loc["people", "recall"], g.loc["people", "precision"], s=150, marker="*", color=INK, zorder=6)
+    dots(ax, g.loc["people", "recall"], g.loc["people", "precision"], s=150, marker="*", color=INK, zorder=6)
     ax.annotate("half of the players,\nagainst the other half", (g.loc["people", "recall"], g.loc["people", "precision"]), xytext=(10, -14),
                 textcoords="offset points", fontsize=8, color=INK)
 

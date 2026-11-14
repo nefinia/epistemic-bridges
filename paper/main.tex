@@ -67,9 +67,9 @@ Prompting can push back against narrow output. Personas of ordinary people raise
 \subsection{The game and the players}
 \label{sec:game}
 
-Each round of Bridges shows two ideas joined by a dashed arrow, and the player writes how to get from one to the other, in any form: a sentence, a chain of words, a memory. Up to three stepping stones can be added. Six core pairs go to every player, two for each level of abstraction: two concrete things (bee and mirror, salt and clock), a concrete and an abstract one (river and secret, spider and melody), and two abstract ones (forgetting and festival, distance and habit). Each player sees each pair in one direction, chosen so that both directions get about the same number of players, and further pairs are optional. A ten-word warm-up comes first, and an AI bridge is shown only when a player asks for one. The game runs in five languages and needs no account.
+Each round of Bridges shows two ideas joined by a dashed arrow, and the player writes how to get from one to the other, in any form: a sentence, a chain of words, a memory. Up to three stepping stones can be added. Six core pairs go to every player, two for each level of abstraction: two concrete things (bee and mirror, salt and clock), a concrete and an abstract one (river and secret, spider and melody), and two abstract ones (forgetting and festival, distance and habit). Each player sees each pair in one direction, chosen so that both directions get about the same number of players. After the six core pairs, players can stop or keep going with 24 more pairs, eight at each level (all pairs are listed in Appendix~\ref{app:pairs}). A ten-word warm-up comes first, and an AI bridge is shown only when a player asks for one. The game runs in five languages and needs no account.
 
-The game was shared during the sprint through AI safety communities and personal networks. Between 25 October and 14 November 2026, 22 players wrote 115 bridges, 93 of them in English. To compare like with like, the analysis uses the 86 English answers to the six core pairs, from 16 players. A typical answer has 9 words and takes about a minute. Most players who answered the optional questions use AI daily and work in engineering; a few work in the arts, sciences, health or social sciences, and one never uses AI.
+The game was shared during the sprint through AI safety communities and personal networks. Between 25 October and 14 November 2026, 22 players wrote 115 bridges, 93 of them in English. Sixteen players answered all six core pairs, and four of them kept going, with 8 more bridges on 7 of the other pairs. People stop when they want, while a model answers every pair it is given, so every comparison uses equal numbers of answers. The main analysis uses the 86 English answers to the six core pairs, from 16 players; the 21 Spanish and French answers, too few for maps of their own, join them in a check with all languages together. A typical answer has 9 words and takes about a minute. Most players who answered the optional questions use AI daily and work in engineering; a few work in the arts, sciences, health or social sciences, and one never uses AI.
 
 \subsection{Models and conditions}
 \label{sec:models}
@@ -84,7 +84,7 @@ Each model first answered every pair, direction and language 10 times with no pe
 No language model grades any answer. All measures come from placing answers in a space of meaning and counting. The terms used in the rest of the paper are defined here.
 
 \begin{description}[leftmargin=0pt, itemsep=0.05em, parsep=0pt]
-\item[\textbf{Space of meaning.}] Each answer is turned into a list of numbers by a small embedding model (all-MiniLM-L6-v2), so that answers saying similar things sit close together and different answers sit far apart. Before this step, each answer is read between its two ideas (``salt \emph{[answer]} a clock''), so that answers that fill the gap between the two ideas read as full sentences, and it is cut to its first 40 words. Nine in ten human answers are 40 words or shorter, while chat models write around 150 words; the cut gives every answer the same room. Results with the full answers are in Appendix~\ref{app:robust}.
+\item[\textbf{Space of meaning.}] Each answer is turned into a list of numbers by a small embedding model (all-MiniLM-L6-v2), so that answers saying similar things sit close together and different answers sit far apart. Before this step, each answer is read between its two ideas (``salt \emph{[answer]} a clock''), so that answers that fill the gap between the two ideas read as full sentences, and it is cut to its first 40 words. Nine in ten human answers are 40 words or shorter, while chat models write around 150; the cut gives every answer the same room. Results with the full answers are in Appendix~\ref{app:robust}.
 \item[\textbf{Temperature.}] The amount of randomness a model adds as it writes. Low temperature gives the most likely words; high temperature gives more unusual ones, and at the top, nonsense.
 \item[\textbf{Persona.}] A short text placed before the question that asks the model to answer as someone or in some way.
 \item[\textbf{The human map.}] For each pair, the region of the space of meaning that the players' answers cover: a small ball around each human answer, as wide as the distance to its third closest human neighbour \citep{kynkaanniemi2019}.
@@ -105,15 +105,15 @@ Map reached and on the map are computed with as many answers from a group as the
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.64\textwidth]{figs/fig0_money.pdf}
+\includegraphics[width=0.58\textwidth]{figs/fig0_money.pdf}
 \caption{The results on one model. The star is the human reference: half of the players placed on the map drawn by the other half. Qwen2.5 7B before chat training (blue) reaches far; after chat training (orange) it stays in a small corner. Creative conditions on the same chat model (green) open the map again. The dashed line is the same chat model at higher and higher temperature. Grey dots: the other models with no persona. Groups are placed against half of the players here, so values are a little lower than in Table~\ref{tab:models}.}
 \label{fig:money}
 \end{figure}
 
-Figure~\ref{fig:money} gathers the main results on one model. The star shows what people do: half of the players, placed on the map drawn by the other half, reach about two thirds of it and stay on it about as often. People do not reach the whole map, since each person brings different connections, but no model comes close to that point. The rest of this section follows the figure step by step, then looks at the pairs, the direction of the arrow and the warm-up.
+Figure~\ref{fig:money} gathers the main results on one model. The star shows what people do: half of the players, placed on the map drawn by the other half, reach about two thirds of it and stay on it about as often. People do not reach the whole map, since each person brings different connections, and no model comes close to that point. The rest of this section follows the figure step by step, then looks at the pairs, the direction of the arrow and the warm-up.
 
 \begin{table}[!htb]
-\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\centering\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{0.88}
 \begin{tabular}{lrrrrrrr}
 \toprule
 Model & Year & Size (B) & Words & On the map & Map reached & Different & Hub rate \\
@@ -145,7 +145,7 @@ The first step is the models with no persona (Table~\ref{tab:models}). GPT-2 and
 
 \subsection{Chat training is where the map closes}
 
-Because old base models and new chat models differ in many ways at once, the clearest comparison keeps everything else the same: Qwen2.5 7B before and after chat training. The share of the map it reaches drops from 54\% to 6\%, while the share of its answers on the map stays the same (68\% and 69\%). Size adds to the effect. Within the Qwen2.5 chat family, larger models reach less, from 29\% at 0.5 billion parameters to 3\% at 14 billion, and the newest model, Qwen3 8B, stays on the map most often of all chat models while reaching the least of it (1\%). The ordering does not depend on the measuring setup: with the full answers, the shorter cut and two other embedding models, Qwen2.5 14B and Qwen3 8B reach between 0\% and 4\% of the map in every setting, and the 7B base model between 47\% and 69\% (Appendix~\ref{app:robust}).
+Because old base models and new chat models differ in many ways at once, the clearest comparison keeps everything else the same: Qwen2.5 7B before and after chat training. The share of the map it reaches drops from 54\% to 6\%, while the share of its answers on the map stays the same (68\% and 69\%). Size adds to the effect. Within the Qwen2.5 chat family, larger models reach less, from 29\% at 0.5 billion parameters to 3\% at 14 billion, and the newest model, Qwen3 8B, stays on the map most often of all chat models while reaching the least of it (1\%). The order holds with the full answers, a shorter cut, two other embedding models, and all three languages together (Appendix~\ref{app:robust}).
 
 \subsection{Reasoning personas change little, creative conditions open the map}
 
@@ -155,7 +155,7 @@ The newest model gains as much as the others, but it starts lower and stays lowe
 
 \begin{figure}[!htb]
 \centering
-\begin{minipage}[t]{0.47\textwidth}\centering
+\begin{minipage}[t]{0.44\textwidth}\centering
 \includegraphics[width=\linewidth]{figs/fig3_conditions.pdf}
 \caption{Change in the share of the human map reached, against the same model with no persona. Dot: mean; bar: range across models. Reasoning personas on 10 chat models (blue), creative conditions on 5 (orange).}
 \label{fig:conditions}
@@ -169,17 +169,17 @@ The newest model gains as much as the others, but it starts lower and stays lowe
 
 \subsection{Creative conditions and randomness}
 
-That price raises a doubt: perhaps the creative conditions only add noise, as randomness would. Temperature tests this. On Qwen2.5 7B, raising it to 1.6 takes the share reached to 41\%, and to 65\% at 2.0, while the share on the map falls to 31\% and then 2\% (dashed line in Figure~\ref{fig:money}). Against that line, an ordinary life and a playful mood sit above it, a memory sits on it, and a story falls below it. On Qwen3 8B the difference is larger: temperature barely moves the share reached until 2.0 (18\%), while an ordinary life and a memory reach 38\% and 28\% with about half of their answers on the map. So creative framings open the map at least as well as randomness, and on the newest model much better.
+That price raises a doubt: perhaps the creative conditions only add noise, as randomness would. Temperature tests this. On Qwen2.5 7B, raising it to 1.6 takes the share reached to 41\%, and to 65\% at 2.0, while the share on the map falls to 31\% and then 2\% (dashed line in Figure~\ref{fig:money}). Against that line, an ordinary life and a playful mood sit above it, a memory sits on it, and a story falls below it. On Qwen3 8B the difference is larger: temperature barely moves the share reached until 2.0 (18\%), while an ordinary life and a memory reach 38\% and 28\% with about half of their answers on the map.
 
 \subsection{Concrete and abstract pairs, and the direction of the arrow}
 
 The pairs were chosen at three levels of abstraction and shown in both directions, to see whether either changes the answers. Level matters less than expected (Figure~\ref{fig:pairs}, left). People give about as many different answers for abstract pairs (0.50 to 0.54 per answer) as for concrete ones (0.56 to 0.60), and chat models stay low everywhere (0.17 to 0.23). What lowers diversity is a strong shared hub. For spider and melody, 60\% of people's answers pass through a web or a nursery rhyme, and people give the fewest different answers of all pairs (0.45). For the same pair, and for bee and mirror through a reflection, 88\% of the chat models' answers take the hub.
 
-Direction behaves differently for people and models. For each model and pair, the answers going one way and the answers going the other way can be compared, and for chat models the starting idea changes the answer in 35 of 60 cases, by about one and a half times the shift expected by chance. Base models show it in only 2 of 18 cases. For people, no pair shows a shift beyond chance, although with six to nine answers per direction a small effect would be hard to see. Both people and chat models lean slightly toward the idea they start from (Figure~\ref{fig:pairs}, right; an average pull of $+0.05$ for people, $+0.04$ for chat models and about $0$ for base models). For people the pull is strongest from bee to mirror and from festival to forgetting.
+Direction behaves differently for people and models. For each model and pair, the answers going one way and the answers going the other way can be compared, and for chat models the starting idea changes the answer in 35 of 60 cases, by about one and a half times the shift expected by chance. Base models show it in only 2 of 18 cases. For people, no pair shows a shift beyond chance, although with six to nine answers per direction a small effect would be hard to see. Both people and chat models lean slightly toward the idea they start from (Figure~\ref{fig:pairs}, right; an average pull of $+0.05$ for people, $+0.04$ for chat models and about $0$ for base models).
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.78\textwidth]{figs/fig4_pairs_direction.pdf}
+\includegraphics[width=0.66\textwidth]{figs/fig4_pairs_direction.pdf}
 \caption{Left: different answers per answer for each pair, people and chat models. Right: pull of the starting idea, positive when answers sit closer to the idea they start from. Pairs grouped by level of abstraction.}
 \label{fig:pairs}
 \end{figure}
@@ -197,20 +197,18 @@ Even with every condition and temperature together, some human bridges stay far 
 \section{Discussion}
 \label{sec:discussion}
 
-\textbf{Newer models offer fewer of the connections people make.} The clearest result holds the model fixed and changes only chat training: the share of the human map it reaches falls by a factor of nine while its answers stay just as sensible. Larger and newer chat models go further in the same direction. Creativity needs both sense and variety. The old base models have variety without sense, the newest chat models have sense with little variety, and people have both. Keeping the space between ideas open is a goal worth giving to AI, and in this study the newest models move the other way.
+\textbf{Newer models offer fewer of the connections people make.} The clearest result holds the model fixed and changes only chat training: the share of the human map it reaches falls by a factor of nine while its answers stay just as sensible. Larger and newer chat models go further in the same direction. Creativity needs both sense and variety. The old base models have variety without sense, the newest chat models have sense with little variety, and people have both. Keeping the space between ideas open is a goal worth giving to AI, and in this study the newest models move the other way. People also stopped when they liked, while a model answers everything it is asked, and people still covered more ground.
 
 \textbf{Human ways of connecting reopen it, part of the way.} The conditions that help most are the ones closest to what the players did: speaking from a life, a memory, a story, a mood. The blind spots point the same way, since what no model reaches is memory, place and play. Reasoning styles built for investigating change almost nothing, which echoes the false epistemic redundancy result: framings that look different can leave the search in the same place \citep{gallego2026fer}. This part of the result is partly circular, since the creative conditions were built from human styles and are then measured against human answers. It is still informative that they work at all, that they work better than randomness, and that they never close the gap with people.
 
 \textbf{From creativity to blind spots.} Bridges measures connecting on simple ideas that anyone can play with; false epistemic redundancy looked at technical cases with a known, unusual answer, where the risk is a shared blind spot. Both ask whether a model explores beyond the most expected answer. Running the creative framings on those technical cases is the most direct next step.
 
-\textbf{Toward a harmonic interaction.} The potential for AI to widen the space of ideas is there, as the creative conditions show, and so is the risk of narrowing it, as the chat models show. Chat training rewards the single best answer. A harmonic interaction would preserve what people already do well, the personal, the sensory, the playful, and enhance what machines can add, such as speed and breadth across disciplines. In practice, a tool could offer several voices, each drawn from a different human way of connecting or a different discipline's view of the same concept, and show how much ground they cover together; for model training, human trains of thought could be collected for how widely they explore as well as for being right.
+\textbf{Toward a harmonic interaction.} AI could widen the space of ideas, as the creative conditions show, or narrow it, as the chat models show, since chat training rewards the single best answer. A harmonic interaction would preserve what people already do well, the personal, the sensory, the playful, and enhance what machines can add, such as speed and breadth across disciplines. In practice, a tool could offer several voices, each drawn from a different human way of connecting or a different discipline's view of the same concept, and show how much ground they cover together; for model training, human trains of thought could be collected for how widely they explore as well as for being right.
 
 \section{Future Work}
 \label{sec:future}
 
-\textbf{More and different players.} Players from other fields, languages and cultures, and players who rarely use AI, would show how much the human map depends on perspective and on exposure to AI; blind ratings of surprise and fit would separate new territory from noise.
-
-\textbf{Time, values and disciplines.} Multi-year samples of the Divergent Association Task would give a proper time axis on the human side. Pairs with values at stake, such as freedom and safety, and concepts seen from different disciplines are where convergence costs most, and a shared map of human and AI bridges would make the space and its gaps visible.
+Players from other fields, languages and cultures, and players who rarely use AI, would show how much the human map depends on perspective and on AI use, and multi-year samples of the Divergent Association Task would give it a time axis. Pairs with values at stake, such as freedom and safety, and one concept seen from several disciplines are where convergence costs most.
 
 \section*{Data and Code Availability}
 The pairs, personas, generation code, analysis code, figures and all AI answers are available at \url{https://github.com/nefinia/epistemic-bridges}. The game is live at \url{https://mapideas.org/bridges}, and its code is at \url{https://github.com/nefinia/themap}. The game, together with the reasoning personas, the Modal server and the clustering settings from false epistemic redundancy, existed before the sprint; the model runs, creative conditions, measures, analysis and this paper were made during it.
@@ -261,6 +259,53 @@ Claude was used throughout the sprint to scope the question, to write the game, 
 
 \textbf{Ethics and privacy.} Players took part anonymously after a consent screen. No name, IP address or location is stored, and page visits are counted only as daily totals per country. Voice answers are transcribed and never stored. Player answers are kept private.
 
+\section{The Pairs}
+\label{app:pairs}
+
+All pairs in the game, in English. Every player saw the six core pairs, each in one direction; the optional pairs came after them, for players who chose to keep going, taking turns between the levels and favouring the pairs with the fewest answers so far. The models answered the core pairs.
+
+\begin{center}\footnotesize
+\begin{tabular}{ll}
+\toprule
+Pair & Set\\
+\midrule
+\multicolumn{2}{l}{\emph{two concrete ideas}}\\
+a bee / a mirror & core\\
+salt / a clock & core\\
+a snail / a map & optional\\
+a needle / a cloud & optional\\
+an egg / a door & optional\\
+honey / a knife & optional\\
+a stone / a letter & optional\\
+a rope / the moon & optional\\
+a fish / a basket & optional\\
+a tooth / rain & optional\\
+\multicolumn{2}{l}{\emph{concrete and abstract}}\\
+a river / a secret & core\\
+a spider / a melody & core\\
+a seed / trust & optional\\
+bread / luck & optional\\
+sand / waiting & optional\\
+a cup / silence & optional\\
+a bird / the past & optional\\
+a tree / a journey & optional\\
+an ant / a promise & optional\\
+wind / childhood & optional\\
+\multicolumn{2}{l}{\emph{two abstract ideas}}\\
+forgetting / a festival & core\\
+distance / a habit & core\\
+luck / balance & optional\\
+friendship / a harvest & optional\\
+waiting / an echo & optional\\
+the past / silence & optional\\
+childhood / a promise & optional\\
+memory / a journey & optional\\
+trust / a shadow & optional\\
+a shadow / friendship & optional\\
+\bottomrule
+\end{tabular}
+\end{center}
+
 \section{Prompts, Personas and Settings}
 \label{app:prompts}
 
@@ -274,5 +319,7 @@ To give a feel for the answers behind the numbers, here is one answer per condit
 \input{appendix_examples}
 
 \input{appendix_robust}
+
+With the three languages together (86 English, 19 Spanish and 2 French answers), measured with the multilingual embedding model and with the same mix of languages for models as for players, the order is the same: the base models reach 72\% to 78\% of the map, Qwen2.5 7B 10\% after chat training, Qwen3 8B 7\% and Qwen2.5 14B 3\%. Small chat models reach more in this setting (up to 64\% for Qwen2.5 0.5B), partly because their Spanish and French answers are often broken or switch to English, and such text spreads widely in the space of meaning.
 
 \end{document}

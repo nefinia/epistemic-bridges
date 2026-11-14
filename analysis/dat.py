@@ -8,6 +8,9 @@ the first seven valid words (lowercase, in the GloVe vocabulary), mean cosine di
 import argparse, json, re, sys
 from pathlib import Path
 import numpy as np, pandas as pd
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from plotstyle import dots  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 NORM_MEAN, NORM_SD = 78.38, 6.35
 
@@ -87,8 +90,8 @@ def figure(p, summ):
     ax.axvspan(NORM_MEAN - NORM_SD, NORM_MEAN + NORM_SD, color=GRID, alpha=0.8, zorder=0)
     ax.axvline(NORM_MEAN, color=MUTED, linewidth=1.2, linestyle=(0, (3, 2)))
     y = np.arange(len(s) + 1)
-    ax.scatter(p, np.full(len(p), len(s)) + np.random.default_rng(0).uniform(-0.25, 0.25, len(p)), s=14, color=INK, alpha=0.6, zorder=3)
-    ax.scatter([p.mean()], [len(s)], s=70, marker="D", color=INK, edgecolor="white", zorder=4)
+    dots(ax, p, np.full(len(p), len(s)) + np.random.default_rng(0).uniform(-0.25, 0.25, len(p)), s=14, color=INK, alpha=0.6, zorder=3)
+    dots(ax, [p.mean()], [len(s)], s=70, marker="D", color=INK, edgecolor="white", zorder=4)
     for i, (_, r) in enumerate(s.iterrows()):
         color = BLUE if r["kind"] == "base" else ORANGE
         ax.errorbar(r["mean"], i, xerr=r["sd"], fmt="o", color=color, ecolor=color, elinewidth=1.2, capsize=0, markersize=5)
