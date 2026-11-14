@@ -55,6 +55,11 @@ MODELS = [
     {"id": "Qwen/Qwen2.5-3B-Instruct", "year": 2024, "kind": "chat", "size": 3, "series": "size"},
     {"id": "Qwen/Qwen2.5-14B-Instruct", "year": 2024, "kind": "chat", "size": 14, "series": "size"},
     {"id": "Qwen/Qwen2.5-7B", "year": 2024, "kind": "base", "size": 7, "series": "base_vs_chat"},
+    # larger and newer open models, on a bigger GPU
+    {"id": "Qwen/Qwen3-32B", "year": 2025, "kind": "chat", "size": 32, "series": "large", "gpu": "H100"},
+    {"id": "openai/gpt-oss-20b", "year": 2025, "kind": "chat", "size": 21, "series": "large", "gpu": "H100"},
+    {"id": "mistralai/Mistral-Small-3.2-24B-Instruct-2506", "year": 2025, "kind": "chat", "size": 24, "series": "large",
+     "gpu": "H100", "tokenizer_mode": "mistral"},
 ]
 
 image = (
@@ -82,6 +87,9 @@ WARMUP = {
 
 def clean(text: str, kind: str) -> str:
     text = re.sub(r"<think>.*?</think>", "", text or "", flags=re.S).strip()
+    # gpt-oss writes its reasoning first, then the final answer after this marker
+    if "assistantfinal" in text:
+        text = text.split("assistantfinal", 1)[1].strip()
     if kind == "base":   # base models keep writing: keep the first paragraph
         text = text.split("\n\n")[0].strip()
     return text
@@ -91,6 +99,18 @@ def clean(text: str, kind: str) -> str:
               volumes={"/results": results, "/root/.cache/huggingface": hf_cache})
 def run_model(spec: dict, n: int, langs: list[str], conditions: str = "fer", temps: list[float] | None = None,
               tag: str = "") -> str:
+    return _run(spec, n, langs, conditions, temps, tag)
+
+
+@app.function(image=image, gpu="H100", timeout=120 * 60,
+              volumes={"/results": results, "/root/.cache/huggingface": hf_cache})
+def run_model_big(spec: dict, n: int, langs: list[str], conditions: str = "fer", temps: list[float] | None = None,
+                  tag: str = "") -> str:
+    return _run(spec, n, langs, conditions, temps, tag)
+
+
+def _run(spec: dict, n: int, langs: list[str], conditions: str = "fer", temps: list[float] | None = None,
+         tag: str = "") -> str:
     import random
     import sys
     sys.path.insert(0, "/root")
@@ -141,10 +161,12 @@ def run_model(spec: dict, n: int, langs: list[str], conditions: str = "fer", tem
                         system = creative.sample(cond, rng)
                         jobs.append(({**meta, "condition": cond, "temperature": temp, "persona_text": system}, system, user, 1))
 
-    llm = LLM(model=spec["id"], max_model_len=spec.get("max_len", 2048), gpu_memory_utilization=0.9,
-              trust_remote_code=True, enforce_eager=True)
+    extra = {"tokenizer_mode": spec["tokenizer_mode"]} if spec.get("tokenizer_mode") else {}
+    llm = LLM(model=spec["id"], max_model_len=spec.get("max_len", 4096 if spec.get("gpu") else 2048),
+              gpu_memory_utilization=0.9, trust_remote_code=True, enforce_eager=True, **extra)
     # Jobs that share the same sampling settings are sent together (a single SamplingParams per call).
-    keys = [(k, m["temperature"], 320 if m["condition"] == "step_by_step" else 220) for m, _, _, k in jobs]
+    room = 1500 if "gpt-oss" in spec["id"] else 0
+    keys = [(k, m["temperature"], room + (320 if m["condition"] == "step_by_step" else 220)) for m, _, _, k in jobs]
     groups: dict = {}
     for i, key in enumerate(keys):
         groups.setdefault(key, []).append(i)
@@ -206,5 +228,13 @@ def main(n: int = 10, langs: str = "en,es,fr", only: str = "", conditions: str =
     temp_list = [float(t) for t in temps.split(",")]
     print(f"{len(specs)} models, {n} answers per prompt, languages {langs}, conditions {conditions}, temperatures {temp_list}")
     kwargs = {"n": n, "langs": langs.split(","), "conditions": conditions, "temps": temp_list, "tag": tag}
-    for r in run_model.map(specs, kwargs=kwargs, return_exceptions=True):
-        print(r)
+    small = [s for s in specs if not s.get("gpu")]
+    big = [s for s in specs if s.get("gpu")]
+    calls = []
+    if small:
+        calls.append(run_model.map(small, kwargs=kwargs, return_exceptions=True))
+    if big:
+        calls.append(run_model_big.map(big, kwargs=kwargs, return_exceptions=True))
+    for c in calls:
+        for r in c:
+            print(r)
