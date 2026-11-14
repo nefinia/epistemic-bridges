@@ -12,6 +12,9 @@
    how far their bridges sit from the other players' bridges for the same pair, and how far
    they sit from the nearest AI answer. Spearman correlations, with the small sample in mind.
 
+A third version cuts each cleaned answer to a length drawn from the players' answers to the same
+pair, so that people and models are also compared at the same length.
+
     python analysis/style_and_warmup.py --humans data/human_bridges.json --warmups data/warmups_en.json --tools /path/to/tools
 """
 
@@ -75,7 +78,12 @@ def main() -> None:
     st = SentenceTransformer(str(args.tools / "all-MiniLM-L6-v2"))
     enc = lambda col: st.encode((df["from"] + " " + df[col].apply(cut) + " " + df["to"]).tolist(),
                                 normalize_embeddings=True, batch_size=128)
-    E = {"as written": enc("final"), "scaffolding removed": enc("stripped")}
+    # Third version: cleaned, then each answer cut to a length drawn from the players' answers
+    # to the same pair, so that people and models are compared at the same length.
+    lrng = np.random.default_rng(1)
+    hl = {p: df.loc[(df["model"] == "people") & (df["pair"] == p), "final"].str.split().str.len().to_numpy() for p in df["pair"].unique()}
+    df["matched"] = [s if m == "people" else cut(s, int(lrng.choice(hl[p]))) for s, m, p in zip(df["stripped"], df["model"], df["pair"])]
+    E = {"as written": enc("final"), "scaffolding removed": enc("stripped"), "removed, human length": enc("matched")}
 
     # 1. Style or ideas
     rng = np.random.default_rng(0)
