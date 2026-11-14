@@ -144,8 +144,10 @@ def main() -> None:
     axes[1].set_xlabel("\u2190 more varied voice    more repetitive \u2192", fontsize=7.5, color=MUTED)
     axes[0].set_yticks(y); axes[0].set_yticklabels(s["cond"].str.replace("_", " ").str.replace(" siev", "").str.replace(" tmk", ""))
     dots(axes[1], [], [], color=BLUE, label="Reasoning (FER)"); dots(axes[1], [], [], color=ORANGE, label="Creative")
-    axes[1].legend(frameon=False, fontsize=7.5, loc="upper right")
-    fig.tight_layout()
+    handles, labels = axes[1].get_legend_handles_labels()
+    fig.legend(handles, labels, frameon=False, fontsize=7.5, loc="lower center", ncol=2, bbox_to_anchor=(0.5, 0.0))
+    fig.tight_layout(rect=(0, 0.05, 1, 1))
+    
     fig.savefig(figs / "fig3_conditions.pdf"); fig.savefig(figs / "fig3_conditions.svg")
 
 
