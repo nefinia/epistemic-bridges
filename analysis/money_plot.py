@@ -129,12 +129,15 @@ def draw(res: pd.DataFrame) -> None:
     ax.annotate("Qwen2.5 7B\nbefore chat training", (g.loc[BASE, "recall"], g.loc[BASE, "precision"]), xytext=(0, 12),
                 textcoords="offset points", fontsize=8, color=INK, ha="center")
     ax.scatter(g.loc[FOCUS, "recall"], g.loc[FOCUS, "precision"], s=60, color=ORANGE, edgecolor="white", linewidth=1.5, zorder=5)
-    ax.annotate("after chat\ntraining", (g.loc[FOCUS, "recall"], g.loc[FOCUS, "precision"]), xytext=(-4, -22),
-                textcoords="offset points", fontsize=8, color=INK, ha="right")
+    ax.annotate("after chat training", (g.loc[FOCUS, "recall"], g.loc[FOCUS, "precision"]), xytext=(0.15, 0.655),
+                textcoords="data", fontsize=8, color=INK, ha="left", va="center",
+                arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6, shrinkA=2, shrinkB=5))
+    offsets = {"ordinary_life": (0, -13, "center"), "playful": (6, -3, "left")}
     for c, label in CREATIVE.items():
         ax.scatter(g.loc[c, "recall"], g.loc[c, "precision"], s=40, color=AQUA, edgecolor="white", linewidth=1.2, zorder=5)
-        ax.annotate(label, (g.loc[c, "recall"], g.loc[c, "precision"]), xytext=(6, -3), textcoords="offset points",
-                    fontsize=7.5, color=INK)
+        dx, dy, ha = offsets.get(c, (6, -3, "left"))
+        ax.annotate(label, (g.loc[c, "recall"], g.loc[c, "precision"]), xytext=(dx, dy), textcoords="offset points",
+                    fontsize=7.5, color=INK, ha=ha)
     ax.scatter(g.loc["people", "recall"], g.loc["people", "precision"], s=150, marker="*", color=INK, zorder=6)
     ax.annotate("half of the players,\nagainst the other half", (g.loc["people", "recall"], g.loc["people", "precision"]), xytext=(10, -14),
                 textcoords="offset points", fontsize=8, color=INK)

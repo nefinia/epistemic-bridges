@@ -1,10 +1,10 @@
 \subsection*{The game text}
 Players and models received the same text, here in English (the game also runs in French, Spanish, Italian and German). For a model, the pair was written as ``salt $\to$ a clock''.
 \begin{quote}\small You will see two ideas. Write how you would get from one to the other. Any connection works, short or long. There is no wrong answer.\\[0.3em] salt $\to$ a clock \\[0.3em] How do you get from one to the other?\end{quote}
-The first version of the welcome text, seen by players before 14 November 00:30 Paris time, read: ``You will see two ideas. Write how you would get from one to the other. Short or long, any way you like. There is no wrong answer.''. Base models received the same text followed by ``Answer:'', to be continued.
+Base models received the same text followed by ``Answer:'', to be continued.
 \subsection*{Generation settings}
 vLLM 0.21 on one NVIDIA L40S GPU per model (Modal), temperature 1.0 unless stated, top-$p$ 1.0, at most 220 new tokens (320 for step by step, whose answer was read from a final line starting with ``Bridge:''), 10 answers per pair, direction, language and condition. Thinking mode was switched off for Qwen3. Chat models received the persona as a system message; where a model's chat template had no system role, the persona was placed before the question. Vicuna 7B had no chat template and received a plain ``USER: \dots\ ASSISTANT:'' format.
-\subsection*{Reasoning personas (from false epistemic redundancy, by Anya Habana)}
+\subsection*{Reasoning personas (from false epistemic redundancy \citep{gallego2026fer})}
 \begin{description}[leftmargin=0pt, itemsep=0.4em]
 \item[\textbf{causal mechanist}.] \small You are a Causal Mechanist. You ignore narrative and focus strictly on physical A$\to$B dependency paths, structural constraints, and mechanistic covariation. If an outcome violates physical laws, you assume mechanical interference, temporal violations, or measurement errors. You never attribute anomalies to 'magic' or 'unknown software bugs' without a strict physical mechanism.
 \item[\textbf{analogical thinker}.] \small You are an Analogical Thinker. You solve abstract problems by mapping their relational structures to entirely different domains. When presented with a mystery, do not take the nouns literally. Map the structural relations to a different phenomenon (e.g., biology, orbital mechanics, economics) to find the solution.
