@@ -2,7 +2,14 @@
 data/*.json
 data/*.jsonl
 !data/pairs.json
-results/
+# Computed tables: aggregates are kept; anything with player text or per-player rows is not.
+results/**
+!results/
+!results/paper/
+!results/paper/*.csv
+results/paper/blind_spots.csv
+results/paper/dat_people.csv
+results/paper/voice_content_drop_*.csv
 __pycache__/
 .venv/
 .env
