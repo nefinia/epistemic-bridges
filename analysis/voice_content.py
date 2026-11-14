@@ -60,6 +60,9 @@ def main() -> None:
     ap.add_argument("--ai", type=Path, default=ROOT / "data" / "ai")
     ap.add_argument("--tools", type=Path, required=True)
     ap.add_argument("--draws", type=int, default=200)
+    ap.add_argument("--seed", type=int, default=0, help="seed for the draws and the cut of content words")
+    ap.add_argument("--drop-player", default="", help="leave this player out (for the leave-one-out check)")
+    ap.add_argument("--plain", action="store_true", help="only models with no persona")
     args = ap.parse_args()
 
     import nltk
@@ -70,10 +73,14 @@ def main() -> None:
 
     h = pd.DataFrame(json.loads(args.humans.read_text()))
     h = h[(h["lang"] == "en") & (h["set"] == "core")].assign(model="people", model_kind="people")
+    if args.drop_player:
+        h = h[h["code"] != args.drop_player]
     a = pd.DataFrame([json.loads(l) for f in sorted(args.ai.glob("*.jsonl")) for l in f.read_text().splitlines() if l.strip()])
     run = a["run"].fillna("fer")
     a = a[(a["task"] == "bridge") & (a["lang"] == "en") & (a["set"] == "core")
           & run.isin(["fer", "creative", "temps"])]
+    if args.plain:
+        a = a[(a["run"].fillna("fer") == "fer") & (a["condition"] == "baseline")]
     df = pd.concat([h, a], ignore_index=True)
     df["final"] = df["final"].fillna("").astype(str)
     df = df[df["final"].str.strip() != ""].reset_index(drop=True)
@@ -106,7 +113,7 @@ def main() -> None:
     df["n_words"] = df["final"].str.split().str.len()
     df["n_concepts"] = df["concepts"].str.len()
 
-    rng = np.random.default_rng(0)
+    rng = np.random.default_rng(args.seed)
     pairs = sorted(df.loc[people, "pair"].unique())
     hwords = {p: df.loc[people & (df["pair"] == p), "n_words"].to_numpy() for p in pairs}
     hconc = {p: df.loc[people & (df["pair"] == p) & (df["n_concepts"] > 0), "n_concepts"].to_numpy() for p in pairs}
@@ -164,7 +171,8 @@ def main() -> None:
     res["name"] = [NAMES.get(m.split(" | ")[0], m.split(" | ")[0]) + (" | " + m.split(" | ")[1] if " | " in m else "") for m in res["model"]]
     out = ROOT / "results" / "paper"
     out.mkdir(parents=True, exist_ok=True)
-    res.to_csv(out / "voice_content.csv", index=False)
+    name = f"voice_content_drop_{args.drop_player}.csv" if args.drop_player else f"voice_content_seed{args.seed}.csv"
+    res.to_csv(out / name, index=False)
     print(res[["name", "kind", "cr_words", "cr_pos", "on_map_ideas", "map_reached_ideas", "share_with_content"]].round(2).to_string(index=False))
 
 
