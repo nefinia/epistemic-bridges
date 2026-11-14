@@ -38,7 +38,7 @@ Rarity alone rewards nonsense. A blind sample of answers (human and AI mixed, so
 
 ## Reading the answers
 
-Players connect ideas in at least three styles so far: a story or sentence, a chain of words, and filling the gap so that the two ideas start and end the sentence ("a mirror → [answer removed] → a bee"). With `--with-ends`, each answer is measured together with its two ideas, so the third style reads as a full sentence. Results are reported both ways.
+Players connect ideas in at least three styles so far: a story or sentence, a chain of words, and filling the gap so that the two ideas start and end the sentence (for example "a bee → *visits flowers next to* → a mirror", an invented illustration). With `--with-ends`, each answer is measured together with its two ideas, so the third style reads as a full sentence. Results are reported both ways.
 
 The welcome text changed once, on 14 Nov 2026 at about 00:30 Paris time (see `instructions_versions` in `data/pairs.json`). Answers are tagged by version through their timestamp, and AI generations use the version they are compared against.
 

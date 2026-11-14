@@ -137,7 +137,7 @@ def run(embedders: list[str], humans: Path, ai: Path, with_ends: bool) -> None:
     df = df[df["final"] != ""].reset_index(drop=True)
     df["n_words"] = df["final"].apply(lambda t: len(words(t)))
     df["fragment"] = df["n_words"] < MIN_WORDS
-    # Some players fill the gap between the two ideas ("[answer removed]" -> a bee).
+    # Some players fill the gap between the two ideas, so the two ideas start and end their sentence.
     # With --with-ends each answer is measured as "from + answer + to", so those read as full sentences.
     df["text"] = (df["from"] + " " + df["final"] + " " + df["to"]) if with_ends else df["final"]
     print(f"{len(df)} answers: " + ", ".join(f"{k} {v}" for k, v in df["condition"].value_counts().items()))

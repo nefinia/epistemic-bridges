@@ -27,7 +27,7 @@ Bridges is a short game where people link two simple ideas, like a bee and a mir
 
 The human answers draw the map of where people go. For each model, two numbers follow, with no AI judging anything: how many of its answers land on that map, and how much of the map it reaches.
 
-The oldest models reach most of the map, mostly by noise. Chat training closes it: the same 7B model reaches 54\% of the human map before chat training and 8\% after. The newest model tested, Qwen3 8B, reaches 2\%. Personas for reasoning change little. Creative personas taken from how people connect ideas (an ordinary life, a story, a memory) open the map again, and do it with less noise than raising the temperature. The bridges no model reaches are personal memories, small scenes and wordplay.
+Another group of players reaches about two thirds of the map and stays on it about as often. No model gets close to both. The oldest models reach most of the map, mostly by noise. Chat training closes it: the same 7B model reaches 54\% of the human map before chat training and 8\% after. The newest model tested, Qwen3 8B, reaches 2\%. Personas for reasoning change little. Creative personas taken from how people connect ideas (an ordinary life, a memory, a playful mood) open the map again, about as far as more randomness does, with a little less noise in the best cases. The bridges no model reaches are personal memories, small everyday scenes and play with words.
 \end{abstract}
 
 \section{Introduction}
@@ -85,6 +85,15 @@ Both are computed with as many model answers as there are human answers for that
 
 \section{What came out}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.86\linewidth]{figs/fig0_money.pdf}
+\caption{The whole story on one model. Half of the players draw the map; the star is the other half. Qwen2.5 7B before chat training (blue) reaches far. After chat training (orange) it stays in a small corner. Creative personas on the same chat model (green) open the map again. The dashed line is the same chat model with more and more randomness. Grey dots: the other models with no persona. Here every group is placed against half of the players, so the numbers are a little lower than in Table~\ref{tab:models}.}
+\label{fig:money}
+\end{figure}
+
+Figure~\ref{fig:money} sums up the results. Another group of players reaches about two thirds of the human map and stays on it about as often. No model comes close to that point. The rest of this section looks at each step.
+
 \begin{table}[t]
 \centering\small
 \begin{tabular}{lrrrrrrr}
@@ -139,23 +148,9 @@ Qwen3 & 2025 & 8 & 155 & 0.81 & 0.02 & 0.15 & 0.51 \\
 \label{fig:conditions}
 \end{figure}
 
-\paragraph{Personas open the map with less noise than temperature.} Temperature is the monkey dial. On Qwen2.5 7B, raising it to 1.6 takes the share reached to 45\%, and to 67\% at 2.0, while the share on the map falls to 32\% and then 2\% (Figure~\ref{fig:tradeoff}). Several creative conditions sit above that curve. At normal temperature, the memory condition reaches 47\% with 36\% on the map, and the playful mood 42\% with 53\%. On Qwen3 8B, temperature hardly moves anything until 2.0 (19\%), while an ordinary life and a memory reach 44\% and 31\%, with at least 44\% of answers on the map.
+\paragraph{Personas and randomness open the map about as far.} Temperature is the monkey dial. On Qwen2.5 7B, raising it to 1.6 takes the share reached to 45\%, and to 67\% at 2.0, while the share on the map falls to 32\% and then 2\% (dashed line in Figure~\ref{fig:money}). On this model, an ordinary life and a playful mood sit a little above that curve, a memory sits on it, and a story falls below it. On Qwen3 8B the difference is larger: temperature hardly moves anything until 2.0 (19\%), while an ordinary life and a memory reach 44\% and 31\%, with at least 44\% of answers on the map. So creative personas are at least as good as randomness at opening the map, and on the newest model much better.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{figs/fig5_tradeoff.pdf}
-\caption{Creative conditions (orange) and the temperature sweep with no persona (grey line), on two models.}
-\label{fig:tradeoff}
-\end{figure}
-
-\paragraph{What no model reaches.} Ordering the human bridges by how far they are from the closest AI answer, from any model and any condition, gives a clear picture. The farthest ones are personal:
-\begin{itemize}\setlength\itemsep{0.15em}
-\item ``[answer removed] [answer removed] \dots\ a smaller cruise on a river.''
-\item ``[answer removed] \dots\ [answer removed]''
-\item ``I used to use old CDs as hanging mirrors in my garden \dots\ a trickling parade of little bees.''
-\item ``Yesterday I looked at the clock on my phone \dots\ smelling the salt air.''
-\end{itemize}
-Next to them come an etymology (``[answer removed]'') and play with the words themselves (``[answer removed]''; ``distancia, grande, cumbre'', through the sound of \emph{costumbre}). Two players, hours apart, each linked mirror and bee through mirrors hung in a garden. A connection can be rare and still shared, and a good measure of diversity should keep it.
+\paragraph{What no model reaches.} Ordering the human bridges by how far they are from the closest AI answer, from any model and any condition, gives a clear picture. The sample is small, so the answers are described here and never quoted, to keep players from being recognised. The farthest bridges are personal: a wish kept secret, a place from childhood, an object reused in a garden, an afternoon at the sea. Next come an old meaning of a word, and play with the letters or the sound of the words themselves, such as a chain that moves through rhyme. Two players, hours apart, found the same rare connection for one pair. A connection can be rare and still shared, and a good measure of diversity should keep it.
 
 \section{What it suggests}
 
@@ -170,7 +165,7 @@ This is a first test. The human sample is small: 15 players for the English core
 \appendix
 \section{Dual use and ethics}
 
-A way to measure how much of the human map a model reaches could also become a training target, used to make models more varied and inventive, which is a capability. The added risk looks small: every measure here is already published, and the new part is the human baseline. One risk is worth naming: if reaching the map became a target, models could learn to look diverse without being more useful. The measures are offered for watching how models change, and are kept away from training. Players took part anonymously after a consent screen. No name, IP address or location is stored. Page visits are counted only as daily totals per country. Voice answers are transcribed and never stored. Player answers stay out of the public repository, and only short anonymous quotes appear here.
+A way to measure how much of the human map a model reaches could also become a training target, used to make models more varied and inventive, which is a capability. The added risk looks small: every measure here is already published, and the new part is the human baseline. One risk is worth naming: if reaching the map became a target, models could learn to look diverse without being more useful. The measures are offered for watching how models change, and are kept away from training. Players took part anonymously after a consent screen. No name, IP address or location is stored. Page visits are counted only as daily totals per country. Voice answers are transcribed and never stored. Player answers stay out of the public repository, and no answer is quoted in this report, since a small sample makes answers easy to recognise.
 
 \section{What existed before the sprint}
 
