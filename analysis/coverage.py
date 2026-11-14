@@ -30,12 +30,15 @@ from sklearn.metrics.pairwise import cosine_distances
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def load(humans: Path, ai: Path, trim: int, conditions: list[str] | None, lang: str | None) -> pd.DataFrame:
+def load(humans: Path, ai: Path, trim: int, conditions: list[str] | None, lang: str | None,
+         with_ends: bool = False, tag: str | None = None) -> pd.DataFrame:
     h = pd.DataFrame(json.loads(humans.read_text()))
     h["group"], h["model"], h["condition"] = "human", "human", "human"
     files = sorted(ai.glob("*.jsonl")) if ai.is_dir() else [ai]
     a = pd.DataFrame([json.loads(l) for f in files for l in f.read_text().splitlines() if l.strip()])
     a = a[a["task"] == "bridge"]
+    if tag is not None and "run" in a:
+        a = a[a["run"].fillna("fer") == tag]
     if "temperature" in a:
         a = a[a["temperature"].fillna(1.0) == 1.0]
     if conditions:
@@ -51,6 +54,8 @@ def load(humans: Path, ai: Path, trim: int, conditions: list[str] | None, lang: 
         df["text"] = df["final"].apply(lambda t: " ".join(re.findall(r"\S+", t)[:trim]))
     else:
         df["text"] = df["final"]
+    if with_ends:   # read each answer between its two ideas, so gap-filling answers become full sentences
+        df["text"] = df["from"] + " " + df["text"] + " " + df["to"]
     return df.reset_index(drop=True)
 
 
@@ -84,10 +89,12 @@ def main() -> None:
     ap.add_argument("--draws", type=int, default=30)
     ap.add_argument("--lang", default="en")
     ap.add_argument("--conditions", nargs="*")
+    ap.add_argument("--with-ends", action="store_true", help="measure each answer together with its two ideas")
+    ap.add_argument("--run", default=None, help="only AI rows from this run tag (fer, creative, temps)")
     ap.add_argument("--out", type=Path, default=ROOT / "results")
     args = ap.parse_args()
 
-    df = load(args.humans, args.ai, args.trim, args.conditions, args.lang)
+    df = load(args.humans, args.ai, args.trim, args.conditions, args.lang, args.with_ends, args.run)
     E = embed(df["text"].tolist(), args.embedder)
     rng = np.random.default_rng(0)
     rows, gaps = [], []
@@ -117,7 +124,7 @@ def main() -> None:
                              "human_bridge": df.loc[i, "final"], "distance_to_nearest_ai": float(d)})
 
     args.out.mkdir(exist_ok=True)
-    tag = f"{args.embedder.split('/')[-1]}_trim{args.trim}_{args.lang or 'all'}"
+    tag = f"{args.embedder.split('/')[-1]}_trim{args.trim}_{args.lang or 'all'}{'_ends' if args.with_ends else ''}_{args.run or 'allruns'}"
     res = pd.DataFrame(rows)
     res.to_csv(args.out / f"coverage_{tag}.csv", index=False)
     gp = pd.DataFrame(gaps).sort_values("distance_to_nearest_ai", ascending=False)
