@@ -57,7 +57,7 @@ MODELS = [
     {"id": "Qwen/Qwen2.5-7B", "year": 2024, "kind": "base", "size": 7, "series": "base_vs_chat"},
     # larger and newer open models, on a bigger GPU
     {"id": "Qwen/Qwen3-32B", "year": 2025, "kind": "chat", "size": 32, "series": "large", "gpu": "H100"},
-    {"id": "openai/gpt-oss-20b", "year": 2025, "kind": "chat", "size": 21, "series": "large", "gpu": "H100"},
+    {"id": "openai/gpt-oss-20b", "year": 2025, "kind": "chat", "size": 21, "series": "large", "gpu": "H100", "max_len": 8192},
     {"id": "mistralai/Mistral-Small-3.2-24B-Instruct-2506", "year": 2025, "kind": "chat", "size": 24, "series": "large",
      "gpu": "H100", "tokenizer_mode": "mistral"},
 ]
@@ -90,6 +90,8 @@ def clean(text: str, kind: str) -> str:
     # gpt-oss writes its reasoning first, then the final answer after this marker
     if "assistantfinal" in text:
         text = text.split("assistantfinal", 1)[1].strip()
+    elif text.startswith("analysis"):   # ran out of room before the final answer: no answer
+        text = ""
     if kind == "base":   # base models keep writing: keep the first paragraph
         text = text.split("\n\n")[0].strip()
     return text
@@ -165,7 +167,7 @@ def _run(spec: dict, n: int, langs: list[str], conditions: str = "fer", temps: l
     llm = LLM(model=spec["id"], max_model_len=spec.get("max_len", 4096 if spec.get("gpu") else 2048),
               gpu_memory_utilization=0.9, trust_remote_code=True, enforce_eager=True, **extra)
     # Jobs that share the same sampling settings are sent together (a single SamplingParams per call).
-    room = 1500 if "gpt-oss" in spec["id"] else 0
+    room = 6000 if "gpt-oss" in spec["id"] else 0
     keys = [(k, m["temperature"], room + (320 if m["condition"] == "step_by_step" else 220)) for m, _, _, k in jobs]
     groups: dict = {}
     for i, key in enumerate(keys):
