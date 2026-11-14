@@ -26,9 +26,9 @@ for ax, model in zip(axes, ["Qwen2.5 7B", "Qwen3 8B"]):
         if r["condition"] in ("ordinary_life", "story", "memory", "step_by_step", "playful", "dreamy"):
             ax.annotate(r["condition"].replace("_", " "), (r["recall"], r["precision"]), xytext=(4, 3), textcoords="offset points", fontsize=7, color=INK)
     ax.set_title(model, fontsize=9, color=INK)
-    ax.set_xlabel("Coverage of the human space (recall)")
+    ax.set_xlabel("Share of the human map reached (recall)")
     ax.set_xlim(-0.02, 0.75); ax.set_ylim(0, 1)
-axes[0].set_ylabel("Inside the human space (precision)")
+axes[0].set_ylabel("Answers on the human map (precision)")
 axes[0].legend(frameon=False, fontsize=7, loc="upper right")
 fig.tight_layout()
 fig.savefig(figs / "fig5_tradeoff.pdf"); fig.savefig(figs / "fig5_tradeoff.svg")

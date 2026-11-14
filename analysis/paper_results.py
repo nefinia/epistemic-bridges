@@ -200,8 +200,8 @@ def figures(models, cond, temps, hum, figs: Path) -> None:
     for _, r in models.iterrows():
         ax.annotate(f"{r['name']} ({int(r['year'])})", (r["recall"], r["precision"]), xytext=offsets.get(r["name"], (5, 2)),
                     textcoords="offset points", fontsize=7, color=MUTED)
-    ax.set_xlabel("Coverage of the human space (recall)")
-    ax.set_ylabel("Inside the human space (precision)")
+    ax.set_xlabel("Share of the human map reached (recall)")
+    ax.set_ylabel("Answers on the human map (precision)")
     ax.set_xlim(-0.02, 1.0); ax.set_ylim(0, 1.0)
     ax.legend(frameon=False, loc="lower right", fontsize=8)
     save(fig, "fig1_precision_recall")
@@ -217,7 +217,7 @@ def figures(models, cond, temps, hum, figs: Path) -> None:
     ax.scatter(q3["size_b"], q3["recall"], color=AQUA, s=40, marker="D", edgecolor="white", linewidth=1.5, zorder=3,
                label="Qwen3 8B (2025)")
     ax.set_xscale("log"); ax.set_xticks([0.5, 1.5, 3, 7, 14]); ax.set_xticklabels(["0.5", "1.5", "3", "7", "14"])
-    ax.set_xlabel("Parameters (billions)"); ax.set_ylabel("Coverage of the human space")
+    ax.set_xlabel("Parameters (billions)"); ax.set_ylabel("Share of the human map reached")
     ax.set_ylim(0, max(0.6, models["recall"].max() * 0.7)); ax.legend(frameon=False, fontsize=8)
     save(fig, "fig2_scale")
 
@@ -237,7 +237,7 @@ def figures(models, cond, temps, hum, figs: Path) -> None:
     ax.scatter(deltas["delta"], y, color=colors, s=30, zorder=3, edgecolor="white", linewidth=1)
     ax.axvline(0, color=MUTED, linewidth=0.8)
     ax.set_yticks(y); ax.set_yticklabels(deltas["condition"].str.replace("_", " "))
-    ax.set_xlabel("Change in coverage against no persona\n(dot: mean; bar: range across models)")
+    ax.set_xlabel("Change in share of the map reached, against no persona\n(dot: mean; bar: range across models)")
     ax.scatter([], [], color=BLUE, label="Investigative (FER)"); ax.scatter([], [], color=ORANGE, label="Creative")
     ax.legend(frameon=False, fontsize=8, loc="lower right"); ax.grid(axis="y", visible=False)
     save(fig, "fig3_conditions")
@@ -248,7 +248,7 @@ def figures(models, cond, temps, hum, figs: Path) -> None:
         s = s.sort_values("temperature")
         axes[0].plot(s["temperature"], s["recall"], color=color, linewidth=2, marker="o", markersize=5, label=name)
         axes[1].plot(s["temperature"], s["precision"], color=color, linewidth=2, marker="o", markersize=5, label=name)
-    axes[0].set_title("Coverage (recall)", fontsize=9, color=INK); axes[1].set_title("Inside the human space (precision)", fontsize=9, color=INK)
+    axes[0].set_title("Coverage (recall)", fontsize=9, color=INK); axes[1].set_title("Answers on the human map (precision)", fontsize=9, color=INK)
     for a in axes:
         a.set_xlabel("Temperature"); a.set_ylim(0, 1)
     axes[0].legend(frameon=False, fontsize=8)

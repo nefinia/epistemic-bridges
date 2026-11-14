@@ -13,7 +13,7 @@
 \captionsetup{font=small, labelfont=bf}
 \setlength{\parskip}{0.35em}
 
-\title{Epistemic Bridges\\[0.3em]\large How much of the human space of connections do language models reach?}
+\title{Epistemic Bridges\\[0.3em]\large How much of the space of human connections do language models reach?}
 \author{Sofia Gallego\\ CosmoVentures, Paris}
 \date{AI $\times$ Epistemics Research Sprint, Apart Research, November 2026}
 
@@ -21,48 +21,75 @@
 \maketitle
 
 \begin{abstract}
-Given infinite time, a room of monkeys at typewriters would produce Shakespeare, and a great deal of noise on the way. Creativity sits between that noise and the cliché: connections that are unexpected and still make sense. We ask how much of the space of connections that people make between two ideas language models reach. In a short multilingual web game, players link two simple ideas (a bee and a mirror, salt and a clock) in any form they like. We collected 109 bridges from 21 players and generated 27{,}720 bridges with 13 open models released between 2019 and 2025, with investigative personas, creative personas and a range of sampling temperatures. Using the human answers to define the space people reach, and no model as a judge, we measure precision (how many model answers fall inside it) and recall (how much of it the model covers). Old base models cover most of the human space through noise. Chat training closes it: the same 7B model drops from 0.54 to 0.08 recall after chat training, and the newest model we tested (Qwen3 8B) covers 0.02. Investigative personas change little. Creative personas built from how people actually connect ideas (an ordinary life, a story, a memory) raise recall by 0.33 to 0.37 on average, more than raising temperature at the same precision. The human bridges that no model reaches are personal memories, small scenes and wordplay. This is a first test with a small human sample; it suggests a cheap, judge-free way to track whether AI narrows the connections available to people, and which framings widen them.
+Give a room of monkeys typewriters and infinite time, and one day they will type Shakespeare, together with a mountain of noise. Creativity lives somewhere between that noise and the cliché: a connection that surprises and still makes sense.
+
+Bridges is a short game where people link two simple ideas, like a bee and a mirror, or salt and a clock, in any way they like. 21 players wrote 109 bridges. The same pairs went to 13 open language models released between 2019 and 2025, with no persona, with reasoning personas, with creative personas and at different temperatures, for 27{,}720 AI bridges in total.
+
+The human answers draw the map of where people go. For each model, two numbers follow, with no AI judging anything: how many of its answers land on that map, and how much of the map it reaches.
+
+The oldest models reach most of the map, mostly by noise. Chat training closes it: the same 7B model reaches 54\% of the human map before chat training and 8\% after. The newest model tested, Qwen3 8B, reaches 2\%. Personas for reasoning change little. Creative personas taken from how people connect ideas (an ordinary life, a story, a memory) open the map again, and do it with less noise than raising the temperature. The bridges no model reaches are personal memories, small scenes and wordplay.
 \end{abstract}
 
 \section{Introduction}
 
-People are good at connecting distant ideas, and much of brainstorming and discovery happens there. As more thinking passes through AI tools, a natural worry is that those tools draw on what is already written and pull everyone toward the same connections. Work on writing and ideation supports the worry: AI help can make each person's ideas better while making the ideas of a group more alike \cite{doshi2024,anderson2024}.
+People are good at connecting distant ideas. Much of brainstorming and discovery happens in those connections. More and more thinking now passes through AI tools, and those tools learn from what is already written. They may pull everyone toward the same connections. Studies on writing and ideas point that way: help from AI can improve each person's ideas and still make a group's ideas more alike \cite{doshi2024,anderson2024}.
 
-This project is a first step toward tools that do the opposite: a map of ideas (\href{https://mapideas.org}{mapideas.org}) that keeps room for contrast and makes new spaces between ideas visible. Before building such a tool, we need a way to see the space itself. This sprint tests one precise question:
+This work is a first step toward tools that keep the space open, such as a map of ideas that leaves room for contrast and shows how ideas relate (\href{https://mapideas.org}{mapideas.org}). Before building such tools, the space itself needs to be visible. The sprint asks one precise question:
 
 \begin{quote}
-\emph{Do the connections that language models make between two ideas cover less of the space than the connections people make? How does that change across model generations, sizes, chat training, personas and temperature?}
+\emph{Do the connections language models make between two ideas cover less ground than the ones people make? And how does that change with the age of the model, its size, chat training, personas and temperature?}
 \end{quote}
 
-We use random pairs of simple, universal concepts on purpose. No prior knowledge is needed, so the task measures connecting itself, and anyone can take part in any of five languages. Debates and contested concepts, where convergence has a higher cost, are the next step.
+The pairs are simple and universal on purpose. Nobody needs to know a topic to play, so the game measures the act of connecting, in five languages. Contested ideas, where everyone thinking alike costs more, are the natural next step.
 
-Our contributions are: (1) Bridges, an open game that collects free-form connections between ideas, live at \href{https://mapideas.org/bridges}{mapideas.org/bridges}; (2) a judge-free way to measure how much of the human space a model reaches, using precision and recall for generative models \cite{kynkaanniemi2019}; (3) a first map of 13 open models from 2019 to 2025, with investigative and creative personas and a temperature sweep; (4) a qualitative look at the human bridges no model reaches. All code and AI answers are public at \href{https://github.com/nefinia/epistemic-bridges}{github.com/nefinia/epistemic-bridges}.
+What this work brings:
+\begin{itemize}\setlength\itemsep{0.1em}
+\item Bridges, an open game that collects free connections between ideas (\href{https://mapideas.org/bridges}{mapideas.org/bridges}).
+\item A simple way to see how much of the human map a model reaches, with published methods and no AI judge \cite{kynkaanniemi2019}.
+\item A first look at 13 open models from 2019 to 2025, with reasoning personas, creative personas and a temperature sweep.
+\item The human bridges that no model reaches, read one by one.
+\end{itemize}
+All code and all AI answers are public at \href{https://github.com/nefinia/epistemic-bridges}{github.com/nefinia/epistemic-bridges}.
 
-\section{Related work}
+\section{Where this comes from}
 
-Linking two fixed ends has a long history. Lewis Carroll's \emph{Doublets} (1879) asked readers to change \textsc{head} into \textsc{tail} one letter at a time. Koestler described creativity as the meeting of two unrelated frames of thought \cite{koestler1964}. The Remote Associates Test asks for the one word linking three distant words \cite{mednick1962}, and research on conceptual combination studied how people read pairs like ``zebra clam'' through shared properties or relations \cite{wisniewski1997}. Word association norms go back to 1910, and Jenkins and Russell found that answers became more alike between 1910 and 1952 \cite{jenkins1960}. Players navigating Wikipedia between two articles pass through a few central hubs \cite{west2012}. A recent daily web game, Linxicon, asks players to link two random words through a chain of single words; Bridges leaves the form open, keeps the direction of the arrow, and compares people with AI on the same pairs.
+Linking two fixed ends is an old game. In 1879 Lewis Carroll asked readers to turn \textsc{head} into \textsc{tail} one letter at a time. Koestler saw creativity as two unrelated frames of thought meeting \cite{koestler1964}. The Remote Associates Test asks for the one word that links three distant ones \cite{mednick1962}. Studies of word pairs like ``zebra clam'' looked at how people join two concepts, through a shared property or a relation \cite{wisniewski1997}. Word association lists go back to 1910, and between 1910 and 1952 people's answers became more alike \cite{jenkins1960}. People moving through Wikipedia from one article to another pass through a few central hubs \cite{west2012}. Today a daily web game, Linxicon, asks players to link two random words through a chain of single words. Bridges keeps the form open, keeps the direction of the arrow, and puts people and AI on the same pairs.
 
-On the measurement side, the Divergent Association Task scores how far apart ten words are \cite{olson2021}, and was recently used to compare about 100{,}000 people with language models \cite{bellemare2026}. Diversity can be counted as an effective number of distinct items, with Hill numbers \cite{jost2006} or the Vendi score \cite{friedman2023}. Precision and recall for generative models separate quality from coverage \cite{kynkaanniemi2019}. Chat training is known to reduce output diversity \cite{kirk2024}. Personas of ordinary people raise the diversity of AI-generated ideas \cite{deng2026}, as does step-by-step prompting \cite{meincke2024}. This project grows out of earlier work on \emph{false epistemic redundancy}, where AI personas that looked different shared the same blind spots.
+For measuring, the Divergent Association Task scores how far apart ten words are \cite{olson2021}, and was recently used to compare about 100{,}000 people with language models \cite{bellemare2026}. Diversity can be counted as an effective number of different answers \cite{jost2006,friedman2023}. Chat training is known to make answers less varied \cite{kirk2024}. Personas of ordinary people make AI ideas more varied \cite{deng2026}, and so does asking a model to think step by step \cite{meincke2024}. This project also continues earlier work on \emph{false epistemic redundancy}, where AI personas that looked different shared the same blind spots.
 
-\section{Method}
+\section{How it works}
 
-\paragraph{The game.} Players see two ideas joined by a dashed arrow and write how they would get from one to the other, in any form. They may add up to three stepping stones. Six core pairs are shown to everyone (bee $\to$ mirror, salt $\to$ clock, river $\to$ secret, spider $\to$ melody, forgetting $\to$ festival, distance $\to$ habit), from concrete--concrete to abstract--abstract, each in one direction per player, balanced across players. Further pairs are optional. A ten-word warm-up comes first. Players can ask to see an AI bridge for a pair, but only after choosing to. The game runs in English, French, Spanish, Italian and German. No account is needed; players are identified by a random code, and no name, IP address or location is stored.
+\paragraph{The game.} Two ideas appear, joined by a dashed arrow. The player writes how to get from one to the other, in any form: a sentence, a chain of words, a memory. Up to three stepping stones can be added. Six core pairs go to everyone: bee $\to$ mirror, salt $\to$ clock, river $\to$ secret, spider $\to$ melody, forgetting $\to$ festival, distance $\to$ habit. They go from two concrete things to two abstract ones. Each player sees each pair in one direction, and both directions get the same number of players. More pairs are optional. A ten-word warm-up comes first. An AI bridge can be shown, only if the player asks for it. The game runs in English, French, Spanish, Italian and German, with no account, and stores no name, IP address or location.
 
-\paragraph{Players.} Between 25 October and 14 November 2026, 21 players wrote 109 bridges (87 in English, 20 in Spanish, 2 in French). The analysis below uses the 80 English answers to the core pairs, from 15 players. The median answer is 9 words, written in 55 seconds. Of those who answered the optional questions, most use AI daily and work in engineering; a few work in the arts, health or social sciences, and one never uses AI. The welcome text changed once during the sprint, from ``Short or long, any way you like'' to ``Any connection works, short or long''; 41 answers came after the change.
+\paragraph{The players.} Between 25 October and 14 November 2026, 21 players wrote 109 bridges: 87 in English, 20 in Spanish and 2 in French. The analysis uses the 80 English answers to the core pairs, from 15 players. A typical answer has 9 words and takes about a minute. Most players who answered the optional questions use AI every day and work in engineering. A few work in the arts, health or social sciences, and one never uses AI. During the sprint the welcome text changed once, from ``Short or long, any way you like'' to ``Any connection works, short or long''. 41 answers came after the change.
 
-\paragraph{Models.} We ran 13 open models with vLLM on Modal (Table~\ref{tab:models}): two base models from before chat training (GPT-2 XL, 2019; GPT-J 6B, 2021), chat models from 2023 to 2025 at about 7B parameters, the Qwen2.5 family from 0.5B to 14B, and the base Qwen2.5 7B. Every model received exactly the instructions players see. Base models received them as text to continue.
+\paragraph{The models.} 13 open models ran on Modal (Table~\ref{tab:models}). Two are base models from before chat training: GPT-2 XL (2019) and GPT-J 6B (2021). Base models simply continue text. The others are chat models from 2023 to 2025, most of them around 7 billion parameters, plus the Qwen2.5 family from 0.5 to 14 billion and the base Qwen2.5 7B. Every model got exactly the text the players see.
 
-\paragraph{Conditions.} With no persona, each model answered each pair, direction and language 10 times at temperature 1.0. Chat models also answered with the four investigative personas from false epistemic redundancy (causal mechanist, analogical thinker, teleological analyst, dialectical thinker), written by Anya Habana. On five models we added creative conditions built from how players connected ideas: \emph{association}, \emph{story}, \emph{memory}, \emph{senses}, \emph{wordplay}; three moods (\emph{playful}, \emph{dreamy}, \emph{child}); a random small constraint; an ordinary life drawn at random from 30 short sketches (``a 62-year-old fisherwoman in La Serena who mends her own nets''); and step-by-step thinking. On two models we swept temperature from 0.4 to 2.0. In total, 27{,}720 AI bridges.
+\paragraph{The conditions.} Each model answered each pair, direction and language 10 times, with no persona, at temperature 1.0. Chat models also answered with the four reasoning personas from false epistemic redundancy, written by Anya Habana: a causal mechanist, an analogical thinker, a teleological analyst and a dialectical thinker. Five models also answered with creative conditions, built from the ways players connected ideas:
+\begin{itemize}\setlength\itemsep{0.1em}
+\item ways of connecting: association, story, memory, senses, wordplay;
+\item moods: playful, dreamy, a child's eyes;
+\item an ordinary life drawn at random from 30 short sketches, such as ``a 62-year-old fisherwoman in La Serena who mends her own nets'';
+\item a small random constraint (``pass through something soft''), and thinking step by step.
+\end{itemize}
+Two models also ran with no persona at temperatures from 0.4 to 2.0. Temperature is how much randomness a model adds when it writes.
 
-\paragraph{Measures.} No language model grades any answer. Each answer is read between its two ideas (``salt \emph{[answer]} a clock'') and cut to its first 40 words, so that long model answers do not gain from length, then embedded with all-MiniLM-L6-v2. For each pair, the human answers define the space people reach: a ball around each human answer, with radius equal to the distance to its third nearest human neighbour. \emph{Precision} is the share of a model's answers that fall inside some human ball. \emph{Recall} is the share of human answers that fall inside the model's own balls. Both are computed at the human sample size for each pair, averaged over 30 random draws, then over pairs. We also report the Vendi score per answer (the effective number of distinct answers, divided by the number of answers) and a hub rate: the share of answers that use the most common human bridge for that pair (the hourglass for salt and clock, the web or the nursery rhyme for spider and melody, walking for distance and habit). Results are checked with two other embedding models and a 15-word cut without the two ideas.
+\paragraph{The measures.} No AI grades any answer. Each answer is read between its two ideas (``salt \emph{[answer]} a clock''), cut to its first 40 words so long answers gain nothing from length, and placed in a space of meaning by a small embedding model (all-MiniLM-L6-v2). Close answers say similar things.
 
-\section{Results}
+For each pair, the human answers draw the map: a small circle around each human answer, as wide as the distance to its third closest human neighbour. Two numbers follow \cite{kynkaanniemi2019}:
+\begin{itemize}\setlength\itemsep{0.1em}
+\item \textbf{On the map} (precision): the share of a model's answers that fall inside some human circle. It shows how close the model stays to what people write.
+\item \textbf{Map reached} (recall): the share of human answers that the model also reaches. It shows how much of the human space the model covers.
+\end{itemize}
+Both are computed with as many model answers as there are human answers for that pair, averaged over 30 random draws, then over the six pairs. Two more numbers help: how many really different answers a group gives, per answer (the Vendi score \cite{friedman2023}), and how often a group takes the most common human bridge, such as the hourglass for salt and clock or walking for distance and habit. Every result was checked again with two other embedding models and with a shorter 15-word cut.
+
+\section{What came out}
 
 \begin{table}[t]
 \centering\small
 \begin{tabular}{lrrrrrrr}
 \toprule
-Model & Year & Size (B) & Words & Precision & Recall & Vendi/$n$ & Hub rate \\
+Model & Year & Size (B) & Words & On the map & Map reached & Different & Hub \\
 \midrule
 People (15 players) & & & 9 & & & 0.27 & 0.33 \\
 \midrule
@@ -81,66 +108,73 @@ Qwen2.5 & 2024 & 14 & 174 & 0.74 & 0.03 & 0.16 & 0.47 \\
 Qwen3 & 2025 & 8 & 155 & 0.81 & 0.02 & 0.15 & 0.51 \\
 \bottomrule
 \end{tabular}
-\caption{Models with no persona, English, temperature 1.0. Words: median length of the full answer. Precision and recall against the human space, at the human sample size. Vendi/$n$: effective number of distinct answers per answer. Hub rate: share of answers using the most common human bridge.}
+\caption{Models with no persona, English, temperature 1.0. Words: typical length of the full answer. On the map: share of answers inside the human space. Map reached: share of the human space the model reaches. Different: really different answers per answer. Hub: share of answers taking the most common human bridge.}
 \label{tab:models}
 \end{table}
 
-\paragraph{Old base models cover the space through noise; chat models stay in a small corner.} Figure~\ref{fig:pr} shows the trade-off. GPT-2 and GPT-J reach about 70\% of the human space, but only a third of their answers fall inside it: coverage through randomness, the monkeys at the typewriters. Chat models are far more often inside the human space and cover much less of it. Their answers are also more alike (Vendi/$n$ 0.15 to 0.22, against 0.27 for people) and use the obvious hub more often (0.41 to 0.53, against 0.33 for people).
+\paragraph{The oldest models reach far by chance. Chat models stay close and small.} Figure~\ref{fig:pr} shows each model as one point. GPT-2 and GPT-J reach about 70\% of the human map, and only a third of their answers land on it. That is the monkeys at the typewriters. Chat models land on the map much more often and reach much less of it. Their answers are also more alike than people's (0.15 to 0.22 different answers per answer, against 0.27 for people), and they take the most common bridge more often (41\% to 53\%, against 33\% for people).
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.72\linewidth]{figs/fig1_precision_recall.pdf}
-\caption{Precision against recall for each model with no persona. Base models (blue) reach much of the human space with many answers outside it. Chat models (orange) stay inside it and reach little.}
+\caption{Each model with no persona. Across: how much of the human map it reaches. Up: how many of its answers land on the map. Base models in blue, chat models in orange.}
 \label{fig:pr}
 \end{figure}
 
-\paragraph{Chat training, more than size or year, closes the space.} The clearest comparison holds everything else fixed: Qwen2.5 7B before and after chat training. Recall falls from 0.54 to 0.08 while precision stays about the same (0.68 and 0.69). Within the Qwen2.5 chat family, recall falls with size, from 0.32 at 0.5B to 0.03 at 14B (Figure~\ref{fig:scale}). The newest model, Qwen3 8B, has the highest precision of all chat models and the lowest recall (0.02). These results hold with the two other embedding models and the shorter cut (recall for Qwen2.5 14B and Qwen3 8B between 0.00 and 0.04 in every setting; for the 7B base model between 0.45 and 0.69).
+\paragraph{Chat training is where the map closes.} The clearest case keeps everything else the same: Qwen2.5 7B before and after chat training. The share of the map it reaches drops from 54\% to 8\%, and the share of answers on the map stays almost the same (68\% and 69\%). Inside the Qwen2.5 chat family, bigger models reach less, from 32\% at 0.5 billion parameters to 3\% at 14 billion (Figure~\ref{fig:scale}). The newest model, Qwen3 8B, stays on the map most often of all chat models and reaches the least of it, 2\%. The same picture appears with the two other embedding models and the shorter cut: Qwen2.5 14B and Qwen3 8B reach between 0\% and 4\% in every setting, and the 7B base model between 45\% and 69\%.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.55\linewidth]{figs/fig2_scale.pdf}
-\caption{Recall across the Qwen2.5 chat family, with the same 7B model before chat training and the newer Qwen3 8B.}
+\caption{Share of the human map reached by the Qwen2.5 chat family at each size, by the same 7B model before chat training, and by the newer Qwen3 8B.}
 \label{fig:scale}
 \end{figure}
 
-\paragraph{Investigative personas change little; creative ones widen the space.} The four FER personas move recall by $-0.03$ to $+0.02$ on average (Figure~\ref{fig:conditions}). Every creative condition raises it. The largest gains come from an ordinary life ($+0.37$), a story ($+0.37$), a memory ($+0.34$) and a playful mood ($+0.31$). On Qwen3 8B, the ordinary-life condition raises recall from 0.05 to 0.44. These gains have a cost in precision, largest for \emph{story} (as low as 0.10 on two models). Step-by-step thinking is the exception: a smaller gain ($+0.15$) with precision kept or raised (0.57 to 0.88).
+\paragraph{Reasoning personas change little. Creative ones open the map.} The four personas from false epistemic redundancy move the share reached by $-3$ to $+2$ points on average (Figure~\ref{fig:conditions}). Every creative condition raises it. The largest gains come from an ordinary life ($+37$ points), a story ($+37$), a memory ($+34$) and a playful mood ($+31$). On Qwen3 8B, the ordinary life takes the share reached from 5\% to 44\%. The gain has a price: fewer answers land on the map, most of all with \emph{story}, which drops to 10\% on two models. Thinking step by step is the careful option: a smaller gain ($+15$ points), with answers still close to people's (57\% to 88\% on the map).
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.62\linewidth]{figs/fig3_conditions.pdf}
-\caption{Change in recall for each condition against the same model with no persona. FER personas on 10 chat models, creative conditions on 5.}
+\caption{Change in the share of the human map reached, against the same model with no persona. Dot: average. Bar: range across models. Reasoning personas on 10 chat models, creative conditions on 5.}
 \label{fig:conditions}
 \end{figure}
 
-\paragraph{Personas widen the space more efficiently than temperature.} Raising temperature is the monkey dial. On Qwen2.5 7B, recall rises to 0.45 at temperature 1.6 and 0.67 at 2.0, but precision falls to 0.32 and 0.02 (Figure~\ref{fig:tradeoff}). Several creative conditions lie above that curve: at temperature 1.0, the memory condition reaches recall 0.47 with precision 0.36, and the playful mood reaches 0.42 with 0.53. On Qwen3 8B, temperature barely moves recall until 2.0 (0.19), while the ordinary-life and memory conditions reach 0.44 and 0.31 with precision above 0.44.
+\paragraph{Personas open the map with less noise than temperature.} Temperature is the monkey dial. On Qwen2.5 7B, raising it to 1.6 takes the share reached to 45\%, and to 67\% at 2.0, while the share on the map falls to 32\% and then 2\% (Figure~\ref{fig:tradeoff}). Several creative conditions sit above that curve. At normal temperature, the memory condition reaches 47\% with 36\% on the map, and the playful mood 42\% with 53\%. On Qwen3 8B, temperature hardly moves anything until 2.0 (19\%), while an ordinary life and a memory reach 44\% and 31\%, with at least 44\% of answers on the map.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figs/fig5_tradeoff.pdf}
-\caption{Creative conditions (orange) against the temperature sweep with no persona (grey line), on two models.}
+\caption{Creative conditions (orange) and the temperature sweep with no persona (grey line), on two models.}
 \label{fig:tradeoff}
 \end{figure}
 
-\paragraph{What no model reaches.} Ranking human bridges by their distance to the nearest AI answer from any model or condition gives a clear picture. The farthest are personal and particular: ``[answer removed] [answer removed] \dots\ a smaller cruise on a river''; ``[answer removed] \dots\ The other side seemed like this secret place''; ``I used to use old CDs as hanging mirrors in my garden \dots\ a trickling parade of little bees''; ``Yesterday I looked at the clock on my phone \dots\ smelling the salt air''; an etymology (``[answer removed]''); and play with the letters themselves (``[answer removed]''; ``distancia, grande, cumbre'', through the sound of \emph{costumbre}). Two players, hours apart, independently linked mirror and bee through mirrors hung in a garden. That is a rare connection, and a shared one, which is the kind of answer a diversity measure should keep.
+\paragraph{What no model reaches.} Ordering the human bridges by how far they are from the closest AI answer, from any model and any condition, gives a clear picture. The farthest ones are personal:
+\begin{itemize}\setlength\itemsep{0.15em}
+\item ``[answer removed] [answer removed] \dots\ a smaller cruise on a river.''
+\item ``[answer removed] \dots\ [answer removed]''
+\item ``I used to use old CDs as hanging mirrors in my garden \dots\ a trickling parade of little bees.''
+\item ``Yesterday I looked at the clock on my phone \dots\ smelling the salt air.''
+\end{itemize}
+Next to them come an etymology (``[answer removed]'') and play with the words themselves (``[answer removed]''; ``distancia, grande, cumbre'', through the sound of \emph{costumbre}). Two players, hours apart, each linked mirror and bee through mirrors hung in a garden. A connection can be rare and still shared, and a good measure of diversity should keep it.
 
-\section{Discussion}
+\section{What it suggests}
 
-Three findings stand out in this first test. First, the loss of coverage comes with chat training more than with time: base models, old and new, cover far more of the human space than chat models of the same size. Second, the newest and largest chat models are the most reliably sensible and the narrowest, which is the homogenization worry in a measurable form. Third, the space can be reopened cheaply. Framings drawn from how people actually connect ideas (a life, a memory, a story, a mood) widen coverage much more than investigative reasoning styles, and at a better trade-off than raising temperature. The blind spots point in the same direction: what the models miss is memory, place and play, which is what the best creative conditions try to supply.
+Three things stand out. Chat training is the step where the space closes: base models, old and new, reach much more of the human map than chat models of the same size. The newest and largest chat models are the most reliably sensible and the narrowest, which is the worry about everyone thinking alike, now in numbers. And the space opens again at little cost, with framings taken from how people really connect ideas: a life, a memory, a story, a mood. The blind spots point the same way. What the models miss is memory, place and play, the same things the strongest creative conditions bring in.
 
-For tools that support thinking, this suggests a design principle: a tool that wants to widen the space of ideas can offer several framed voices drawn from human ways of connecting, and show their coverage, instead of offering one fluent answer.
+For tools that help people think, this suggests offering several voices, each drawn from a human way of connecting, and showing how much ground they cover together.
 
-\section{Limitations}
+\section{Limits}
 
-This is a first test. The human sample is small (15 players for the English core pairs), mostly AI-literate engineers, and recruited through AI safety communities; the human space is therefore a narrow estimate, and recall values are relative to it. Players saw one of two welcome texts. Precision measures closeness to what people wrote, which is a proxy for sense; a blind human rating of surprise and fit is the natural next check, along with agreement between raters. Model answers are much longer than human ones; we cut every answer to 40 words, read it between its two ideas, and checked a 15-word cut, but length and style may still matter. Embedding models are trained on text much like what chat models produce. We tested open models only, mostly from one family for size, and one failed to run (Falcon 7B). The creative conditions were designed after seeing the first human answers, so they are informed by the human data they are compared with; they use the styles, never the texts. Six pairs of simple concepts are a narrow task.
+This is a first test. The human sample is small: 15 players for the English core pairs, mostly engineers who use AI every day, found through AI safety communities. The human map is narrow, and every share reached is relative to it. Players saw one of two welcome texts. ``On the map'' measures closeness to what people wrote, which is only a stand-in for making sense; blind ratings by people are the next check, with agreement between raters. Model answers are much longer than human ones; every answer was cut to 40 words and read between its two ideas, and a 15-word cut was checked too, but length and style may still play a part. The embedding models learned from text much like what chat models write. Only open models were tested, mostly one family for size, and one model (Falcon 7B) failed to run. The creative conditions were designed after seeing the first answers: they borrow the styles, never the texts. Six pairs of simple ideas are a narrow task.
 
 \appendix
 \section{Dual use and ethics}
 
-A way to measure how much of the human space a model reaches could also be used as a training target to make models more varied and inventive, which is a capability. The added risk seems small: every measure here is a published method, and the main new element is a human baseline. The risk we would name is different: if coverage became a target, models could learn to look diverse without being more useful, so we present these measures for monitoring rather than optimisation. Players took part anonymously after a consent screen; no name, IP address or location is stored, page visits are counted only as daily totals per country, voice answers are transcribed and never stored, and player answers are kept out of the public repository. Short anonymous quotes appear in this report.
+A way to measure how much of the human map a model reaches could also become a training target, used to make models more varied and inventive, which is a capability. The added risk looks small: every measure here is already published, and the new part is the human baseline. One risk is worth naming: if reaching the map became a target, models could learn to look diverse without being more useful. The measures are offered for watching how models change, and are kept away from training. Players took part anonymously after a consent screen. No name, IP address or location is stored. Page visits are counted only as daily totals per country. Voice answers are transcribed and never stored. Player answers stay out of the public repository, and only short anonymous quotes appear here.
 
 \section{What existed before the sprint}
 
-The Bridges game (built before 13 November 2026, in \href{https://github.com/nefinia/themap}{nefinia/themap}) and, from false epistemic redundancy, the four investigative personas, the Modal server and the clustering settings. The model runs, creative conditions, measures, analysis and this report were made during the sprint.
+The Bridges game, built before 13 November 2026 (\href{https://github.com/nefinia/themap}{nefinia/themap}), and from false epistemic redundancy the four reasoning personas, the Modal server and the clustering settings. The model runs, the creative conditions, the measures, the analysis and this report were made during the sprint.
 
 \begin{thebibliography}{99}\small
 \bibitem{anderson2024} B.~R. Anderson, J.~H. Shah, M.~Kreminski. Homogenization effects of large language models on human creative ideation. \emph{Creativity and Cognition}, 2024.
