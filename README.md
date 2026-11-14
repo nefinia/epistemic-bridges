@@ -61,12 +61,15 @@ The measures, settings and references are in [docs/methods.md](docs/methods.md).
 - `data/pairs.json`: the 30 pairs in five languages, and the instructions players see (with each version of the welcome text).
 - `personas/personas.py`: the four personas, reused verbatim from False Epistemic Redundancy, where Anya Habana wrote them.
 - `generate/generate.py`: sends the same prompt the players see to any OpenAI-compatible model, with or without a persona. `generate/serve_model.py` serves an open model on Modal, reused from False Epistemic Redundancy.
+- `generate/ladder_modal.py`: runs open models from 2019 to 2025 and one family at many sizes on Modal, with every persona and the warm-up. Results go to `data/ai/`, one file per model, and are public.
 - `analysis/diversity.py`: all the diversity measures. The clustering and pairwise distance follow False Epistemic Redundancy.
 - `tools/export_humans.sh`: exports player answers from the game's database into `data/`. Player answers stay out of git.
 
 ```
 pip install -r requirements.txt
 python generate/generate.py --model Qwen/Qwen2.5-7B-Instruct --n 10 --langs en es fr
+modal run --detach generate/ladder_modal.py
+modal volume get bridges-results / data/ai/
 python analysis/diversity.py --with-ends
 ```
 

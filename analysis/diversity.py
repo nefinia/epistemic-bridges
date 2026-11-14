@@ -45,9 +45,17 @@ def load_humans(path: Path) -> pd.DataFrame:
 
 
 def load_ai(path: Path) -> pd.DataFrame:
-    if not path.exists():
+    """One .jsonl file, or a folder of them (one per model, from generate/ladder_modal.py)."""
+    files = sorted(path.glob("*.jsonl")) if path.is_dir() else ([path] if path.exists() else [])
+    rows = [json.loads(l) for f in files for l in f.read_text().splitlines() if l.strip()]
+    if not rows:
         return pd.DataFrame()
-    return pd.DataFrame([json.loads(l) for l in path.read_text().splitlines() if l.strip()])
+    df = pd.DataFrame(rows)
+    if "task" in df:                      # warm-up answers are scored separately
+        df = df[df["task"].fillna("bridge") == "bridge"]
+    if "model" in df:                     # one group per model and persona
+        df["condition"] = df["model"].str.split("/").str[-1] + ":" + df["condition"]
+    return df.reset_index(drop=True)
 
 
 def words(text: str) -> list[str]:
@@ -191,7 +199,7 @@ if __name__ == "__main__":
     ap.add_argument("--embedder", nargs="+", default=["all-MiniLM-L6-v2", "paraphrase-multilingual-MiniLM-L12-v2"],
                     help="sentence-transformers model names, or 'tfidf' for a model-free check")
     ap.add_argument("--humans", type=Path, default=ROOT / "data" / "human_bridges.json")
-    ap.add_argument("--ai", type=Path, default=ROOT / "data" / "ai_bridges.jsonl")
+    ap.add_argument("--ai", type=Path, default=ROOT / "data" / "ai")
     ap.add_argument("--with-ends", action="store_true", help="measure each answer together with its two ideas")
     a = ap.parse_args()
     run(a.embedder, a.humans, a.ai, a.with_ends)
