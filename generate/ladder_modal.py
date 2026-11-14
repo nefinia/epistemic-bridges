@@ -14,6 +14,12 @@ In the morning, copy the results into data/ai/:
     modal volume get bridges-results / data/ai/
 
 Options:  --n 10  --langs en,es,fr  --only Qwen/Qwen2.5-7B-Instruct,gpt2-xl
+          --conditions fer|creative|all|baseline,story,...  --temps 0.7,1.0,1.3  --tag creative
+
+Creative run:      modal run --detach generate/ladder_modal.py --conditions creative --tag creative \
+                       --only Qwen2.5-7B-Instruct,Qwen3-8B,OLMo-2-1124-7B-Instruct,zephyr-7b-beta
+Temperature dial:  modal run --detach generate/ladder_modal.py --conditions baseline --tag temps \
+                       --only Qwen2.5-7B-Instruct --temps 0.4,0.7,1.0,1.3,1.6,2.0
 """
 
 from __future__ import annotations
@@ -58,6 +64,7 @@ image = (
     .uv_pip_install("vllm==0.21.0", "hf_transfer")   # same vLLM as False Epistemic Redundancy
     .add_local_file(str(ROOT / "data" / "pairs.json"), "/root/pairs.json")
     .add_local_file(str(ROOT / "personas" / "personas.py"), "/root/personas.py")
+    .add_local_file(str(ROOT / "personas" / "creative.py"), "/root/creative.py")
 )
 
 app = modal.App("epistemic-bridges-ladder")
@@ -82,33 +89,73 @@ def clean(text: str, kind: str) -> str:
 
 @app.function(image=image, gpu="L40S", timeout=90 * 60,
               volumes={"/results": results, "/root/.cache/huggingface": hf_cache})
-def run_model(spec: dict, n: int, langs: list[str]) -> str:
+def run_model(spec: dict, n: int, langs: list[str], conditions: str = "fer", temps: list[float] | None = None,
+              tag: str = "") -> str:
+    import random
     import sys
     sys.path.insert(0, "/root")
     from vllm import LLM, SamplingParams
     from personas import CONDITIONS
+    import creative
 
     pairs = json.load(open("/root/pairs.json"))
     core = [p for p in pairs["pairs"] if p["set"] == "core"]
     kind = spec["kind"]
-    conditions = CONDITIONS if kind == "chat" else {"baseline": None}
+    temps = temps or [1.0]
 
-    jobs = []   # (meta, system, user)
-    for lang in langs:
-        welcome = pairs["instructions_versions"]["v2"]["welcome"][lang]
-        question = pairs["instructions"][lang]["question"]
-        for cond, system in conditions.items():
+    # Which conditions: "fer" = no persona + the four FER personas, "creative" = no persona +
+    # the creative conditions, "all" = both, or a comma-separated list of names.
+    fixed = {"baseline": None}
+    sampled = []
+    if kind == "chat":
+        groups = {"fer": dict(CONDITIONS), "creative": {**creative.FIXED}}
+        if conditions in ("fer", "all"):
+            fixed.update(groups["fer"])
+        if conditions in ("creative", "all"):
+            fixed.update(groups["creative"])
+            sampled = list(creative.SAMPLED)
+        if conditions not in ("fer", "creative", "all"):
+            every = {**CONDITIONS, **creative.FIXED}
+            names = [c.strip() for c in conditions.split(",") if c.strip()]
+            fixed = {c: every[c] for c in names if c in every}
+            sampled = [c for c in names if c in creative.SAMPLED]
+
+    jobs = []   # (meta, system, user, n)
+    for temp in temps:
+        for lang in langs:
+            welcome = pairs["instructions_versions"]["v2"]["welcome"][lang]
+            question = pairs["instructions"][lang]["question"]
+            tasks = []
             for p in core:
                 for d in ("ab", "ba"):
                     src, dst = (p["a"][lang], p["b"][lang]) if d == "ab" else (p["b"][lang], p["a"][lang])
-                    user = f"{welcome}\n\n{src} → {dst}\n\n{question}"
-                    jobs.append(({"task": "bridge", "condition": cond, "pair": p["id"], "level": p["level"],
-                                  "set": p["set"], "dir": d, "lang": lang, "from": src, "to": dst}, system, user))
-            jobs.append(({"task": "warmup", "condition": cond, "lang": lang}, system, WARMUP[lang]))
+                    tasks.append(({"task": "bridge", "pair": p["id"], "level": p["level"], "set": p["set"], "dir": d,
+                                   "lang": lang, "from": src, "to": dst}, f"{welcome}\n\n{src} → {dst}\n\n{question}"))
+            tasks.append(({"task": "warmup", "lang": lang}, WARMUP[lang]))
+            for meta, user in tasks:
+                for cond, system in fixed.items():
+                    jobs.append(({**meta, "condition": cond, "temperature": temp, "persona_text": system}, system, user, n))
+                for cond in sampled:
+                    for rep in range(n):
+                        rng = random.Random(f"{cond}|{meta.get('pair', 'warmup')}|{meta.get('dir', '')}|{lang}|{rep}|{temp}")
+                        system = creative.sample(cond, rng)
+                        jobs.append(({**meta, "condition": cond, "temperature": temp, "persona_text": system}, system, user, 1))
 
     llm = LLM(model=spec["id"], max_model_len=spec.get("max_len", 2048), gpu_memory_utilization=0.9,
               trust_remote_code=True, enforce_eager=True)
-    sp = SamplingParams(n=n, temperature=1.0, top_p=1.0, max_tokens=220)
+    # Jobs that share the same sampling settings are sent together (a single SamplingParams per call).
+    keys = [(k, m["temperature"], 320 if m["condition"] == "step_by_step" else 220) for m, _, _, k in jobs]
+    groups: dict = {}
+    for i, key in enumerate(keys):
+        groups.setdefault(key, []).append(i)
+
+    def run_grouped(call, items):
+        out = [None] * len(items)
+        for (k, t, mx), idx in groups.items():
+            res = call([items[i] for i in idx], SamplingParams(n=k, temperature=t, top_p=1.0, max_tokens=mx))
+            for i, r in zip(idx, res):
+                out[i] = r
+        return out
 
     def as_text(system, user):
         head = f"{system}\n\n" if system else ""
@@ -116,36 +163,48 @@ def run_model(spec: dict, n: int, langs: list[str]) -> str:
 
     outputs, mode = None, kind
     if kind == "chat":
-        convs = [([{"role": "system", "content": s}] if s else []) + [{"role": "user", "content": u}] for _, s, u in jobs]
-        merged = [[{"role": "user", "content": (f"{s}\n\n{u}" if s else u)}] for _, s, u in jobs]
+        convs = [([{"role": "system", "content": s}] if s else []) + [{"role": "user", "content": u}] for _, s, u, _ in jobs]
+        merged = [[{"role": "user", "content": (f"{s}\n\n{u}" if s else u)}] for _, s, u, _ in jobs]
         for attempt, c in (("chat", convs), ("chat_no_system", merged)):
             try:
-                outputs = llm.chat(c, sp, chat_template_kwargs={"enable_thinking": False})
+                outputs = run_grouped(lambda items, sp: llm.chat(items, sp, chat_template_kwargs={"enable_thinking": False}), c)
                 mode = attempt
                 break
             except Exception as e:  # no chat template, or no system role
                 print(f"{spec['id']}: {attempt} failed ({e}), trying the next format")
     if outputs is None:
         mode = "completion" if kind == "base" else "completion_fallback"
-        outputs = llm.generate([as_text(s, u) for _, s, u in jobs], sp)
+        outputs = run_grouped(lambda items, sp: llm.generate(items, sp), [as_text(s, u) for _, s, u, _ in jobs])
 
-    safe = spec["id"].replace("/", "__")
+    safe = spec["id"].replace("/", "__") + (f"__{tag}" if tag else "")
     path = Path(f"/results/{safe}.jsonl")
+    count = 0
     with path.open("w") as f:
-        for (meta, _, _), out in zip(jobs, outputs):
-            for rep, o in enumerate(out.outputs, 1):
+        rep_counter: dict = {}
+        for (meta, _, _, _), out in zip(jobs, outputs):
+            key = (meta["condition"], meta.get("pair"), meta.get("dir"), meta["lang"], meta["task"], meta["temperature"])
+            for o in out.outputs:
+                rep_counter[key] = rep_counter.get(key, 0) + 1
+                text = clean(o.text, kind)
+                if meta["condition"] == "step_by_step":
+                    m = re.search(r"Bridge:\s*(.+)", text, flags=re.S)
+                    text = m.group(1).strip() if m else text
                 f.write(json.dumps({"source": "ai", "model": spec["id"], "year": spec["year"], "size_b": spec["size"],
-                                    "model_kind": kind, "series": spec["series"], "prompt_mode": mode,
-                                    "instructions": "v2", "temperature": 1.0, "replicate": rep,
-                                    **meta, "final": clean(o.text, kind), "raw": o.text}, ensure_ascii=False) + "\n")
+                                    "model_kind": kind, "series": spec["series"], "prompt_mode": mode, "run": tag or "fer",
+                                    "instructions": "v2", "replicate": rep_counter[key],
+                                    **meta, "final": text, "raw": o.text}, ensure_ascii=False) + "\n")
+                count += 1
     results.commit()
-    return f"{spec['id']}: {len(jobs) * n} answers ({mode})"
+    return f"{spec['id']}: {count} answers ({mode})"
 
 
 @app.local_entrypoint()
-def main(n: int = 10, langs: str = "en,es,fr", only: str = ""):
+def main(n: int = 10, langs: str = "en,es,fr", only: str = "", conditions: str = "fer", temps: str = "1.0",
+         tag: str = ""):
     wanted = [s.strip() for s in only.split(",") if s.strip()]
     specs = [m for m in MODELS if not wanted or m["id"] in wanted or m["id"].split("/")[-1] in wanted]
-    print(f"{len(specs)} models, {n} answers per prompt, languages {langs}")
-    for r in run_model.map(specs, kwargs={"n": n, "langs": langs.split(",")}, return_exceptions=True):
+    temp_list = [float(t) for t in temps.split(",")]
+    print(f"{len(specs)} models, {n} answers per prompt, languages {langs}, conditions {conditions}, temperatures {temp_list}")
+    kwargs = {"n": n, "langs": langs.split(","), "conditions": conditions, "temps": temp_list, "tag": tag}
+    for r in run_model.map(specs, kwargs=kwargs, return_exceptions=True):
         print(r)

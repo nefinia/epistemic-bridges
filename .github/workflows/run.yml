@@ -1,0 +1,91 @@
+# Runs model generations on Modal, or prepares the measuring tools, from GitHub.
+# Start it from the Actions tab (Run workflow), or with:
+#   gh workflow run run.yml -f task=generate -f args="--conditions creative --tag creative --only Qwen2.5-7B-Instruct"
+# Needs two repository secrets: MODAL_TOKEN_ID and MODAL_TOKEN_SECRET (a Modal API token).
+
+name: run
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: "generate (Modal run) or tools (embedding models and word vectors as a release)"
+        required: true
+        default: generate
+        type: choice
+        options: [generate, tools]
+      args:
+        description: "Options for generate/ladder_modal.py"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    if: inputs.task == 'generate'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      RUN_ARGS: ${{ inputs.args }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install modal
+      - name: Run on Modal
+        run: modal run generate/ladder_modal.py $RUN_ARGS
+      - name: Bring the results into the repo
+        run: |
+          mkdir -p data/ai
+          modal volume get bridges-results / data/ai --force
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add data/ai
+          git commit -m "AI bridges: $RUN_ARGS" || echo "nothing new"
+          git pull --rebase && git push
+
+  tools:
+    if: inputs.task == 'tools'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sentence-transformers numpy
+      - name: Embedding models
+        run: |
+          python - <<'EOF'
+          from sentence_transformers import SentenceTransformer
+          for name in ["all-MiniLM-L6-v2", "paraphrase-multilingual-MiniLM-L12-v2", "BAAI/bge-small-en-v1.5"]:
+              SentenceTransformer(name).save(f"tools/{name.split('/')[-1]}")
+          EOF
+          cd tools && for d in */; do tar czf "${d%/}.tar.gz" "$d"; done
+      - name: GloVe vectors for the DAT (most frequent 200k words, as used by the official scoring)
+        run: |
+          curl -fsSL -o glove.zip https://huggingface.co/stanfordnlp/glove/resolve/main/glove.840B.300d.zip || curl -fsSL -o glove.zip https://downloads.cs.stanford.edu/nlp/data/glove.840B.300d.zip
+          unzip -p glove.zip | head -n 200000 > glove200k.txt
+          python - <<'EOF'
+          import numpy as np
+          words, vecs = [], []
+          for line in open("glove200k.txt", encoding="utf8"):
+              parts = line.rstrip().split(" ")
+              if len(parts) != 301:
+                  continue
+              words.append(parts[0]); vecs.append(np.array(parts[1:], dtype=np.float32))
+          np.save("tools/glove200k.npy", np.stack(vecs).astype(np.float16))
+          open("tools/glove200k.vocab.txt", "w", encoding="utf8").write("\n".join(words))
+          EOF
+          cd tools && tar czf glove200k.tar.gz glove200k.npy glove200k.vocab.txt
+      - name: Publish as a release
+        run: |
+          gh release delete tools --yes || true
+          gh release create tools tools/*.tar.gz --title "Measuring tools" --notes "Public embedding models and GloVe vectors used by analysis/. Nothing from players."

@@ -1,0 +1,97 @@
+"""Creative conditions for the AI side of Epistemic Bridges.
+
+The FER personas (personas.py) are ways of reasoning toward what is true.
+These are ways of generating connections, on three levels, plus a few
+other factors known to change creative output:
+
+- processes: how the connection is made (built from the styles players used)
+- people: who is connecting, as short sketches of ordinary lives, drawn at
+  random for every answer (after Deng, Brucks and Toubia 2026)
+- states: the mood the connection is made in
+- a random constraint for every answer (in the spirit of Eno and Schmidt's
+  Oblique Strategies), and plain step-by-step thinking (Meincke et al. 2024)
+
+All of them are written to steer the way of connecting, never toward a
+particular answer. None of them mentions any of the game's ideas.
+"""
+
+import random
+
+PROCESSES = {
+    "association": "Let one thought lead to the next. Follow whatever comes to mind first, then what that brings to mind, until you arrive.",
+    "story": "You think in stories. Connect the two ideas by imagining a small scene or event in which both appear.",
+    "memory": "You think through your own life. Connect the two ideas through a moment you remember.",
+    "senses": "You think through the senses. Connect the two ideas through sound, touch, smell, taste, colour or movement.",
+    "wordplay": "You notice the sound and shape of words: rhymes, puns, letters, words hidden inside other words. Connect the two ideas through language itself.",
+}
+
+STATES = {
+    "playful": "You are in a playful, silly mood. Your connection only has to make sense to you.",
+    "dreamy": "You are half asleep, drifting. Ideas blur into each other the way they do in a dream.",
+    "child": "You are an eight-year-old child, seeing these two things with fresh eyes.",
+}
+
+STEP_BY_STEP = "Think it through step by step. Then give your connection on a last line that starts with 'Bridge:'."
+
+# Short, ordinary lives from many places. One is drawn at random for each answer.
+LIVES = [
+    "a 62-year-old fisherwoman in La Serena, Chile, who mends her own nets",
+    "a 34-year-old night-shift nurse in Lyon who cycles home at dawn",
+    "a retired bus driver in Manila who keeps songbirds",
+    "a 19-year-old bakery apprentice in Hamburg",
+    "a 45-year-old primary school teacher in Nairobi who coaches football",
+    "a 71-year-old widower in rural Ireland who walks his dog by the sea",
+    "a 28-year-old software tester in Bangalore who plays the tabla",
+    "a 52-year-old taxi driver in Mexico City who listens to radio dramas",
+    "a 38-year-old beekeeper in Slovenia",
+    "a 23-year-old nursing student in Lagos who sings in a church choir",
+    "a 66-year-old retired miner in Asturias, Spain",
+    "a 41-year-old single father in Toronto who works in a warehouse",
+    "a 30-year-old potter in Kyoto",
+    "a 57-year-old seamstress in Naples",
+    "a 48-year-old farmer in Iowa who grows soybeans",
+    "a 26-year-old barista in Melbourne who surfs before work",
+    "a 69-year-old retired librarian in Kraków",
+    "a 35-year-old midwife in a village in Peru",
+    "a 44-year-old long-distance truck driver in Kazakhstan",
+    "a 21-year-old dance student in Havana",
+    "a 59-year-old watchmaker in the Jura, Switzerland",
+    "a 33-year-old social worker in Glasgow",
+    "a 50-year-old street food cook in Bangkok",
+    "a 75-year-old grandmother in Marrakech who embroiders",
+    "a 27-year-old firefighter in Marseille",
+    "a 63-year-old ferry captain in Norway",
+    "a 39-year-old gardener at a hospital in São Paulo",
+    "a 16-year-old who works weekends at a market stall in Accra",
+    "a 54-year-old bookkeeper in Ohio who restores old radios",
+    "a 47-year-old shepherd in the mountains of Georgia",
+]
+
+# Small constraints, one drawn at random for each answer.
+CONSTRAINTS = [
+    "Your connection must pass through something very small.",
+    "Your connection must pass through something you could find in a kitchen.",
+    "Your connection must pass through a sound.",
+    "Your connection must pass through something that happens at night.",
+    "Your connection must pass through a place you could walk to.",
+    "Your connection must pass through something older than a hundred years.",
+    "Your connection must pass through something soft.",
+    "Your connection must pass through a game.",
+    "Your connection must pass through weather.",
+    "Your connection must pass through a part of the body.",
+    "Your connection must pass through something you can count.",
+    "Your connection must pass through a colour.",
+]
+
+FIXED = {**PROCESSES, **STATES, "step_by_step": STEP_BY_STEP}
+SAMPLED = ("ordinary_life", "random_constraint")
+CREATIVE_CONDITIONS = list(FIXED) + list(SAMPLED)
+
+
+def sample(condition: str, rng: random.Random) -> str:
+    """The system prompt for one answer of a sampled condition."""
+    if condition == "ordinary_life":
+        return f"You are {rng.choice(LIVES)}. Answer as yourself, in your own words."
+    if condition == "random_constraint":
+        return rng.choice(CONSTRAINTS)
+    raise KeyError(condition)
