@@ -70,13 +70,20 @@ def main() -> None:
     for _, r in others[others["name"].isin(["Qwen3 8B", "Qwen3 32B", "gpt-oss 20B", "Qwen2.5 14B", "OLMo 2 7B", "GPT-2 XL", "GPT-J 6B"])].iterrows():
         ax.annotate(r["name"], (r[X], r[Y]), xytext=(4, -9) if r["name"] == "gpt-oss 20B" else (4, 3),
                     textcoords="offset points", fontsize=6.5, color=MUTED)
+    jk_path = ROOT / "results" / "paper" / "players_uncertainty.csv"
+    if jk_path.exists():  # standard error from leaving out one player at a time
+        jk = pd.read_csv(jk_path, index_col=0)
+        for m, r in res[res["cond"].isna()].iterrows():
+            if r["model"] in jk.index:
+                ax.errorbar(r[X], r[Y], xerr=jk.loc[r["model"], "map_reached_ideas_jk"], fmt="none", ecolor=FAINT,
+                            elinewidth=0.8, capsize=0, zorder=1)
     t = res[(res["base"] == FOCUS) & res["cond"].fillna("").str.startswith("T ")].copy()
     t["T"] = t["cond"].str[2:].astype(float)
     t = t.sort_values("T")
     ax.plot(t[X], t[Y], color=MUTED, linewidth=1.1, linestyle=(0, (3, 2)), zorder=2)
     dots(ax, t[X], t[Y], s=9, color=MUTED, zorder=3)
     for _, r in t.iloc[[0, -1]].iterrows():
-        ax.annotate(f"T {r['T']:.1f}", (r[X], r[Y]), xytext=(-4, 6), textcoords="offset points", fontsize=7, color=MUTED)
+        ax.annotate(f"T {r['T']:.1f}", (r[X], r[Y]), xytext=(6, 0), textcoords="offset points", fontsize=7, color=MUTED)
 
     def arrow(a, b, color):
         ax.annotate("", xy=(g.loc[b, X], g.loc[b, Y]), xytext=(g.loc[a, X], g.loc[a, Y]),
@@ -88,7 +95,8 @@ def main() -> None:
         key = f"{FOCUS} | creative:{c}"
         arrow(FOCUS, key, AQUA)
         dots(ax, [g.loc[key, X]], [g.loc[key, Y]], s=34, color=AQUA, edgecolor="white", linewidth=1.2, zorder=5)
-        ax.annotate(label, (g.loc[key, X], g.loc[key, Y]), xytext=(-5, -3), textcoords="offset points", fontsize=7.5,
+        off = {"memory": (-5, 4), "playful": (-5, -10)}.get(c, (-5, -3))
+        ax.annotate(label, (g.loc[key, X], g.loc[key, Y]), xytext=off, textcoords="offset points", fontsize=7.5,
                     color=INK, ha="right")
     dots(ax, [g.loc[BASE, X]], [g.loc[BASE, Y]], s=60, color=BLUE, edgecolor="white", linewidth=1.5, zorder=5)
     ax.annotate("Qwen2.5 7B\nbefore chat training", (g.loc[BASE, X], g.loc[BASE, Y]), xytext=(8, 2),
@@ -104,6 +112,9 @@ def main() -> None:
     ax.text(0.98, 0.91, "creative conditions, same chat model", transform=ax.transAxes, fontsize=8, color=AQUA, va="top", ha="right")
     ax.text(0.98, 0.85, "more randomness (temperature)", transform=ax.transAxes, fontsize=8, color=MUTED, va="top", ha="right")
     ax.set_xlabel("Share of the human map of ideas reached (recall, voice removed)")
+    if jk_path.exists():
+        ax.text(0.02, 0.17, "grey bars: standard error from\nleaving out one player at a time", transform=ax.transAxes,
+                fontsize=7, color=MUTED, va="bottom")
     ax.set_ylabel("Repetition of the voice\n(compression of sentence patterns)")
     ax.legend(frameon=False, fontsize=7.5, loc="lower left")
     fig.tight_layout()
