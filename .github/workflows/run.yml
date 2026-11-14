@@ -87,5 +87,5 @@ jobs:
           cd tools && tar czf glove200k.tar.gz glove200k.npy glove200k.vocab.txt
       - name: Publish as a release
         run: |
-          gh release delete tools --yes || true
+          gh release delete tools --yes --cleanup-tag || true
           gh release create tools tools/*.tar.gz --title "Measuring tools" --notes "Public embedding models and GloVe vectors used by analysis/. Nothing from players."
