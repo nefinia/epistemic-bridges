@@ -136,7 +136,7 @@ def draw(res: pd.DataFrame) -> None:
         ax.annotate(label, (g.loc[c, "recall"], g.loc[c, "precision"]), xytext=(6, -3), textcoords="offset points",
                     fontsize=7.5, color=INK)
     ax.scatter(g.loc["people", "recall"], g.loc["people", "precision"], s=150, marker="*", color=INK, zorder=6)
-    ax.annotate("another group\nof players", (g.loc["people", "recall"], g.loc["people", "precision"]), xytext=(10, -14),
+    ax.annotate("half of the players,\nagainst the other half", (g.loc["people", "recall"], g.loc["people", "precision"]), xytext=(10, -14),
                 textcoords="offset points", fontsize=8, color=INK)
 
     ax.text(0.02, 0.97, "chat training", transform=ax.transAxes, fontsize=8, color=ORANGE, va="top")
