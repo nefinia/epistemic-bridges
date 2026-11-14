@@ -5,7 +5,7 @@ model acting as a judge (precision and recall for generative models,
 Kynkäänniemi et al. 2019):
 
 - precision: share of a group's answers that fall inside the human space
-  (inside the k-nearest-neighbour ball of some human answer to the same pair)
+  (inside the k-nearest-neighbour sphere of some human answer to the same pair)
 - recall: share of human answers that fall inside the group's space
 - blind spots: human answers that are far from every AI answer
 
