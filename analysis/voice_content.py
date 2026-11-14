@@ -46,7 +46,7 @@ NAMES = {"openai-community/gpt2-xl": "GPT-2 XL", "EleutherAI/gpt-j-6b": "GPT-J 6
          "Qwen/Qwen2.5-0.5B-Instruct": "Qwen2.5 0.5B", "Qwen/Qwen2.5-1.5B-Instruct": "Qwen2.5 1.5B",
          "Qwen/Qwen2.5-3B-Instruct": "Qwen2.5 3B", "Qwen/Qwen2.5-7B-Instruct": "Qwen2.5 7B",
          "Qwen/Qwen2.5-14B-Instruct": "Qwen2.5 14B", "Qwen/Qwen2.5-7B": "Qwen2.5 7B base",
-         "allenai/OLMo-2-1124-7B-Instruct": "OLMo 2 7B", "Qwen/Qwen3-8B": "Qwen3 8B"}
+         "allenai/OLMo-2-1124-7B-Instruct": "OLMo 2 7B", "Qwen/Qwen3-8B": "Qwen3 8B", "Qwen/Qwen3-32B": "Qwen3 32B", "openai/gpt-oss-20b": "gpt-oss 20B"}
 
 
 def ratio(text: str) -> float:
@@ -117,6 +117,9 @@ def main() -> None:
     voice.append({"model": "people", "kind": "people", "cr_words": ratio("\n".join(ptxt)),
                   "cr_pos": ratio("\n".join(" ".join(t for _, t in nltk.pos_tag(s.split())) for s in ptxt))})
     for model, g in df[~people].groupby("group"):
+        if any((g["pair"] == p).sum() < len(hwords[p]) for p in pairs):
+            print(f"{model}: too few answers for some pair, left out")
+            continue
         cw, cp = [], []
         for _ in range(30):
             texts = []
@@ -139,6 +142,8 @@ def main() -> None:
     E = st.encode(df["concept_text"].tolist(), normalize_embeddings=True, batch_size=256)
     rows = []
     for model, g in [("people", df[people & keep])] + list(df[~people & keep].groupby("group")):
+        if model != "people" and model not in set(voice["model"]):
+            continue
         P, R = [], []
         for p in pairs:
             hi = df.index[people & keep & (df["pair"] == p)].to_numpy()

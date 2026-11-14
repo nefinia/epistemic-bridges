@@ -24,6 +24,26 @@ CREATIVE = {"ordinary_life": "an ordinary life", "memory": "a memory", "story": 
             "step_by_step": "step by step"}
 
 
+def deltas(res: pd.DataFrame) -> pd.DataFrame:
+    """Change from no persona for each condition and model: reasoning personas against the main
+    run with no persona, creative conditions against the no-persona answers of the creative run."""
+    rows = []
+    for base, g in res.groupby("base"):
+        for c in g["cond"].dropna():
+            if c.startswith("T "):
+                continue
+            run, cond = c.split(":")
+            if cond == "baseline":
+                continue
+            ref = g[g["cond"] == f"{run}:baseline"] if run == "creative" else g[g["cond"].isna()]
+            if ref.empty:
+                continue
+            x, y = g[g["cond"] == c].iloc[0], ref.iloc[0]
+            rows.append({"run": run, "cond": cond, "model": base, "d_ideas": x["map_reached_ideas"] - y["map_reached_ideas"],
+                         "d_onmap": x["on_map_ideas"] - y["on_map_ideas"], "d_voice": x["cr_pos"] - y["cr_pos"]})
+    return pd.DataFrame(rows)
+
+
 def main() -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -47,8 +67,9 @@ def main() -> None:
          edgecolor="white", linewidth=1, label="Base models, no persona")
     dots(ax, others.loc[others["kind"] == "chat", X], others.loc[others["kind"] == "chat", Y], s=30, color=ORANGE, zorder=3,
          edgecolor="white", linewidth=1, label="Chat models, no persona")
-    for _, r in others[others["name"].isin(["Qwen3 8B", "Qwen2.5 14B", "OLMo 2 7B", "Vicuna 7B", "GPT-2 XL", "GPT-J 6B"])].iterrows():
-        ax.annotate(r["name"], (r[X], r[Y]), xytext=(4, 3), textcoords="offset points", fontsize=6.5, color=MUTED)
+    for _, r in others[others["name"].isin(["Qwen3 8B", "Qwen3 32B", "gpt-oss 20B", "Qwen2.5 14B", "OLMo 2 7B", "GPT-2 XL", "GPT-J 6B"])].iterrows():
+        ax.annotate(r["name"], (r[X], r[Y]), xytext=(4, -9) if r["name"] == "gpt-oss 20B" else (4, 3),
+                    textcoords="offset points", fontsize=6.5, color=MUTED)
     t = res[(res["base"] == FOCUS) & res["cond"].fillna("").str.startswith("T ")].copy()
     t["T"] = t["cond"].str[2:].astype(float)
     t = t.sort_values("T")
@@ -89,7 +110,8 @@ def main() -> None:
     fig.savefig(figs / "fig0_voice_ideas.pdf"); fig.savefig(figs / "fig0_voice_ideas.svg")
 
     # Figure 2: change from no persona, ideas and voice
-    d = pd.read_csv(ROOT / "results" / "paper" / "voice_content_deltas.csv")
+    d = deltas(res)
+    d.to_csv(ROOT / "results" / "paper" / "voice_content_deltas.csv", index=False)
     s = d.groupby(["run", "cond"]).agg(ideas=("d_ideas", "mean"), lo=("d_ideas", "min"), hi=("d_ideas", "max"),
                                        voice=("d_voice", "mean"), vlo=("d_voice", "min"), vhi=("d_voice", "max")).reset_index()
     s = s.sort_values("ideas")
