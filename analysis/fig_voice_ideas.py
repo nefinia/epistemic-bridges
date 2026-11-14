@@ -133,13 +133,15 @@ def main() -> None:
     y = np.arange(len(s))
     colors = [BLUE if r == "fer" else ORANGE for r in s["run"]]
     fig, axes = plt.subplots(1, 2, figsize=(6.0, 0.25 * len(s) + 1.1), sharey=True)
-    for ax, col, lo, hi, title in ((axes[0], "ideas", "lo", "hi", "Ideas: change in map reached"),
+    for ax, col, lo, hi, title in ((axes[0], "ideas", "lo", "hi", "Ideas: change in places reached"),
                                    (axes[1], "voice", "vlo", "vhi", "Voice: change in repetition")):
         ax.hlines(y, s[lo], s[hi], color=GRID, linewidth=3)
         dots(ax, s[col], y, color=colors, s=28, zorder=3, edgecolor="white", linewidth=1)
         ax.axvline(0, color=MUTED, linewidth=0.8)
         ax.set_title(title, fontsize=8.5, color=INK)
         ax.grid(axis="y", visible=False)
+    axes[0].set_xlabel("\u2190 narrower ideas    wider ideas \u2192", fontsize=7.5, color=MUTED)
+    axes[1].set_xlabel("\u2190 more varied voice    more repetitive \u2192", fontsize=7.5, color=MUTED)
     axes[0].set_yticks(y); axes[0].set_yticklabels(s["cond"].str.replace("_", " ").str.replace(" siev", "").str.replace(" tmk", ""))
     dots(axes[1], [], [], color=BLUE, label="Reasoning (FER)"); dots(axes[1], [], [], color=ORANGE, label="Creative")
     axes[1].legend(frameon=False, fontsize=7.5, loc="upper right")
