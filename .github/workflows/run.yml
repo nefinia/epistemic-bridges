@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
     inputs:
       task:
-        description: "generate (Modal run) or tools (embedding models and word vectors as a release)"
+        description: "generate (Modal run), api (Claude, GPT and Gemini through their APIs) or tools (embedding models and word vectors as a release)"
         required: true
         default: generate
         type: choice
-        options: [generate, tools]
+        options: [generate, api, tools]
       args:
         description: "Options for generate/ladder_modal.py"
         required: false
@@ -47,6 +47,31 @@ jobs:
           git config user.email "github-actions@users.noreply.github.com"
           git add data/ai
           git commit -m "AI bridges: $RUN_ARGS" || echo "nothing new"
+          git pull --rebase && git push
+
+  api:
+    if: inputs.task == 'api'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      RUN_ARGS: ${{ inputs.args }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install anthropic openai google-genai
+      - name: Ask the frontier models
+        run: python generate/api_models.py $RUN_ARGS
+      - name: Bring the results into the repo
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add data/ai
+          git commit -m "AI bridges from frontier models" || echo "nothing new"
           git pull --rebase && git push
 
   tools:
