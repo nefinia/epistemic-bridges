@@ -2,7 +2,7 @@
 
 How do people connect two distant ideas, and how does AI do it?
 
-Players see two ideas with an arrow between them and write how they would get from one to the other. The same pairs go to AI models, both plain and with different reasoning personas. Comparing the two sets of bridges shows how varied each one is, which stepping stones they pass through, and whether the direction of the arrow changes the path.
+Players see two ideas with an arrow between them and write how they would get from one to the other. The same pairs go to AI models, plain, with reasoning personas, with creative conditions and at different temperatures. The players' answers draw a map of where people go, and each model is placed on it.
 
 The longer aim is to find a harmonic space where collaborating with AI increases epistemic diversity, without shrinking the space of ideas.
 
@@ -43,35 +43,53 @@ The same pairs, directions, instructions and languages go to AI models, first wi
 
 The question is whether the personas widen the space of bridges, and in which way.
 
-## How diversity is measured
+## What we found
 
-AI helps run the code; it never judges creativity.
+The paper is [paper/main.pdf](paper/main.pdf), and a short version is at [sofiagallego.com/epistemic-bridges](https://sofiagallego.com/epistemic-bridges). In short, with 27 players, 145 bridges and 15 open models from 2019 to 2025:
 
-- **Rarity:** how few others found a similar bridge.
-- **Diversity of each group:** the effective number of distinct bridges among humans and among AI answers.
-- **Distance in meaning:** with several embedding models, plus a word-overlap check that uses no model.
-- **Stepping stones:** which concepts each group passes through, and whether AI relies on a few central ones.
-- **Direction:** whether a → b and b → a lead to different paths.
-- **Human judgement:** a sample rated blind, so that rare answers which make no sense do not count as creative.
+- Measured as written, chat models seem to reach almost none of the ground people cover. Most of that gap is the voice: chat answers share one way of speaking, and their sentence patterns repeat more than people's.
+- With the voice removed from every answer in the same way, the larger and newer chat models still reach less of the human map of ideas (recall 47% to 59%, against 81% for people) while landing on it most often. No model comes near people on both counts at once.
+- Creative conditions change the voice more than the ideas. Only one widens the ideas on every model: answering as an ordinary person drawn at random.
+- The direction of the arrow matters for chat models and hardly for people: chat answers talk more about the word they start from.
 
-The measures, settings and references are in [docs/methods.md](docs/methods.md). Related work and next steps are in [docs/context-and-next.md](docs/context-and-next.md).
+## How it is measured
+
+AI helps run the code; no model judges any answer.
+
+- **The human map:** the region of meaning that the players' answers cover, for each pair (all-MiniLM-L6-v2 embeddings, k-nearest-neighbour spheres).
+- **Precision and recall:** the share of a group's answers that land on the human map, and the share of the human map they reach (Kynkäänniemi et al. 2019). People are measured half against half.
+- **Voice and ideas:** the voice is how much a set of answers repeats its sentence patterns (compression of parts of speech, Shaib et al. 2024). For the ideas, the scaffolding and the two words of the pair are removed from every answer, human or AI, and answers are compared on their content words at a player's length.
+- **Hub rate:** the share of answers that take the most common human bridge, such as the hourglass for salt and clock.
+- **Direction:** whether answers going a → b differ from answers going b → a, and which word they talk about more.
+- **Warm-up:** the Divergent Association Task score, against published scores from before ChatGPT.
+- **Uncertainty:** 11 seeds, two batches of answers, and leaving out one player at a time.
+
+The paper's Methods section and appendix describe the measures in full. [docs/methods.md](docs/methods.md) and [docs/context-and-next.md](docs/context-and-next.md) are the plan written at the start of the sprint; some of it, such as rarity scores and blind human ratings, was left for later.
 
 ## In this repo
 
-- `data/pairs.json`: the 30 pairs in five languages, and the instructions players see (with each version of the welcome text).
-- `personas/personas.py`: the four personas, reused verbatim from False Epistemic Redundancy, where Anya Habana wrote them.
-- `generate/generate.py`: sends the same prompt the players see to any OpenAI-compatible model, with or without a persona. `generate/serve_model.py` serves an open model on Modal, reused from False Epistemic Redundancy.
-- `generate/ladder_modal.py`: runs open models from 2019 to 2025 and one family at many sizes on Modal, with every persona and the warm-up. Results go to `data/ai/`, one file per model, and are public.
-- `analysis/diversity.py`: all the diversity measures. The clustering and pairwise distance follow False Epistemic Redundancy.
+- `data/pairs.json`: the 30 pairs in five languages, and the instructions players see.
+- `personas/personas.py`: the four reasoning personas, reused verbatim from False Epistemic Redundancy, where Anya Habana wrote them.
+- `generate/`: `ladder_modal.py` runs the open models on Modal (vLLM), with every persona, creative condition and temperature, and the warm-up; `api_models.py` does the same for models behind an API; `generate.py` and `serve_model.py` are the simpler versions reused from False Epistemic Redundancy. All AI answers are in `data/ai/`, one file per model.
+- `analysis/`:
+  - `paper_results.py`: precision, recall and hub rate as written, and the robustness checks.
+  - `voice_content.py` and `uncertainty.py`: voice and ideas measured apart, with seeds and the leave-one-player-out check.
+  - `levels_directions.py`, `diversity_ladder.py`: pairs, direction, and diversity as the voice is removed step by step.
+  - `style_and_warmup.py`, `dat.py`, `all_languages.py`: the cleaning of the scaffolding, the warm-up, and the check with every language.
+  - `fig_money.py`, `fig_voice_ideas.py`: the figures.
+- `paper/`: the LaTeX source, figures and PDF.
 - `tools/export_humans.sh`: exports player answers from the game's database into `data/`. Player answers stay out of git.
 
 ```
 pip install -r requirements.txt
-python generate/generate.py --model Qwen/Qwen2.5-7B-Instruct --n 10 --langs en es fr
 modal run --detach generate/ladder_modal.py
-modal volume get bridges-results / data/ai/
-python analysis/diversity.py --with-ends
+python analysis/paper_results.py --humans data/human_bridges.json --tools /path/to/tools
+python analysis/voice_content.py --humans data/human_bridges.json --tools /path/to/tools
+python analysis/levels_directions.py --humans data/human_bridges.json --tools /path/to/tools
+python analysis/fig_money.py
 ```
+
+`/path/to/tools` holds the embedding models and GloVe vectors; the `tools` task in `.github/workflows/run.yml` builds it.
 
 ## What existed before the sprint
 
@@ -82,6 +100,6 @@ Everything else in this repo was written during the sprint.
 
 ## Status
 
-The game is live and collecting answers. Analysis and write-up in progress.
+The game is live and still collecting answers. The paper uses the answers given up to 15 November 2026.
 
 Sofia Gallego · CosmoVentures · Paris
