@@ -80,7 +80,7 @@ def main() -> None:
     a = pd.DataFrame([json.loads(l) for f in sorted(args.ai.glob("*.jsonl")) for l in f.read_text().splitlines() if l.strip()])
     run = a["run"].fillna("fer")
     a = a[(a["task"] == "bridge") & (a["lang"] == "en") & (a["set"] == "core")
-          & run.isin(["fer", "creative", "temps", "combo", "lifefer", "lifeway", "steer"])]
+          & run.isin(["fer", "creative", "temps", "combo", "lifefer", "lifeway", "steer", "aya_steer"])]
     if args.runs:
         a = a[a["run"].fillna("fer").isin(args.runs.split(","))]
     if args.plain:
