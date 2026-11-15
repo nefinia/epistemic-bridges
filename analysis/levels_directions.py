@@ -142,26 +142,37 @@ def figure(levels, anch_pair):
     names = ["bee\nmirror", "salt\nclock", "river\nsecret", "spider\nmelody", "forgetting\nfestival", "distance\nhabit"]
     lv = levels.set_index("pair").loc[order]
     x = np.arange(len(order))
-    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.3))
-    axes[0].bar(x - 0.2, lv["people_different"], width=0.38, color=INK, label="People")
-    axes[0].bar(x + 0.2, lv["chat_different"], width=0.38, color=ORANGE, label="Chat models (mean)")
-    axes[0].set_ylabel("Really different answers per answer"); axes[0].set_title("Diversity by pair", fontsize=9, color=INK)
-    axes[0].legend(frameon=False, fontsize=7.5, loc="upper right"); axes[0].grid(axis="x", visible=False)
-    axes[0].set_ylim(0, 0.8)
-    for kind, color, name, off in (("people", INK, "People", -0.2), ("base", BLUE, "Base models", 0.0), ("chat", ORANGE, "Chat models", 0.2)):
-        s = anch_pair.loc[kind].reindex(order)
-        dots(axes[1], x + off, s.values, color=color, s=34, edgecolor="white", linewidth=1, label=name, zorder=3)
-    axes[1].axhline(0, color=MUTED, linewidth=0.8)
-    axes[1].set_ylabel("Closer to the starting idea (+)"); axes[1].set_title("Pull of the starting idea", fontsize=9, color=INK)
-    axes[1].legend(frameon=False, fontsize=7.5, loc="upper right"); axes[1].grid(axis="x", visible=False)
-    for ax in axes:
+    def diversity_panel(ax):
+        ax.bar(x - 0.2, lv["people_different"], width=0.38, color=INK, label="People")
+        ax.bar(x + 0.2, lv["chat_different"], width=0.38, color=ORANGE, label="Chat models (mean)")
+        ax.set_ylabel("Really different answers per answer"); ax.set_title("Diversity by pair", fontsize=9, color=INK)
+        ax.legend(frameon=False, fontsize=7.5, loc="upper right"); ax.grid(axis="x", visible=False)
+        ax.set_ylim(0, 0.8)
+        finish(ax)
+
+    def pull_panel(ax):
+        for kind, color, name, off in (("people", INK, "People", -0.2), ("base", BLUE, "Base models", 0.0), ("chat", ORANGE, "Chat models", 0.2)):
+            sr = anch_pair.loc[kind].reindex(order)
+            dots(ax, x + off, sr.values, color=color, s=34, edgecolor="white", linewidth=1, label=name, zorder=3)
+        ax.axhline(0, color=MUTED, linewidth=0.8)
+        ax.set_ylabel("Closer to the starting idea (+)"); ax.set_title("Pull of the starting idea", fontsize=9, color=INK)
+        ax.legend(frameon=False, fontsize=7.5, loc="upper right"); ax.grid(axis="x", visible=False)
+        finish(ax)
+
+    def finish(ax):
         ax.set_xticks(x); ax.set_xticklabels(names, fontsize=7)
         for i0, lab in ((0.5, "concrete"), (2.5, "concrete–abstract"), (4.5, "abstract")):
             ax.text(i0, -0.2, lab, transform=ax.get_xaxis_transform(), ha="center", va="top", fontsize=7, color=MUTED)
         ax.axvline(1.5, color=GRID, linewidth=1); ax.axvline(3.5, color=GRID, linewidth=1)
+
+    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.3))
+    diversity_panel(axes[0]); pull_panel(axes[1])
     fig.tight_layout()
     figs = ROOT / "paper" / "figs"
     fig.savefig(figs / "fig4_pairs_direction.pdf"); fig.savefig(figs / "fig4_pairs_direction.svg")
+    (figs / "web").mkdir(exist_ok=True)
+    for name, panel in (("fig4a", diversity_panel), ("fig4b", pull_panel)):
+        f1, a1 = plt.subplots(figsize=(4.4, 3.4)); panel(a1); f1.tight_layout(); f1.savefig(figs / "web" / f"{name}.svg"); plt.close(f1)
 
 
 if __name__ == "__main__":
