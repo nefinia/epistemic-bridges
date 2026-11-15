@@ -98,6 +98,10 @@ STYLES = {
 }
 STYLE_PREFIX = "life_style+"
 
+# The life leads and the False Epistemic Redundancy persona follows, verbatim except for its opening
+# "You are", which becomes "In how you think, you are". "life_fer+causal_mechanist" and so on.
+LIFE_FER_PREFIX = "life_fer+"
+
 # A reasoning persona from False Epistemic Redundancy, held by an ordinary life drawn at random:
 # "ordinary_life+causal_mechanist" and so on. The persona text comes first and stays verbatim.
 COMBO_PREFIX = "ordinary_life+"
@@ -105,6 +109,11 @@ COMBO_PREFIX = "ordinary_life+"
 
 def sample(condition: str, rng: random.Random, personas: dict | None = None) -> str:
     """The system prompt for one answer of a sampled condition."""
+    if condition.startswith(LIFE_FER_PREFIX):
+        persona = (personas or {})[condition[len(LIFE_FER_PREFIX):]]
+        assert persona.startswith("You are ")
+        return (f"You are {rng.choice(LIVES)}. In how you think, you are {persona[len('You are '):]}\n\n"
+                "Answer as yourself, in your own words.")
     if condition.startswith(STYLE_PREFIX):
         return f"You are {rng.choice(LIVES)}. {STYLES[condition[len(STYLE_PREFIX):]]} Answer as yourself, in your own words."
     if condition.startswith(COMBO_PREFIX):
