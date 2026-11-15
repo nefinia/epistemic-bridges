@@ -14,6 +14,7 @@
 \usepackage{caption}
 \usepackage{titlesec}
 \usepackage{xcolor}
+\usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,fit}
 
@@ -35,40 +36,60 @@ Sofia G. Gallego$^{1}$ \\[4pt]
 \maketitle
 
 \begin{abstract}
-Creativity, innovation and improvement often happen in the space between ideas. As more of our thinking passes through AI, that space can quietly shrink, or it can grow. This paper gathers what has been tried so far and where it could go. A study of AI ensembles found agents that looked different and missed the same thing. A public map of ideas shows concepts from many perspectives, with the space between them in view. A game asks people and models to link the same words, and draws a map of where people go: chat models reach less of it, and an ordinary perspective was the one change that widened every model's ideas. Three threads come out of this, each testing the others: a measure of epistemic diversity drawn from real people, tools that open the space between ideas, and models that widen what they reach.
+Creativity, innovation and improvement often happen in the space between ideas. As more of our thinking passes through AI, that space can quietly shrink, or it can grow. Evidence from many fields points the same way: in science, AI helps each researcher while the topics studied together narrow; in art and writing, individual work improves while the whole becomes more alike; in politics, a writing assistant can shift the views of those who use it; in law and institutions, decisions that share one model share its mistakes; across cultures, suggestions pull writers toward one style. Several lines of work try to see and counter this: measures of diversity, ways of widening models, and tools that help groups see where they differ. This paper places among them a map of ideas, where concepts are seen from many perspectives and the space between them stays in view, and a game that measures, against real people, how much of that space models reach. It ends with directions in which a measure, tools for people and changes to models check one another.
 \end{abstract}
 
 \section{The Space Between Ideas}
 
-A word like \emph{water} reads differently to a chemist, a farmer, a historian and a poet. Each reading is true, and new ideas often appear where two of them meet. Groups that think in different ways find things that groups of the individually best problem solvers miss \citep{hong2004}. The diversity of how people see the same thing is how a society notices its mistakes, finds new ideas and keeps a debate alive.
+A word like \emph{water} reads differently to a chemist, a farmer, a historian and a poet. Each reading is true, and new ideas often appear where two of them meet. Groups that think in different ways find things that groups of the individually best problem solvers miss \citep{hong2004}, and scientific work with the most impact tends to join well-known ideas with unusual combinations of them \citep{uzzi2013}. The diversity of how people see the same thing is how a society notices its mistakes, finds new ideas and keeps a debate alive.
 
-The world is more connected than ever, and so are its questions. Climate, health, technology and justice cross the borders between fields, and many innovations come from carrying an idea from one field into another. A scientific question can open when it is seen from another discipline. Politics and law work better when the views of those affected sit side by side. Art often finds what other ways of knowing have not yet named. All of this depends on people meeting ideas from outside their own field, and finding the threads between them.
+The world is more connected than ever, and so are its questions. Climate, health, technology and justice cross the borders between fields, and many innovations come from carrying an idea from one field into another. All of this depends on people meeting ideas from outside their own field, and finding the threads between them.
 
 How can people and AI think together in a way that keeps this space open, and even widens it? Models hold much of what has been written. People bring lives, places and ways of seeing that are written nowhere. A harmonic interaction would keep what works in each and enhance what can be enhanced.
 
-\section{Why Now}
+\section{What Is at Stake, Field by Field}
 
-AI is becoming a shared layer of thinking, and there are signs that it narrows. Chat training reduces the variety of what a model writes \citep{kirk2024}, and models are more alike in their creative output than people are \citep{wenger2026,jiang2025}. Help from AI can make each person's ideas better while making the ideas of a group more alike \citep{doshi2024,anderson2024}. When many people rely on the same models, rarer ideas can fade from use, a process described as knowledge collapse \citep{peterson2024,wright2025}.
+\textbf{Science.} Across 41 million papers in the natural sciences, researchers who use AI publish about three times more and are cited almost five times more, while the range of topics studied together shrinks by about 5\% and scientists engage less with each other's work \citep{hao2026}. AI tends to go where data is already rich. Anthropologists of science warn of \emph{monocultures of knowing}, where questions and methods that suit AI crowd out others, and scientists come to believe they understand more than they do \citep{messeri2024}.
 
-This is easy to miss. A model can sound varied while saying the same thing, and a person helped by AI can feel more creative while the group explores less. Seeing the space of ideas comes first.
+\textbf{Creativity and art.} Writers helped by AI write stories judged better, and the stories become more alike \citep{doshi2024}. Artists who adopt image generators produce more and are rated higher, while the novelty of their work drops over time \citep{zhou2024}. People brainstorming with a chat model produce ideas that overlap more with each other's \citep{anderson2024}.
+
+\textbf{Politics and democracy.} People who wrote with a model that leaned toward one view moved their own opinions toward it, often without noticing \citep{jakesch2023}. Deliberation depends on views that differ and are seen to differ. AI can also help here: a model that drafts group statements helped people find common ground while keeping minority views in \citep{tessler2024}. The same power can narrow or connect.
+
+\textbf{Law and institutions.} When many decision makers use the same algorithm, the overall quality of their decisions can fall even if the algorithm is more accurate than each of them alone \citep{kleinberg2021}, and the same people are wrongly rejected everywhere \citep{bommasani2022}. As courts, firms and administrations draw on the same models, their errors stop being independent.
+
+\textbf{Culture and language.} Writing suggestions helped American writers more than Indian ones and pulled Indian writers toward Western styles, flattening cultural expression \citep{agarwal2025}. Models carry the perspectives most present in what is written, and the ones least written down are the easiest to lose.
+
+\textbf{Learning.} Students who wrote essays with a chat model produced essays that were more alike within each topic, and remembered less of what they wrote \citep{kosmyna2025}.
+
+\textbf{The models themselves.} Chat training reduces the variety of what a model writes \citep{kirk2024}, models are more alike in their creative output than people are \citep{wenger2026}, and different models converge on the same answers to open questions \citep{jiang2025}. When many people rely on the same models, rarer ideas can fade from use, a process described as knowledge collapse \citep{peterson2024}, now measured across models and languages \citep{wright2025}.
+
+The pattern across fields is the same. Each person gains, and the whole loses range. This is easy to miss from the inside, which is why seeing the space comes first.
 
 \section{What Has Been Tried}
 
-\subsection{Agents that look different}
-False epistemic redundancy \citep{gallego2026fer} gave several AI agents different ways of reasoning and asked whether they checked each other. They sounded different and missed the same cause. The question that followed was how to tell diversity of ideas from diversity of style.
+\textbf{Measuring diversity.} Benchmarks now ask whether models give humanlike variety \citep{zhang2025}, how much different models converge \citep{jiang2025}, and how much of the world's knowledge their answers cover \citep{wright2025}. False epistemic redundancy \citep{gallego2026fer} asked whether AI agents with different reasoning personas check each other, and found that they sounded different and missed the same cause. Epistemic Bridges \citep{gallego2026bridges}, made during this sprint, asks people and models to link the same pairs of words and places each model on the map that people draw, by how much of it a model reaches (recall) and how many of its answers land on it (precision). Most of what made chat answers look narrow was one shared voice; with the voice removed, the larger and newer chat models still reached less of the map than people (recall 47\% to 59\%, against 81\%).
 
-\subsection{A map of ideas}
-The Map of Ideas (\href{https://mapideas.org}{mapideas.org}) is a public map where ideas grow and relate. It started from Gödel and now holds more than 200 ideas and about 100 open questions across 17 topics, from mathematics and astronomy to religions, cultures and art. A link can carry how one idea reads when you come from the other. An answer is an idea of its own, joined to the one it answers, so a debate shows its views side by side. Each tradition and culture has its own idea, described as its own people would, and nothing is ranked. Any idea can become the center. An AI guide answers from the map and never writes to it, so what is there was written by people, with sources and history. An earlier map of theories of consciousness, made for the Models of Consciousness 7 conference, read its links in both directions in the same way.
+\textbf{Widening models.} Prompting with personas and backstories gives models more varied answers \citep{moon2024,deng2026}. In Bridges, reasoning personas mostly changed the voice, while answering as an ordinary person drawn at random widened the ideas on every model. A first pilot steered a model's activations toward that perspective: a light push raised recall from 0.61 to 0.70 and lowered precision from 0.82 to 0.65, and stronger pushes broke the answers.
 
-\subsection{A game of bridges}
-Epistemic Bridges \citep{gallego2026bridges} lives alongside the map. Players link two words with no evident connection, in any form, in five languages, with no accounts, cookies or IP addresses. Their answers draw a map of where people go, and each model is placed on it by how much of the map it reaches (recall) and how many of its answers land on it (precision), with no model as judge. With 27 players and 15 open models, chat models first seemed to reach almost none of the map. Most of that gap was one shared voice. With the voice removed from every answer in the same way, the larger and newer chat models still reached less of it than people (recall 47\% to 59\%, against 81\%), and none came near people on both counts. They also stayed closer to the word they started from.
+\textbf{Tools that help groups see.} Polis maps the opinions of many people so that groups see where they agree and differ \citep{polis2021}. Community Notes shows a note only when people who usually disagree both find it helpful \citep{wojcik2022}. The Habermas Machine drafts statements that a divided group can share \citep{tessler2024}. Each of these works on opinions about a question already asked. The space between ideas, where new questions come from, has fewer tools.
 
-\subsection{A perspective}
-Reasoning personas mostly changed the voice, and one narrowed the ideas. Answering as an ordinary person drawn at random was the one change that widened the ideas on every model, and a way of reasoning held by such a life widened them too. A first pilot then looked for the same effect inside a model, by steering its activations toward that perspective. On one 7B chat model, a light push raised recall from 0.61 to 0.70 and lowered precision from 0.82 to 0.65; stronger pushes broke the answers. Perspective moves a model toward where people go. Doing it well inside the model is still open.
+\section{The Map of Ideas}
+
+The Map of Ideas (\href{https://mapideas.org}{mapideas.org}, Figure~\ref{fig:map}) is a public map where ideas grow and relate. It holds more than 300 ideas and open questions across 17 topics, from mathematics and astronomy to religions, cultures and art. A link can carry how one idea reads when you come from the other. An answer is an idea of its own, joined to the one it answers, so a debate shows its views side by side. Each tradition and culture has its own idea, described as its own people would, and nothing is ranked. Any idea can become the center, so the map has no single starting point. An AI guide answers from the map and never writes to it, so what is there was written by people, with sources and history. An earlier map of theories of consciousness, made for the Models of Consciousness 7 conference, read its links in both directions in the same way.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.60\textwidth]{map_overview.png}\hfill
+\includegraphics[width=0.37\textwidth]{map_card.png}
+\caption{The Map of Ideas. Left, the whole map: topics and the lines between them, thicker where more ideas connect, with each topic's ideas around it. Right, an idea as a reader sees it, with its sources, the ideas it connects to across topics, and how it reads each neighbour.}
+\label{fig:map}
+\end{figure}
+
+Where Polis and the Habermas Machine help a group with one question, the map keeps the wider space in view: what lies around an idea, across fields, before a question settles. A map shown to everyone is also a shared prior. It could widen what people reach, or become the new common answer. That is what the measure is for.
 
 \section{Where It Can Go}
 
-Three threads come out of this, and each one tests the others (Figure~\ref{fig:program}). A tool or a model can look diverse while narrowing what people reach, so all of them are read against the same human map.
+Three threads come out of this, and each one tests the others (Figure~\ref{fig:program}).
 
 \begin{figure}[H]
 \centering
@@ -86,28 +107,16 @@ Three threads come out of this, and each one tests the others (Figure~\ref{fig:p
 \label{fig:program}
 \end{figure}
 
-\subsection{A measure}
-Bridges can grow into an open measure for any model or tool: more players, languages and backgrounds, frontier models, and all 30 pairs. With enough answers it can also ask where AI reaches beyond people. The voice and the ideas stay apart, and every result is read against real people.
+\textbf{A measure.} Bridges can grow into an open measure for any model or tool: more players, languages and backgrounds, frontier models, and all 30 pairs, keeping the voice and the ideas apart.
 
-\subsection{Tools}
-The map is the first tool. After answering, a player could see where their own connection sits among everyone's. People could grow personal maps from their own notes and choose what to share. New topics could be written with the people of each field and tradition, and the same way of seeing could serve brainstorming, research, policy and debate, showing what lies around an idea, across fields, before an answer settles it.
+\textbf{Tools.} After answering, a player could see where their own connection sits among everyone's on the map. People could grow personal maps from their own notes and choose what to share, and new topics could be written with the people of each field and tradition, for research, policy and debate.
 
-\subsection{Models}
-A perspective in the prompt is the simplest change that worked. Beyond it lie steering the shared voice inside the model, giving models backgrounds and lives alongside better reasoning, and asking whether a perspective also helps AI ensembles catch the blind spots they share.
+\textbf{Models.} Beyond a perspective in the prompt lie steering the shared voice inside the model, giving models backgrounds and lives alongside better reasoning, and asking whether a perspective helps AI ensembles catch the blind spots they share.
 
-\subsection{A first experiment}
-The threads meet in one experiment. Players answer the Bridges pairs alone, after exploring the map, after seeing an AI bridge, or after seeing a bridge from an AI given a perspective. A separate group answering alone draws the reference map, and each condition is read as a group against it. A tool that helps each person while pulling everyone toward what they saw makes single answers better and the group's recall lower, as earlier studies found \citep{doshi2024}. Here the two can be told apart. A tool fosters epistemic diversity when recall rises for the group, precision holds, and both hold with the voice removed.
-
-\section{Ways of Working}
-\begin{itemize}[itemsep=0.1em]
-\item \textbf{Read against people.} Diversity is measured against what real people do, and no model judges an answer.
-\item \textbf{Voice and ideas apart.} How something is said is kept apart from what is said.
-\item \textbf{Many perspectives, none ranked.} Contrasting views sit side by side, and each tradition speaks in its own terms.
-\item \textbf{Open, and private where it matters.} Code, measures and AI answers are open; what people write stays theirs.
-\end{itemize}
+\textbf{A first experiment.} Players answer the Bridges pairs alone, after exploring the map, after seeing an AI bridge, or after seeing a bridge from an AI given a perspective. A separate group answering alone draws the reference map, and each condition is read as a group against it. A tool fosters epistemic diversity when recall rises for the group and precision holds, with the voice removed. A tool that makes single answers better while the group's recall falls shows the pattern seen across the fields above.
 
 \section{Conclusion}
-The space of ideas is wider than any one model, and it grows where perspectives meet. What has been tried so far shows that AI can narrow it, that the narrowing can be seen against real people, and that a perspective can move models back toward it. The next steps are to measure it in the open, to build tools that open it, and to shape models that widen it, so that people and AI each widen what the other can reach.
+The space of ideas is wider than any one model, and it grows where perspectives meet. In science, art, politics, law, culture and learning, AI is helping each person while the whole loses range. Tools exist for seeing where opinions differ; fewer exist for the space between ideas. A map of ideas, a measure grounded in real people, and models given a perspective are first steps toward a relation between people and AI in which each widens what the other can reach.
 
 \section*{Data and Code Availability}
 The Bridges measure, AI answers and analysis are at \url{https://github.com/nefinia/epistemic-bridges}, with this paper in the \texttt{fostering/} folder; the steering pilot is at \url{https://github.com/nefinia/steering-the-voice}. The game is at \url{https://mapideas.org/bridges} and the map at \url{https://mapideas.org}. The Map of Ideas, the game and false epistemic redundancy existed before the sprint started on 13 November; the Bridges study, the steering pilot and this paper were made during it.
@@ -118,15 +127,30 @@ S.G.G.\ conceived the vision, the map, the game and the studies, and wrote this 
 \begin{thebibliography}{99}
 \small
 \bibitem{hong2004} L.\ Hong, S.\ E.\ Page. \emph{Groups of diverse problem solvers can outperform groups of high-ability problem solvers.} PNAS, 101(46), 2004.
+\bibitem{uzzi2013} B.\ Uzzi, S.\ Mukherjee, M.\ Stringer, B.\ Jones. \emph{Atypical combinations and scientific impact.} Science, 342(6157), 2013.
+\bibitem{hao2026} Q.\ Hao, F.\ Xu, Y.\ Li, J.\ Evans. \emph{AI Expands Scientists' Impact but Contracts Science's Focus.} Nature (accepted), 2026. arXiv:2412.07727.
+\bibitem{messeri2024} L.\ Messeri, M.\ J.\ Crockett. \emph{Artificial intelligence and illusions of understanding in scientific research.} Nature, 627, 2024.
+\bibitem{doshi2024} A.\ R.\ Doshi, O.\ P.\ Hauser. \emph{Generative AI enhances individual creativity but reduces the collective diversity of novel content.} Science Advances, 10(28), 2024.
+\bibitem{zhou2024} E.\ Zhou, D.\ Lee. \emph{Generative artificial intelligence, human creativity, and art.} PNAS Nexus, 3(3), 2024.
+\bibitem{anderson2024} B.\ R.\ Anderson, J.\ H.\ Shah, M.\ Kreminski. \emph{Homogenization Effects of Large Language Models on Human Creative Ideation.} Creativity \& Cognition, 2024.
+\bibitem{jakesch2023} M.\ Jakesch, A.\ Bhat, D.\ Buschek, L.\ Zalmanson, M.\ Naaman. \emph{Co-Writing with Opinionated Language Models Affects Users' Views.} CHI, 2023.
+\bibitem{tessler2024} M.\ H.\ Tessler et al. \emph{AI can help humans find common ground in democratic deliberation.} Science, 386(6719), 2024.
+\bibitem{kleinberg2021} J.\ Kleinberg, M.\ Raghavan. \emph{Algorithmic monoculture and social welfare.} PNAS, 118(22), 2021.
+\bibitem{bommasani2022} R.\ Bommasani, K.\ A.\ Creel, A.\ Kumar, D.\ Jurafsky, P.\ Liang. \emph{Picking on the Same Person: Does Algorithmic Monoculture lead to Outcome Homogenization?} NeurIPS, 2022.
+\bibitem{agarwal2025} D.\ Agarwal, M.\ Naaman, A.\ Vashistha. \emph{AI Suggestions Homogenize Writing Toward Western Styles and Diminish Cultural Nuances.} CHI, 2025.
+\bibitem{kosmyna2025} N.\ Kosmyna et al. \emph{Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task.} arXiv:2506.08872, 2025.
 \bibitem{kirk2024} R.\ Kirk, I.\ Mediratta, C.\ Nalmpantis, J.\ Luketina, E.\ Hambro, E.\ Grefenstette, R.\ Raileanu. \emph{Understanding the Effects of RLHF on LLM Generalisation and Diversity.} ICLR, 2024.
 \bibitem{wenger2026} E.\ Wenger, Y.\ N.\ Kenett. \emph{Large language models are homogeneously creative.} PNAS Nexus, 5(3):pgag042, 2026.
 \bibitem{jiang2025} L.\ Jiang et al. \emph{Artificial Hivemind: The Open-Ended Homogeneity of Language Models (and Beyond).} NeurIPS, 2025.
-\bibitem{doshi2024} A.\ R.\ Doshi, O.\ P.\ Hauser. \emph{Generative AI enhances individual creativity but reduces the collective diversity of novel content.} Science Advances, 10(28), 2024.
-\bibitem{anderson2024} B.\ R.\ Anderson, J.\ H.\ Shah, M.\ Kreminski. \emph{Homogenization Effects of Large Language Models on Human Creative Ideation.} Creativity \& Cognition, 2024.
 \bibitem{peterson2024} A.\ J.\ Peterson. \emph{AI and the Problem of Knowledge Collapse.} arXiv:2404.03502, 2024.
 \bibitem{wright2025} D.\ Wright, S.\ Masud, J.\ Moore, S.\ Yadav, M.\ Antoniak, P.\ Ebert Christensen, C.\ Y.\ Park, I.\ Augenstein. \emph{Epistemic Diversity and Knowledge Collapse in Large Language Models.} arXiv:2510.04226, 2025.
-\bibitem{gallego2026bridges} S.\ G.\ Gallego. \emph{Epistemic Bridges: Do Language Models Reach the Connections People Make?} Apart Research AI $\times$ Epistemics Research Sprint, 2026. \url{https://github.com/nefinia/epistemic-bridges}
+\bibitem{zhang2025} Y.\ Zhang, H.\ Diddee, S.\ Holm, H.\ Liu, X.\ Liu, V.\ Samuel, B.\ Wang, D.\ Ippolito. \emph{NoveltyBench: Evaluating Language Models for Humanlike Diversity.} arXiv:2504.05228, 2025.
+\bibitem{moon2024} S.\ Moon et al. \emph{Virtual Personas for Language Models via an Anthology of Backstories.} EMNLP, 2024.
+\bibitem{deng2026} Y.\ Deng, M.\ Brucks, O.\ Toubia. \emph{Examining and Addressing Barriers to Diversity in LLM-Generated Ideas.} 2026.
+\bibitem{polis2021} C.\ Small, M.\ Bjorkegren, T.\ Erkkilä, L.\ Shaw, C.\ Megill. \emph{Polis: Scaling Deliberation by Mapping High Dimensional Opinion Spaces.} Recerca, 26(2), 2021.
+\bibitem{wojcik2022} S.\ Wojcik et al. \emph{Birdwatch: Crowd Wisdom and Bridging Algorithms can Inform Understanding and Reduce the Spread of Misinformation.} arXiv:2210.15723, 2022.
 \bibitem{gallego2026fer} S.\ G.\ Gallego, A.\ Habana. \emph{False Epistemic Redundancy: Do AI Ensembles Share a Blind Spot?} Apart Research Digital Minds Research Sprint, 2026. \url{https://apartresearch.com/project/false-epistemic-redundancy-do-ai-ensembles-share-a-blind-spot-b50u}
+\bibitem{gallego2026bridges} S.\ G.\ Gallego. \emph{Epistemic Bridges: Do Language Models Reach the Connections People Make?} Apart Research AI $\times$ Epistemics Research Sprint, 2026. \url{https://github.com/nefinia/epistemic-bridges}
 \end{thebibliography}
 
 \section*{LLM Usage Statement}
