@@ -190,10 +190,13 @@ Measured as written, chat models seem to leave almost all of the human map of co
 Next steps: blind human judgments of whether two answers say the same thing \citep{tevet2021,zhang2025}, players from other fields and cultures, pairs with values at stake, and pairs that join concepts from two disciplines, such as entropy and trust. The larger aim is the map of ideas (\href{https://mapideas.org}{mapideas.org}), where human and AI connections sit side by side, so that people see the ground they cover together; from there, ways of working with AI that keep that space wide and help disciplines meet where they rarely do, since much innovation happens there.
 
 \section*{Data and Code Availability}
-The pairs, personas, generation code, analysis code, figures and all AI answers are available at \url{https://github.com/nefinia/epistemic-bridges}. The game is live at \url{https://mapideas.org/bridges}, and its code is at \url{https://github.com/nefinia/themap}. The game, together with the reasoning personas, the Modal server and the clustering settings from false epistemic redundancy, existed before the sprint; the model runs, creative conditions, measures, analysis and this paper were made during it. Players have played Bridges since 25 October; 6 of the 145 bridges, from one player, came before the sprint started on 13 November.
+The pairs, personas, code, figures and all AI answers are at \url{https://github.com/nefinia/epistemic-bridges}. The game is live at \url{https://mapideas.org/bridges}, with its code at \url{https://github.com/nefinia/themap}. The game, the reasoning personas, the Modal server and the clustering settings from false epistemic redundancy existed before the sprint started on 13 November, as did 6 of the 145 bridges, from one player; everything else was made during it.
 
 \section*{Author Contributions and Acknowledgements}
-S.G.G.\ designed the study and the game, ran the experiments and analysis, and wrote the paper, in collaboration with Claude throughout (see LLM Usage Statement). Thanks to everyone who played Bridges and left feedback.
+S.G.G.\ designed the study and the game, ran the experiments and analysis, and wrote the paper with Claude (see LLM Usage Statement). Thanks to everyone who played Bridges and left feedback.
+
+\section*{LLM Usage Statement}
+Claude helped write the game before the sprint and, during it, helped scope the question, wrote the generation and analysis code, designed the creative conditions with the author, drafted and revised the paper and made the figures. No language model graded any answer; all measures come from embeddings and the human answers. The AI bridge that players can request in the game was written by Claude Opus 5.5 before the study. Every number was checked against the output of the analysis scripts.
 
 \bibliographystyle{unsrtnat}
 \begin{thebibliography}{99}
@@ -336,8 +339,5 @@ To give a feel for the answers behind the numbers, here is one answer per condit
 
 With the three languages together (116 English, 19 Spanish and 2 French answers), measured with the multilingual embedding model and with the same mix of languages for models as for players, the order is the same: the base models reach 71\% to 76\% of the map, Qwen2.5 7B 5\% after chat training, Qwen2.5 14B 2\% and Qwen3 8B 1\%. Small chat models reach more in this setting (up to 62\% for Qwen2.5 0.5B), partly because their Spanish and French answers are often broken or switch to English, and such text spreads widely in the space of meaning.
 
-
-\section*{LLM Usage Statement}
-Claude helped write the game before the sprint, and was used throughout the sprint to scope the question, to write the generation pipeline and the analysis code, to design the creative conditions with the author, to draft and revise this paper, and to produce the figures. No language model graded or scored any answer; all measures are computed from embeddings and the human answers. The AI bridge that players can request inside the game was written by Claude Opus 5.5 before the study. Every number in this paper comes from the analysis scripts in the repository and was checked against their output.
 
 \end{document}
