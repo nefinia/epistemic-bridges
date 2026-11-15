@@ -102,7 +102,7 @@ Recall and precision are computed with as many answers from a group as there are
 
 \subsection{As written, chat models seem to close the map}
 
-The first step measures the answers as they come, in full (Table~\ref{tab:models} in Appendix~\ref{app:models}). GPT-2 and GPT-J reach about 60\% of the human map (recall), yet only a third of their answers land on it (precision): coverage through noise, the typewriting monkeys of the introduction. Chat models reach much less. The clearest case keeps everything else the same: Qwen2.5 7B has a recall of 49\% before chat training and almost none after, and the larger and newer chat models 0\% to 2\%. This held with other embedding models and with all three languages together (Appendix~\ref{app:robust}).
+The first step measures the answers as they come, in full; Figure~\ref{fig:money} then places the same models with the voice removed (Section~\ref{sec:voiceideas}), and Table~\ref{tab:models} in Appendix~\ref{app:models} gives both. GPT-2 and GPT-J reach about 60\% of the human map (recall), yet only a third of their answers land on it (precision): coverage through noise, the typewriting monkeys of the introduction. Chat models reach much less. The clearest case keeps everything else the same: Qwen2.5 7B has a recall of 49\% before chat training and almost none after, and the larger and newer chat models 0\% to 2\%. This held with other embedding models and with all three languages together (Appendix~\ref{app:robust}).
 
 \subsection{Voice or ideas}
 \label{sec:voiceideas}
