@@ -94,7 +94,8 @@ def figure(p, summ):
     dots(ax, [p.mean()], [len(s)], s=70, marker="D", color=INK, edgecolor="white", zorder=4)
     for i, (_, r) in enumerate(s.iterrows()):
         color = BLUE if r["kind"] == "base" else ORANGE
-        ax.errorbar(r["mean"], i, xerr=r["sd"], fmt="o", color=color, ecolor=color, elinewidth=1.2, capsize=0, markersize=5)
+        ax.errorbar(r["mean"], i, xerr=r["sd"], fmt="none", ecolor=color, elinewidth=1.2, capsize=0)
+        dots(ax, [r["mean"]], [i], s=25, color=color, marker="s" if r["kind"] == "base" else "o", zorder=3)
     ax.set_yticks(y); ax.set_yticklabels(list(s["name"]) + ["People, now"], fontsize=8)
     ax.set_xlabel("Warm-up score (Divergent Association Task)")
     ax.text(NORM_MEAN, -1.1, "people before ChatGPT (published norm, ± 1 SD)", ha="center", va="center", fontsize=7.5, color=MUTED)

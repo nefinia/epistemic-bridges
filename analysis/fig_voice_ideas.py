@@ -67,14 +67,14 @@ def main() -> None:
     jk = pd.read_csv(jk_path, index_col=0) if jk_path.exists() else None
 
     def ideas_panel(ax):
-        for kind, color, label in (("base", BLUE, "Base models"), ("chat", ORANGE, "Chat models")):
+        for kind, color, label, mk in (("base", BLUE, "Base models", "s"), ("chat", ORANGE, "Chat models", "o")):
             sub = plain[plain["kind"] == kind]
             if jk is not None:
                 for _, r in sub.iterrows():
                     if r["model"] in jk.index:
                         ax.errorbar(r[X], r[Y], xerr=jk.loc[r["model"], "map_reached_ideas_jk"], fmt="none", ecolor=GRID,
                                     elinewidth=0.8, zorder=1)
-            dots(ax, sub[X], sub[Y], s=34, color=color, edgecolor="white", linewidth=1, zorder=3, label=label.replace(" models","") + ", no persona")
+            dots(ax, sub[X], sub[Y], s=34, color=color, marker=mk, edgecolor="white", linewidth=1, zorder=3, label=label.replace(" models","") + ", no persona")
         for _, r in plain.iterrows():
             if r["name"] in ("GPT-2 XL", "GPT-J 6B", "Qwen3 8B", "Qwen3 32B", "gpt-oss 20B", "Qwen2.5 14B"):
                 off, ha = ((-5, 5), "right") if r["name"] == "Qwen3 8B" else ((5, -3), "left")
@@ -96,7 +96,7 @@ def main() -> None:
         arrow(FOCUS, key, AQUA)
         dots(ax, [g.loc[key, X]], [g.loc[key, Y]], s=40, color=AQUA, edgecolor="white", linewidth=1.2, zorder=5)
         ax.annotate("an ordinary life", (g.loc[key, X], g.loc[key, Y]), xytext=(-4, -12), textcoords="offset points", fontsize=8, color=INK, ha="right")
-        dots(ax, [g.loc[BASE, X]], [g.loc[BASE, Y]], s=60, color=BLUE, edgecolor="white", linewidth=1.5, zorder=5)
+        dots(ax, [g.loc[BASE, X]], [g.loc[BASE, Y]], s=60, color=BLUE, marker="s", edgecolor="white", linewidth=1.5, zorder=5)
         ax.annotate("Qwen2.5 7B base", (g.loc[BASE, X], g.loc[BASE, Y]), xytext=(6, -10), textcoords="offset points", fontsize=8, color=INK)
         dots(ax, [g.loc[FOCUS, X]], [g.loc[FOCUS, Y]], s=60, color=ORANGE, edgecolor="white", linewidth=1.5, zorder=5)
         ax.annotate("after chat training", (g.loc[FOCUS, X], g.loc[FOCUS, Y]), xytext=(-6, -13), textcoords="offset points",
@@ -114,7 +114,8 @@ def main() -> None:
         y = np.arange(len(v))
         cols = [INK if k == "people" else BLUE if k == "base" else ORANGE for k in v["kind"]]
         av.hlines(y, 3.2, v["cr_pos"], color=GRID, linewidth=1)
-        dots(av, v["cr_pos"], y, color=cols, s=26, zorder=3)
+        dots(av, v["cr_pos"], y, color=cols, s=26, zorder=3,
+             marker=["*" if k == "people" else "s" if k == "base" else "o" for k in v["kind"]])
         av.axvline(g.loc["people", "cr_pos"], color=INK, linewidth=0.8, linestyle=(0, (2, 2)))
         av.set_yticks(y)
         av.set_yticklabels(["People" if m == "people" else n.replace(" base", " (base)") for m, n in zip(v["model"], v["name"])], fontsize=7.5)
@@ -147,7 +148,7 @@ def main() -> None:
     def cond_panel(ax, col, labels=True, legend=False):
         lo, hi, title, xlabel = PANELS[col]
         ax.hlines(y, s[lo], s[hi], color=GRID, linewidth=3)
-        dots(ax, s[col], y, color=colors, s=28, zorder=3, edgecolor="white", linewidth=1)
+        dots(ax, s[col], y, color=colors, s=28, zorder=3, edgecolor="white", linewidth=1, marker=["s" if r == "fer" else "o" for r in s["run"]])
         ax.axvline(0, color=MUTED, linewidth=0.8)
         ax.set_title(title, fontsize=9, color=INK)
         ax.grid(axis="y", visible=False)
@@ -156,13 +157,13 @@ def main() -> None:
         if labels:
             ax.set_yticklabels(names)
         if legend:
-            dots(ax, [], [], color=BLUE, label="Reasoning (FER)"); dots(ax, [], [], color=ORANGE, label="Creative")
+            dots(ax, [], [], color=BLUE, marker="s", label="Reasoning (FER)"); dots(ax, [], [], color=ORANGE, label="Creative")
             ax.legend(frameon=False, fontsize=7.5, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2)
 
     fig, axes = plt.subplots(1, 2, figsize=(5.2, 0.2 * len(s) + 1.2), sharey=True)
     cond_panel(axes[0], "ideas"); cond_panel(axes[1], "voice", labels=False)
     axes[0].tick_params(axis="y", labelsize=8); axes[0].tick_params(axis="x", labelsize=8); axes[1].tick_params(axis="x", labelsize=8)
-    dots(axes[1], [], [], color=BLUE, label="Reasoning (FER)"); dots(axes[1], [], [], color=ORANGE, label="Creative")
+    dots(axes[1], [], [], color=BLUE, marker="s", label="Reasoning (FER)"); dots(axes[1], [], [], color=ORANGE, label="Creative")
     handles, labels = axes[1].get_legend_handles_labels()
     fig.legend(handles, labels, frameon=False, fontsize=8, loc="lower center", ncol=2, bbox_to_anchor=(0.5, 0.0))
     fig.tight_layout(rect=(0, 0.05, 1, 1))

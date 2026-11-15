@@ -151,9 +151,9 @@ def figure(levels, anch_pair):
         finish(ax)
 
     def pull_panel(ax):
-        for kind, color, name, off in (("people", INK, "People", -0.2), ("base", BLUE, "Base models", 0.0), ("chat", ORANGE, "Chat models", 0.2)):
+        for kind, color, name, off, mk in (("people", INK, "People", -0.2, "D"), ("base", BLUE, "Base models", 0.0, "s"), ("chat", ORANGE, "Chat models", 0.2, "o")):
             sr = anch_pair.loc[kind].reindex(order)
-            dots(ax, x + off, sr.values, color=color, s=34, edgecolor="white", linewidth=1, label=name, zorder=3)
+            dots(ax, x + off, sr.values, color=color, marker=mk, s=34, edgecolor="white", linewidth=1, label=name, zorder=3)
         ax.axhline(0, color=MUTED, linewidth=0.8)
         ax.set_ylabel("Closer to the\nstarting idea (+)"); ax.set_title("Pull of the starting idea", fontsize=9, color=INK)
         ax.set_ylim(top=0.14); ax.legend(frameon=False, fontsize=8, loc="upper center", ncol=3); ax.grid(axis="x", visible=False)
