@@ -51,7 +51,7 @@ To answer it, a measure needs a human reference and a task anyone can do. Reachi
 \begin{enumerate}[itemsep=0.1em]
 \item How much of the human space of connections do models reach, how does that change with the age of the model, its size and chat training, and how much of the difference lies in the voice and how much in the ideas?
 \item Can framings, reasoning personas or creative ones, widen what a model reaches, and how do they compare with plain randomness?
-\item Does it matter how abstract the two words are, or which one the connection starts from (is going from a bee to a mirror the same as going from a mirror to a bee)? And how do players today compare with people tested before ChatGPT on a standard word task?
+\item Does it matter how abstract the two words are, or which one the connection starts from (is going from a bee to a mirror the same as going from a mirror to a bee)?
 \end{enumerate}
 
 \section{Related Work}
@@ -133,9 +133,9 @@ On Qwen2.5 7B, raising the temperature to 1.6 gives a recall of 85\%, more than 
 \label{fig:conditions}
 \end{figure}
 
-\subsection{Pairs, direction and the warm-up}
+\subsection{Pairs and direction}
 
-Abstraction matters less than expected: people give about as many different answers to abstract pairs as to concrete ones, and what lowers diversity is a strong shared connection, such as the web or the nursery rhyme for spider and melody (60\% of people's answers, about 90\% of chat answers). The direction of the arrow matters for chat models and hardly for people. Going from the bee to the mirror, chat answers talk more about the bee, and going the other way more about the mirror, on every pair and with the voice removed (41 of 72 cases); for people the two directions mostly give the same answers (Figure~\ref{fig:direction}; Appendix~\ref{app:pairsdir}). On the warm-up, players today score slightly above people tested before ChatGPT (80.4 against 78.4), and models' scores do not follow their bridges (Appendix~\ref{app:warmup}).
+Abstraction matters less than expected: people give about as many different answers to abstract pairs as to concrete ones, and what lowers diversity is a strong shared connection, such as the web or the nursery rhyme for spider and melody (60\% of people's answers, about 90\% of chat answers). The direction of the arrow matters for chat models and hardly for people. Going from the bee to the mirror, chat answers talk more about the bee, and going the other way more about the mirror, on every pair and with the voice removed (41 of 72 cases); for people the two directions mostly give the same answers (Figure~\ref{fig:direction}; Appendix~\ref{app:pairsdir}). As a side check, players today score on the warm-up slightly above people tested before ChatGPT (80.4 against 78.4), and models' scores do not follow their bridges (Appendix~\ref{app:warmup}).
 
 \begin{figure}[!htb]
 \centering
