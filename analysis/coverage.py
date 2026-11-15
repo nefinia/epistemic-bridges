@@ -109,7 +109,7 @@ def main() -> None:
                 continue
             ps, rs = [], []
             for _ in range(args.draws):
-                pick = rng.choice(gi, size=len(hi), replace=False)
+                pick = rng.choice(gi, size=min(len(hi), len(gi)), replace=False)
                 p, r = precision_recall(Eh, E[pick], args.k)
                 ps.append(p); rs.append(r)
             rows.append({"pair": pair, "group": group, "model": gsub["model"].iloc[0], "condition": gsub["condition"].iloc[0],

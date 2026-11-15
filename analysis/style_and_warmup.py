@@ -93,7 +93,7 @@ def main() -> None:
             hi = sub.index[sub["model"] == "people"].to_numpy()
             for model, g in sub[sub["model"] != "people"].groupby("model"):
                 gi = g.index.to_numpy()
-                ps, rs = zip(*[precision_recall(X[hi], X[rng.choice(gi, size=len(hi), replace=False)], 3)
+                ps, rs = zip(*[precision_recall(X[hi], X[rng.choice(gi, size=min(len(hi), len(gi)), replace=False)], 3)
                                for _ in range(args.draws)])
                 rows.append({"version": version, "model": model, "kind": g["model_kind"].iloc[0],
                              "precision": np.mean(ps), "recall": np.mean(rs)})

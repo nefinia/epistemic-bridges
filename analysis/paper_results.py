@@ -80,7 +80,7 @@ def group_stats(df: pd.DataFrame, E: np.ndarray, mask: pd.Series, draws: int = 3
             continue
         ps, rs, vs = [], [], []
         for _ in range(draws):
-            pick = RNG.choice(gi, size=len(hi), replace=False)
+            pick = RNG.choice(gi, size=min(len(hi), len(gi)), replace=False)
             p, r = precision_recall(E[hi], E[pick], k)
             ps.append(p); rs.append(r); vs.append(vendi(E[pick]))
         P.append(np.mean(ps)); R.append(np.mean(rs)); V.append(np.mean(vs) / len(hi))

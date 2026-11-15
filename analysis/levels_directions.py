@@ -94,8 +94,8 @@ def main():
                 gi = g.index.to_numpy()
                 rs, vs = [], []
                 for _ in range(30):
-                    pick = RNG.choice(gi, size=n, replace=False)
-                    rs.append(precision_recall(ends[hi], ends[pick], 3)[1]); vs.append(vendi(ans[pick]) / n)
+                    pick = RNG.choice(gi, size=min(n, len(gi)), replace=False)
+                    rs.append(precision_recall(ends[hi], ends[pick], 3)[1]); vs.append(vendi(ans[pick]) / len(pick))
                 rec.append(np.mean(rs)); dif.append(np.mean(vs))
                 hub.append(float(g["final"].str.lower().str.contains(HUBS[pair]).mean()))
             row.update({f"{kind}_map_reached": np.mean(rec), f"{kind}_different": np.mean(dif), f"{kind}_hub": np.mean(hub)})

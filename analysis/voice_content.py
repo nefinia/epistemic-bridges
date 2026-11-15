@@ -124,7 +124,7 @@ def main() -> None:
     voice.append({"model": "people", "kind": "people", "cr_words": ratio("\n".join(ptxt)),
                   "cr_pos": ratio("\n".join(" ".join(t for _, t in nltk.pos_tag(s.split())) for s in ptxt))})
     for model, g in df[~people].groupby("group"):
-        if any((g["pair"] == p).sum() < len(hwords[p]) for p in pairs):
+        if any((g["pair"] == p).sum() < 10 for p in pairs):
             print(f"{model}: too few answers for some pair, left out")
             continue
         cw, cp = [], []
@@ -132,7 +132,7 @@ def main() -> None:
             texts = []
             for p in pairs:
                 gi = g.index[g["pair"] == p].to_numpy()
-                for i in rng.choice(gi, size=len(hwords[p]), replace=False):
+                for i in rng.choice(gi, size=min(len(hwords[p]), len(gi)), replace=False):
                     texts.append(cut(df.loc[i, "final"], int(rng.choice(hwords[p]))))
             cw.append(ratio("\n".join(texts)))
             cp.append(ratio("\n".join(" ".join(t for _, t in nltk.pos_tag(s.split())) for s in texts)))
@@ -159,7 +159,7 @@ def main() -> None:
             for _ in range(args.draws):
                 perm = rng.permutation(hi)
                 ref, other = perm[: len(hi) // 2], perm[len(hi) // 2:]
-                pick = other if model == "people" else rng.choice(gi, size=len(other), replace=False)
+                pick = other if model == "people" else rng.choice(gi, size=min(len(other), len(gi)), replace=False)
                 pr, rc = precision_recall(E[ref], E[pick], 2)
                 ps.append(pr); rs.append(rc)
             P.append(np.mean(ps)); R.append(np.mean(rs))
