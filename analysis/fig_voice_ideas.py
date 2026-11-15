@@ -118,7 +118,7 @@ def main() -> None:
         av.axvline(g.loc["people", "cr_pos"], color=INK, linewidth=0.8, linestyle=(0, (2, 2)))
         av.set_yticks(y)
         av.set_yticklabels(["People" if m == "people" else n.replace(" base", " (base)") for m, n in zip(v["model"], v["name"])], fontsize=6.5)
-        av.set_xlim(3.2, 5.8)
+        av.set_xlim(3.2, max(5.8, float(v["cr_pos"].max()) + 0.2))
         av.set_xlabel("Repetition of sentence patterns")
         av.set_title("Voice", fontsize=9, color=INK)
         av.grid(axis="y", visible=False)

@@ -3,7 +3,7 @@
     python analysis/paper_results.py --humans data/human_bridges.json --tools /path/to/tools
 
 Main setting: English answers to the six core pairs, each answer read between
-its two ideas and cut to its first 40 words, embedded with all-MiniLM-L6-v2.
+its two ideas, in full (the embedding model reads up to about 200 words), embedded with all-MiniLM-L6-v2.
 Robustness: two other embedding models and a 15-word cut without the ideas.
 Writes results/paper/*.csv and paper/figs/*.pdf|svg (figures contain no player text).
 """
@@ -120,7 +120,7 @@ def main() -> None:
             enc[key] = m.encode(texts(df, trim, ends), normalize_embeddings=True, batch_size=128)
         return enc[key]
 
-    main_E = E_for("all-MiniLM-L6-v2", 40, True)
+    main_E = E_for("all-MiniLM-L6-v2", None, True)
     hum = human_stats(df, main_E)
     pd.DataFrame([hum]).to_csv(out / "humans.csv", index=False)
 
@@ -137,8 +137,8 @@ def main() -> None:
 
     # 2. Robustness: recall with other rulers
     rob = []
-    for name, trim, ends in [("all-MiniLM-L6-v2", 40, True), ("all-MiniLM-L6-v2", 15, False),
-                             ("bge-small-en-v1.5", 40, True), ("paraphrase-multilingual-MiniLM-L12-v2", 40, True)]:
+    for name, trim, ends in [("all-MiniLM-L6-v2", None, True), ("all-MiniLM-L6-v2", 40, True), ("all-MiniLM-L6-v2", 15, False),
+                             ("bge-small-en-v1.5", None, True), ("paraphrase-multilingual-MiniLM-L12-v2", None, True)]:
         E = E_for(name, trim, ends)
         for model in models["model"]:
             r = group_stats(df, E, base_mask & (df["model"] == model), draws=15)
