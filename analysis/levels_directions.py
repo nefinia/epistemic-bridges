@@ -125,7 +125,12 @@ def measure(df, ans, ends, W, tag, out):
     anch.to_csv(out / f"anchoring{tag}.csv")
     anch_pair.to_csv(out / f"anchoring_by_pair{tag}.csv")
     print(anch.round(3)); print(anch_pair.round(3))
-    return levels, anch_pair
+    # Closeness to the left word of the pair (as listed in pairs.json, "a" in the direction labels) minus the
+    # right word, for answers in each direction: equal heights mean the direction does not matter.
+    df["toward_left"] = np.where(df["dir"] == "ab", df["anchoring"], -df["anchoring"])
+    by_dir = df.groupby(["kind", "pair", "dir"])["toward_left"].agg(["mean", "sem", "size"]).reset_index()
+    by_dir.to_csv(out / f"toward_left_by_direction{tag}.csv", index=False)
+    return levels, anch_pair, by_dir
 
 
 def main():
@@ -193,17 +198,19 @@ def figure(written, ideas):
         ax.set_xticks(x); ax.set_xticklabels(short, fontsize=7.5, rotation=35, ha="right", rotation_mode="anchor")
         ax.axvline(1.5, color=GRID, linewidth=1); ax.axvline(3.5, color=GRID, linewidth=1)
 
-    def pull_panel(ax):
-        for kind, color, name, off, mk in (("people", INK, "People", -0.25, "D"), ("base", BLUE, "Base models", 0.0, "s"), ("chat", ORANGE, "Chat models", 0.25, "o")):
-            dots(ax, x + off - 0.06, written[1].loc[kind].reindex(order).values, color=color, marker=mk, s=34, edgecolor="white",
-                 linewidth=1, label=name + ", as written", zorder=3)
-            dots(ax, x + off + 0.06, ideas[1].loc[kind].reindex(order).values, color="white", marker=mk, s=30, edgecolor=color,
-                 linewidth=1.3, label=name + ", voice removed", zorder=3)
+    def direction_panel(ax, kind, color, title, legend=False):
+        d = ideas[2][ideas[2]["kind"] == kind].set_index(["pair", "dir"])["mean"]
+        ab, ba = d.xs("ab", level="dir").reindex(order).values, d.xs("ba", level="dir").reindex(order).values
+        ax.vlines(x, np.minimum(ab, ba), np.maximum(ab, ba), color=color, linewidth=1.5, alpha=0.5)
+        dots(ax, x, ab, color=color, marker="^", s=46, edgecolor="white", linewidth=0.8, zorder=3,
+             label="arrow from the left word" if legend else None)
+        dots(ax, x, ba, color="white", marker="v", s=40, edgecolor=color, linewidth=1.3, zorder=3,
+             label="arrow from the right word" if legend else None)
         ax.axhline(0, color=MUTED, linewidth=0.8)
-        ax.set_ylabel("Closer to the\nfirst word (+)"); ax.set_title("Pull of the first word, where the arrow starts (bee in bee \u2192 mirror)", fontsize=9, color=INK)
-        lo, hi = ax.get_ylim(); ax.set_ylim(lo, hi + 0.6 * (hi - lo))
-        ax.legend(frameon=False, fontsize=7.5, loc="upper center", ncol=3); ax.grid(axis="x", visible=False)
-        finish(ax)
+        ax.set_title(title, fontsize=9, color=INK); ax.grid(axis="x", visible=False)
+        ax.set_ylim(-0.3, 0.3)
+        ax.set_xticks(x); ax.set_xticklabels(short, fontsize=7.5, rotation=35, ha="right", rotation_mode="anchor")
+        ax.axvline(1.5, color=GRID, linewidth=1); ax.axvline(3.5, color=GRID, linewidth=1)
 
     def finish(ax):
         ax.set_xticks(x); ax.set_xticklabels(names, fontsize=7.5)
@@ -211,14 +218,16 @@ def figure(written, ideas):
             ax.text(i0, -0.3, lab, transform=ax.get_xaxis_transform(), ha="center", va="top", fontsize=7.5, color=MUTED)
         ax.axvline(1.5, color=GRID, linewidth=1); ax.axvline(3.5, color=GRID, linewidth=1)
 
-    fig = plt.figure(figsize=(6.5, 6.6))
-    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1.1])
-    a1, a2, a3 = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, :])
+    fig, ((a1, a2), (a3, a4)) = plt.subplots(2, 2, figsize=(6.5, 6.4))
     diversity_panel(a1, lw, "Diversity by pair, as written"); diversity_panel(a2, li, "Diversity by pair, voice removed")
     a1.set_ylabel("Different answers\nper answer")
     a1.legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
-    pull_panel(a3)
-    fig.tight_layout()
+    direction_panel(a3, "people", INK, "People: does the direction matter?")
+    direction_panel(a4, "chat", ORANGE, "Chat models: does the direction matter?", legend=True)
+    a3.set_ylabel("Closer to the left word (+)\nor the right word (\u2212)")
+    h_, l_ = a4.get_legend_handles_labels()
+    fig.legend(h_, l_, frameon=False, fontsize=8, loc="lower center", ncol=2, bbox_to_anchor=(0.5, 0.0))
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
     figs = ROOT / "paper" / "figs"
     fig.savefig(figs / "fig4_pairs_direction.pdf"); fig.savefig(figs / "fig4_pairs_direction.svg")
     (figs / "web").mkdir(exist_ok=True)
@@ -227,7 +236,12 @@ def figure(written, ideas):
     b1.set_ylabel("Different answers per answer"); b2.set_ylabel("Different answers per answer")
     b1.legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
     f1.tight_layout(); f1.savefig(figs / "web" / "fig4a.svg"); plt.close(f1)
-    f1, b3 = plt.subplots(figsize=(4.6, 4.0)); pull_panel(b3); f1.tight_layout(); f1.savefig(figs / "web" / "fig4b.svg"); plt.close(f1)
+    f1, (b3, b4) = plt.subplots(2, 1, figsize=(4.6, 6.0))
+    direction_panel(b3, "people", INK, "People: does the direction matter?", legend=True)
+    direction_panel(b4, "chat", ORANGE, "Chat models: does the direction matter?", legend=True)
+    for b in (b3, b4):
+        b.set_ylabel("Closer to the left word (+)"); b.legend(frameon=False, fontsize=7.5, loc="upper left")
+    f1.tight_layout(); f1.savefig(figs / "web" / "fig4b.svg"); plt.close(f1)
 
 
 if __name__ == "__main__":

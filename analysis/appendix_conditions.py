@@ -58,7 +58,7 @@ if False and full and full.exists():
     rob = pd.concat([rob, f], ignore_index=True)
 R0 = len(L)
 L.append(r"\section{Robustness}\label{app:robust}")
-L.append(r"The answers as written are read in full, between their two ideas, with all-MiniLM-L6-v2. Table~\ref{tab:robust} repeats the share of the map reached with two other embedding models. In every setting the base models stay far above the chat models, and the newest and largest chat models stay lowest.")
+L.append(r"The answers as written are read in full, between the two words of their pair, with all-MiniLM-L6-v2. Table~\ref{tab:robust} repeats the share of the map reached with two other embedding models. In every setting the base models stay far above the chat models, and the newest and largest chat models stay lowest.")
 L.append(r"\begin{table}[h]\centering\small\begin{tabular}{lrrr}\toprule")
 L.append("Model & " + " & ".join(r"\shortstack{" + c.replace(", ", r"\\") + "}" for c in cols) + r" \\ \midrule")
 for m in order:
