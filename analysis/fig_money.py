@@ -40,7 +40,7 @@ def draw(ax, fig, plain, p, jk, label_size=6.8):
     OFF = {"Qwen3 32B": (6, 4, "left"), "Qwen3 8B": (0, -13, "center"), "Qwen2.5 14B": (7, 4, "left"),
            "Qwen2.5 7B": (-7, -6, "right"), "Vicuna 7B": (7, 7, "left"), "Zephyr 7B": (7, -1, "left"),
            "Qwen2.5 3B": (-7, -9, "right"), "gpt-oss 20B": (7, -9, "left"), "OLMo 2 7B": (0, -13, "center"),
-           "Qwen2.5 7B base": (7, -4, "left"), "Phi-3 mini": (0, 8, "center"), "Qwen2.5 1.5B": (-7, -4, "right"),
+           "Qwen2.5 7B base": (-8, -6, "right"), "Phi-3 mini": (0, 8, "center"), "Qwen2.5 1.5B": (-7, -4, "right"),
            "GPT-2 XL": (7, -4, "left"), "GPT-J 6B": (7, -4, "left"), "Qwen2.5 0.5B": (-7, -4, "right")}
     for _, r in plain.iterrows():
         dots(ax, [r[X]], [r[Y]], s=60, marker="s" if r["kind"] == "base" else "o", color=to_hex(cmap(norm(r[V]))),
@@ -58,10 +58,8 @@ def draw(ax, fig, plain, p, jk, label_size=6.8):
     sm = plt.cm.ScalarMappable(norm=norm, cmap=cmap)
     cb = fig.colorbar(sm, ax=ax, fraction=0.04, pad=0.02)
     cb.set_label("Voice: repetition of sentence patterns", fontsize=8)
-    cb.ax.axhline(p[V], color=INK, lw=1.2)
-    ticks = [round(p[V], 1), 4.5, 5.0, 5.5, 6.0]
-    cb.set_ticks(ticks)
-    cb.set_ticklabels([f"people {ticks[0]:.1f}"] + [f"{t:.1f}" for t in ticks[1:]], fontsize=7)
+    cb.set_ticks([4.0, 4.5, 5.0, 5.5, 6.0])
+    cb.ax.tick_params(labelsize=7)
     ax.legend(handles=[Line2D([], [], ls="none", marker="s", color=MUTED, label="base model"),
                        Line2D([], [], ls="none", marker="o", color=MUTED, label="chat model")],
               frameon=False, fontsize=7.5, loc="lower left")
