@@ -1,5 +1,5 @@
 \section{Robustness}\label{app:robust}
-The answers as written are read in full, between the two words of their pair, with all-MiniLM-L6-v2. Table~\ref{tab:robust} repeats the share of the map reached with two other embedding models. In every setting the base models stay far above the chat models, and the newest and largest chat models stay lowest.
+The answers as written are read in full, between the two words of their pair, with all-MiniLM-L6-v2. Table~\ref{tab:robust} repeats recall, the share of the human map reached, with two other embedding models. In every setting the base models stay far above the chat models, and the newest and largest chat models stay lowest.
 \begin{table}[h]\centering\small\begin{tabular}{lrrr}\toprule
 Model & \shortstack{MiniLM\\full answer\\with ideas} & \shortstack{BGE small\\full answer\\with ideas} & \shortstack{Multilingual MiniLM\\full answer\\with ideas} \\ \midrule
 GPT-2 XL & 0.61 & 0.59 & 0.67 \\
@@ -17,4 +17,4 @@ Qwen2.5 14B & 0.00 & 0.00 & 0.01 \\
 Qwen3 8B & 0.01 & 0.00 & 0.00 \\
 gpt-oss 20B & 0.22 & 0.05 & 0.13 \\
 Qwen3 32B & 0.02 & 0.05 & 0.07 \\
-\bottomrule\end{tabular}\caption{Share of the human map reached, with no persona, with three embedding models, to check that the result does not depend on the embedding. Base models stay far above chat models with all three, and the newest and largest chat models stay lowest.}\label{tab:robust}\end{table}
+\bottomrule\end{tabular}\caption{Recall, the share of the human map reached, with no persona, with three embedding models, to check that the result does not depend on the embedding. Base models stay far above chat models with all three, and the newest and largest chat models stay lowest.}\label{tab:robust}\end{table}

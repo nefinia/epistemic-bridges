@@ -104,10 +104,10 @@ def main() -> None:
         ax.set_ylim(-0.7, len(rows) - 0.3)
 
     def ideas_panel(ax, labels=True):
-        row_panel(ax, "map_reached_ideas", "Share of the human\nmap of ideas reached", "Ideas: how far they reach", err=jk, labels=labels)
+        row_panel(ax, "map_reached_ideas", "Share of the human\nmap of ideas reached", "Ideas: recall", err=jk, labels=labels)
 
     def onmap_panel(ax, labels=True):
-        row_panel(ax, "on_map_ideas", "Share of answers\non the human map", "Ideas: where they land", err=jk, labels=labels)
+        row_panel(ax, "on_map_ideas", "Share of answers\non the human map", "Ideas: precision", err=jk, labels=labels)
 
     def voice_panel(av, labels=True):
         row_panel(av, "cr_pos", "Repetition of\nsentence patterns", "Voice", labels=labels)
@@ -130,7 +130,7 @@ def main() -> None:
     y = np.arange(len(s))
     colors = [BLUE if r == "fer" else ORANGE for r in s["run"]]
     names = s["cond"].str.replace("_", " ").str.replace(" siev", "").str.replace(" tmk", "")
-    PANELS = {"ideas": ("lo", "hi", "Ideas: places reached", "\u2190 narrower    wider \u2192"),
+    PANELS = {"ideas": ("lo", "hi", "Ideas: change in recall", "\u2190 narrower    wider \u2192"),
               "voice": ("vlo", "vhi", "Voice: repetition", "\u2190 more varied    more repetitive \u2192")}
 
     def cond_panel(ax, col, labels=True, legend=False):
