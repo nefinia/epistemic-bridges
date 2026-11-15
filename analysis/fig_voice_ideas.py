@@ -112,7 +112,7 @@ def main() -> None:
     def voice_panel(av, labels=True):
         row_panel(av, "cr_pos", "Repetition of\nsentence patterns", "Voice", labels=labels)
 
-    fig, (ax, ao, av) = plt.subplots(1, 3, figsize=(6.5, 4.3), sharey=True)
+    fig, (ax, ao, av) = plt.subplots(1, 3, figsize=(6.5, 3.9), sharey=True)
     ideas_panel(ax); onmap_panel(ao, labels=False); voice_panel(av, labels=False)
     fig.tight_layout()
     fig.savefig(figs / "fig0_voice_ideas.pdf"); fig.savefig(figs / "fig0_voice_ideas.svg")
@@ -148,7 +148,7 @@ def main() -> None:
             dots(ax, [], [], color=BLUE, marker="s", label="Reasoning (FER)"); dots(ax, [], [], color=ORANGE, label="Creative")
             ax.legend(frameon=False, fontsize=7.5, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2)
 
-    fig, axes = plt.subplots(1, 2, figsize=(5.2, 0.2 * len(s) + 1.2), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(5.2, 0.17 * len(s) + 1.1), sharey=True)
     cond_panel(axes[0], "ideas"); cond_panel(axes[1], "voice", labels=False)
     axes[0].tick_params(axis="y", labelsize=8); axes[0].tick_params(axis="x", labelsize=8); axes[1].tick_params(axis="x", labelsize=8)
     dots(axes[1], [], [], color=BLUE, marker="s", label="Reasoning (FER)"); dots(axes[1], [], [], color=ORANGE, label="Creative")
