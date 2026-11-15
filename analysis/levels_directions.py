@@ -145,8 +145,8 @@ def figure(levels, anch_pair):
     def diversity_panel(ax):
         ax.bar(x - 0.2, lv["people_different"], width=0.38, color=INK, label="People")
         ax.bar(x + 0.2, lv["chat_different"], width=0.38, color=ORANGE, label="Chat models (mean)")
-        ax.set_ylabel("Really different answers per answer"); ax.set_title("Diversity by pair", fontsize=9, color=INK)
-        ax.legend(frameon=False, fontsize=7.5, loc="upper right"); ax.grid(axis="x", visible=False)
+        ax.set_ylabel("Different answers\nper answer"); ax.set_title("Diversity by pair", fontsize=9, color=INK)
+        ax.legend(frameon=False, fontsize=8, loc="upper right"); ax.grid(axis="x", visible=False)
         ax.set_ylim(0, 0.8)
         finish(ax)
 
@@ -155,17 +155,17 @@ def figure(levels, anch_pair):
             sr = anch_pair.loc[kind].reindex(order)
             dots(ax, x + off, sr.values, color=color, s=34, edgecolor="white", linewidth=1, label=name, zorder=3)
         ax.axhline(0, color=MUTED, linewidth=0.8)
-        ax.set_ylabel("Closer to the starting idea (+)"); ax.set_title("Pull of the starting idea", fontsize=9, color=INK)
-        ax.legend(frameon=False, fontsize=7.5, loc="upper right"); ax.grid(axis="x", visible=False)
+        ax.set_ylabel("Closer to the\nstarting idea (+)"); ax.set_title("Pull of the starting idea", fontsize=9, color=INK)
+        ax.set_ylim(top=0.14); ax.legend(frameon=False, fontsize=8, loc="upper center", ncol=3); ax.grid(axis="x", visible=False)
         finish(ax)
 
     def finish(ax):
-        ax.set_xticks(x); ax.set_xticklabels(names, fontsize=7)
+        ax.set_xticks(x); ax.set_xticklabels(names, fontsize=7.5)
         for i0, lab in ((0.5, "concrete"), (2.5, "concrete–abstract"), (4.5, "abstract")):
-            ax.text(i0, -0.2, lab, transform=ax.get_xaxis_transform(), ha="center", va="top", fontsize=7, color=MUTED)
+            ax.text(i0, -0.3, lab, transform=ax.get_xaxis_transform(), ha="center", va="top", fontsize=7.5, color=MUTED)
         ax.axvline(1.5, color=GRID, linewidth=1); ax.axvline(3.5, color=GRID, linewidth=1)
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.3))
+    fig, axes = plt.subplots(2, 1, figsize=(6.5, 5.6))
     diversity_panel(axes[0]); pull_panel(axes[1])
     fig.tight_layout()
     figs = ROOT / "paper" / "figs"
