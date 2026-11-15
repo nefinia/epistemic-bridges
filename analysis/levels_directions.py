@@ -185,14 +185,17 @@ def figure(written, ideas):
     x = np.arange(len(order))
 
     def diversity_panel(ax):
-        bars = ((lw["people_different"], INK, None, "People, as written"), (li["people_different"], "white", INK, "People, voice removed"),
-                (lw["chat_different"], ORANGE, None, "Chat models, as written"), (li["chat_different"], "white", ORANGE, "Chat models, voice removed"))
-        for k, (v, face, hatch_color, label) in enumerate(bars):
-            ax.bar(x - 0.3 + 0.2 * k, v, width=0.19, color=face, edgecolor=hatch_color or face, linewidth=1 if hatch_color else 0,
-                   hatch="////" if hatch_color else None, label=label)
-        ax.set_ylabel("Different answers\nper answer"); ax.set_title("Diversity by pair", fontsize=9, color=INK)
-        ax.legend(frameon=False, fontsize=8, loc="upper center", ncol=2); ax.grid(axis="x", visible=False)
-        ax.set_ylim(0, 1.25); ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
+        # Levels differ between the two versions (answers as written name the two ideas), so each version is shown
+        # relative to people measured the same way: 1 means as varied as people.
+        for k, (lv, face, edge, hatch, label) in enumerate(((lw, ORANGE, ORANGE, None, "As written"),
+                                                          (li, "white", ORANGE, "////", "Voice removed"))):
+            ax.bar(x - 0.2 + 0.4 * k, lv["chat_different"] / lv["people_different"], width=0.38, color=face, edgecolor=edge,
+                   linewidth=0 if hatch is None else 1, hatch=hatch, label=label)
+        ax.axhline(1, color=INK, linewidth=1, linestyle=(0, (3, 2)))
+        ax.text(-0.45, 1.02, "people", ha="left", va="bottom", fontsize=8, color=INK)
+        ax.set_ylabel("Chat models' diversity\nas a share of people's"); ax.set_title("Diversity by pair", fontsize=9, color=INK)
+        ax.legend(frameon=False, fontsize=8, loc="upper left", ncol=2); ax.grid(axis="x", visible=False)
+        ax.set_ylim(0, 1.45); ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0, 1.25])
         finish(ax)
 
     def pull_panel(ax):
