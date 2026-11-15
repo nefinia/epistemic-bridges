@@ -88,8 +88,17 @@ SAMPLED = ("ordinary_life", "random_constraint")
 CREATIVE_CONDITIONS = list(FIXED) + list(SAMPLED)
 
 
-def sample(condition: str, rng: random.Random) -> str:
+# A reasoning persona from False Epistemic Redundancy, held by an ordinary life drawn at random:
+# "ordinary_life+causal_mechanist" and so on. The persona text comes first and stays verbatim.
+COMBO_PREFIX = "ordinary_life+"
+
+
+def sample(condition: str, rng: random.Random, personas: dict | None = None) -> str:
     """The system prompt for one answer of a sampled condition."""
+    if condition.startswith(COMBO_PREFIX):
+        persona = (personas or {})[condition[len(COMBO_PREFIX):]]
+        return (f"{persona}\n\nYou are also {rng.choice(LIVES)}, and you bring your own life and what you know "
+                "into how you think. Answer as yourself, in your own words.")
     if condition == "ordinary_life":
         return f"You are {rng.choice(LIVES)}. Answer as yourself, in your own words."
     if condition == "random_constraint":

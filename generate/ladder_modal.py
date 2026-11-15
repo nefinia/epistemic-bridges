@@ -140,7 +140,7 @@ def _run(spec: dict, n: int, langs: list[str], conditions: str = "fer", temps: l
             every = {**CONDITIONS, **creative.FIXED}
             names = [c.strip() for c in conditions.split(",") if c.strip()]
             fixed = {c: every[c] for c in names if c in every}
-            sampled = [c for c in names if c in creative.SAMPLED]
+            sampled = [c for c in names if c in creative.SAMPLED or c.startswith(creative.COMBO_PREFIX)]
 
     jobs = []   # (meta, system, user, n)
     for temp in temps:
@@ -160,7 +160,7 @@ def _run(spec: dict, n: int, langs: list[str], conditions: str = "fer", temps: l
                 for cond in sampled:
                     for rep in range(n):
                         rng = random.Random(f"{cond}|{meta.get('pair', 'warmup')}|{meta.get('dir', '')}|{lang}|{rep}|{temp}")
-                        system = creative.sample(cond, rng)
+                        system = creative.sample(cond, rng, CONDITIONS)
                         jobs.append(({**meta, "condition": cond, "temperature": temp, "persona_text": system}, system, user, 1))
 
     extra = {"tokenizer_mode": spec["tokenizer_mode"]} if spec.get("tokenizer_mode") else {}
