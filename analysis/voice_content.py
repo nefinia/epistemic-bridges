@@ -78,7 +78,7 @@ def main() -> None:
     a = pd.DataFrame([json.loads(l) for f in sorted(args.ai.glob("*.jsonl")) for l in f.read_text().splitlines() if l.strip()])
     run = a["run"].fillna("fer")
     a = a[(a["task"] == "bridge") & (a["lang"] == "en") & (a["set"] == "core")
-          & run.isin(["fer", "creative", "temps"])]
+          & run.isin(["fer", "creative", "temps", "combo"])]
     if args.plain:
         a = a[(a["run"].fillna("fer") == "fer") & (a["condition"] == "baseline")]
     df = pd.concat([h, a], ignore_index=True)
