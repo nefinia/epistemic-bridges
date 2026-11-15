@@ -115,7 +115,7 @@ The largest uncertainty comes from the players: leaving out one at a time gives 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{figs/fig0_voice_ideas.pdf}
-\caption{How far each model reaches on the map of ideas, where its answers land, and how much its voice repeats. One row per model with no persona, from the oldest to the newest, and the same rows in all three panels. Left: recall, the share of the human map of ideas reached, with the voice removed. Middle: precision, the share of answers that land on the human map. Right: repetition of sentence patterns. Black line and grey band: people, half of the players against the other half, with one standard error over players on each side. Squares, base models; circles, chat models; green, Qwen2.5 7B asked to answer as an ordinary life; thin bars, standard error over players. People have a high recall and a high precision. GPT-2 and GPT-J reach as far by scattering, with a lower precision. The larger and newer chat models have the highest precision, the lowest recall, and repeat their voice most.}
+\caption{How far each model reaches on the map of ideas, where its answers land, and how much its voice repeats. One row per model with no persona, from the oldest to the newest, and the same rows in all three panels. Left: recall, the share of the human map of ideas reached, with the voice removed. Middle: precision, the share of answers that land on the human map. Right: repetition of sentence patterns. Black line and grey band: people, half of the players against the other half, with one standard error over players on each side. Squares, base models; circles, chat models; thin bars, standard error over players. People have a high recall and a high precision. GPT-2 and GPT-J reach as far by scattering, with a lower precision. The larger and newer chat models have the highest precision, the lowest recall, and repeat their voice most.}
 \label{fig:money}
 \end{figure}
 
@@ -134,7 +134,14 @@ On Qwen2.5 7B, raising the temperature to 1.6 gives a recall of 85\%, more than 
 
 \subsection{Pairs, direction and the warm-up}
 
-Abstraction matters less than expected: people give about as many different answers to abstract pairs as to concrete ones, and what lowers diversity is a strong shared connection, such as the web or the nursery rhyme for spider and melody (60\% of people's answers, about 90\% of chat answers). The direction of the arrow matters for chat models and hardly for people. Going from the bee to the mirror, chat answers talk more about the bee, and going the other way more about the mirror, on every pair and with the voice removed (41 of 72 cases); for people the two directions mostly give the same answers (Appendix~\ref{app:pairsdir}). On the warm-up, players today score slightly above people tested before ChatGPT (80.4 against 78.4), and models' scores do not follow their bridges (Appendix~\ref{app:warmup}).
+Abstraction matters less than expected: people give about as many different answers to abstract pairs as to concrete ones, and what lowers diversity is a strong shared connection, such as the web or the nursery rhyme for spider and melody (60\% of people's answers, about 90\% of chat answers). The direction of the arrow matters for chat models and hardly for people. Going from the bee to the mirror, chat answers talk more about the bee, and going the other way more about the mirror, on every pair and with the voice removed (41 of 72 cases); for people the two directions mostly give the same answers (Figure~\ref{fig:direction}; Appendix~\ref{app:pairsdir}). On the warm-up, players today score slightly above people tested before ChatGPT (80.4 against 78.4), and models' scores do not follow their bridges (Appendix~\ref{app:warmup}).
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.85\textwidth]{figs/fig4_pairs_direction.pdf}
+\caption{Whether the direction of the arrow matters, with the voice removed, for people (left) and chat models (right). For each pair, filled triangles are answers whose arrow starts from the left word (bee $\to$ mirror) and hollow triangles answers whose arrow starts from the right word (mirror $\to$ bee). The height is how much closer the answers sit to the left word than to the right one in the space of meaning, that is, how much they talk about the bee rather than the mirror; if direction did not matter, the two triangles would be at the same height. For chat models the two triangles are apart on every pair: they talk more about the word they start from. For people the two directions mostly overlap.}
+\label{fig:direction}
+\end{figure}
 
 \subsection{What no model reaches}
 \label{sec:blindspots}
@@ -304,8 +311,8 @@ Direction behaves differently for people and models. For chat models the order o
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=\textwidth]{figs/fig4_pairs_direction.pdf}
-\caption{How varied the answers to each pair are, and whether they stay near the word the arrow starts from, as written and with the voice removed. Top: different answers per answer for each pair (Vendi score over the number of answers), people and chat models, as written (left) and with the voice removed in the same way for both (right). The levels of the two panels cannot be compared with each other, since answers as written name the two words of the pair; within each panel, people and chat models are measured alike. Bottom: whether the direction of the arrow matters, with the voice removed, for people (left) and chat models (right). For each pair, filled triangles are answers whose arrow starts from the left word (bee $\to$ mirror) and hollow triangles answers whose arrow starts from the right word (mirror $\to$ bee); the height is how much closer the answers sit to the left word than to the right one in the space of meaning, that is, how much they talk about the bee rather than the mirror. If direction did not matter, the two triangles would be at the same height. As written, chat models give about a third as many different answers as people on every pair, and with the voice removed most of that gap closes; chat answers talk more about the word they start from on every pair, which separates the two triangles, while for people the two directions mostly overlap.}
+\includegraphics[width=\textwidth]{figs/fig4_pairs_diversity.pdf}
+\caption{How varied the answers to each pair are: different answers per answer (Vendi score over the number of answers), people and chat models, as written (left) and with the voice removed in the same way for both (right). The levels of the two panels cannot be compared with each other, since answers as written name the two words of the pair; within each panel, people and chat models are measured alike. As written, chat models give about a third as many different answers as people on every pair; with the voice removed most of that gap closes.}
 \label{fig:pairs}
 \end{figure}
 

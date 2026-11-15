@@ -218,17 +218,24 @@ def figure(written, ideas):
             ax.text(i0, -0.3, lab, transform=ax.get_xaxis_transform(), ha="center", va="top", fontsize=7.5, color=MUTED)
         ax.axvline(1.5, color=GRID, linewidth=1); ax.axvline(3.5, color=GRID, linewidth=1)
 
-    fig, ((a1, a2), (a3, a4)) = plt.subplots(2, 2, figsize=(6.5, 6.4))
+    figs = ROOT / "paper" / "figs"
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(6.5, 3.2))
     diversity_panel(a1, lw, "Diversity by pair, as written"); diversity_panel(a2, li, "Diversity by pair, voice removed")
     a1.set_ylabel("Different answers\nper answer")
     a1.legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
-    direction_panel(a3, "people", INK, "People: does the direction matter?")
-    direction_panel(a4, "chat", ORANGE, "Chat models: does the direction matter?", legend=True)
+    fig.tight_layout()
+    fig.savefig(figs / "fig4_pairs_diversity.pdf"); fig.savefig(figs / "fig4_pairs_diversity.svg"); plt.close(fig)
+    fig, (a3, a4) = plt.subplots(1, 2, figsize=(6.5, 2.7), sharey=True)
+    direction_panel(a3, "people", INK, "People")
+    direction_panel(a4, "chat", ORANGE, "Chat models", legend=True)
     a3.set_ylabel("Closer to the left word (+)\nor the right word (\u2212)")
-    h_, l_ = a4.get_legend_handles_labels()
-    fig.legend(h_, l_, frameon=False, fontsize=8, loc="lower center", ncol=2, bbox_to_anchor=(0.5, 0.0))
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
-    figs = ROOT / "paper" / "figs"
+    from matplotlib.lines import Line2D
+    h_ = [Line2D([], [], linestyle="none", marker="^", markersize=7, color=MUTED, label="arrow from the left word (bee \u2192 mirror)"),
+          Line2D([], [], linestyle="none", marker="v", markersize=7, markerfacecolor="white", markeredgecolor=MUTED,
+                 label="arrow from the right word (mirror \u2192 bee)")]
+    a4.legend_ = None
+    fig.legend(handles=h_, frameon=False, fontsize=8, loc="lower center", ncol=2, bbox_to_anchor=(0.5, 0.0))
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(figs / "fig4_pairs_direction.pdf"); fig.savefig(figs / "fig4_pairs_direction.svg")
     (figs / "web").mkdir(exist_ok=True)
     f1, (b1, b2) = plt.subplots(2, 1, figsize=(4.6, 5.6))

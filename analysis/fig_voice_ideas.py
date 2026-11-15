@@ -70,7 +70,7 @@ def main() -> None:
     # their value with one standard error over players on each side.
     key = f"{FOCUS} | creative:ordinary_life"
     meta = pd.read_csv(ROOT / "results" / "paper" / "models_baseline.csv").set_index("model")
-    rows = pd.concat([plain, res[res["model"] == key]]).copy()
+    rows = plain.copy()
     rows["year"] = [meta.loc[m.split(" | ")[0], "year"] for m in rows["model"]]
     rows["size"] = [meta.loc[m.split(" | ")[0], "size_b"] + (0.02 if m == key else 0.01 if m == FOCUS else 0.03 if "OLMo" in m else 0) for m in rows["model"]]
     rows = rows.sort_values(["year", "size"]).reset_index(drop=True)
