@@ -132,7 +132,7 @@ gpt-oss & 2025 & 21 & 176 & 0.54 & 0.31 & 0.22 & 0.74 & 0.70 & 4.6 \\
 Qwen3 & 2025 & 32 & 92 & 0.57 & 0.83 & 0.02 & 0.86 & 0.49 & 4.6 \\
 \bottomrule
 \end{tabular}
-\caption{Chat models reach almost none of the human map as written, reach less of the map of ideas than people once the voice is removed, and repeat their voice more. Models with no persona, English, temperature 1.0. Words: median length of the full answer. Hub: share of answers taking the most common human bridge. As written: share of answers on the human map (precision) and share of the map reached (recall), answers in full. Ideas: the same with the voice removed and content words only. Voice: repetition of sentence patterns (compression ratio; higher is more repetitive). People: half of the players against the other half. Ideas and voice are means of 11 runs (Section~\ref{sec:voiceideas}).}
+\caption{How much of the human map each model reaches, as written and with the voice removed, and how much its voice repeats. Models with no persona, English, temperature 1.0. Words: median length of the full answer. Hub: share of answers taking the most common human bridge. As written: share of answers on the human map (precision) and share of the map reached (recall), answers in full. Ideas: the same with the voice removed and content words only. Voice: repetition of sentence patterns (compression ratio; higher is more repetitive). People: half of the players against the other half. Ideas and voice are means of 11 runs (Section~\ref{sec:voiceideas}). As written, chat models reach almost none of the map; without the voice they still reach less than people, and repeat more.}
 \label{tab:models}
 \end{table}
 
@@ -152,7 +152,7 @@ The largest uncertainty comes from the players: leaving out one at a time gives 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.7\textwidth]{figs/fig0_voice_ideas.pdf}
-\caption{People reach far and stay on the map; base models reach as far by scattering; chat models stay on the map and reach less, and their voice repeats most. Left: ideas with the voice removed, places reached against answers on the map. Star, half of the players against the other half; large blue and orange, Qwen2.5 7B before and after chat training; green, with an ordinary life; dashed, more randomness; grey bars, standard error over players. Right: repetition of sentence patterns; dashed line, people.}
+\caption{How far each model reaches on the map of ideas, and how much its voice repeats. Left: ideas with the voice removed, places reached against answers on the map. Star, half of the players against the other half; large blue and orange, Qwen2.5 7B before and after chat training; green, with an ordinary life; dashed, more randomness; grey bars, standard error over players. Right: repetition of sentence patterns; dashed line, people. People reach far and stay on the map; base models reach far by scattering; chat models reach less and repeat most.}
 \label{fig:money}
 \end{figure}
 
@@ -166,12 +166,12 @@ On Qwen2.5 7B, raising the temperature to 1.6 reaches 85\% of the map of ideas, 
 \centering
 \begin{minipage}[t]{0.5\textwidth}\centering
 \includegraphics[width=0.86\linewidth]{figs/fig3_conditions.pdf}
-\caption{Every creative condition makes the voice more varied; only an ordinary life widens the ideas on every model, and the teleological persona narrows them. Each row is one persona, against the same model with no persona (zero: no change). Left: change in places reached on the map of ideas; right of zero is wider. Right: change in repetition of the voice; left of zero is more varied. Dot: mean over models; bar: range. Blue: reasoning personas; orange: creative conditions.}
+\caption{How each persona and creative condition changes ideas and voice, against the same model with no persona (zero). Left: places reached on the map of ideas, right is wider. Right: repetition of the voice, left is more varied. Dot, mean over models; bar, range; blue, reasoning personas; orange, creative conditions. Every creative condition makes the voice more varied; only an ordinary life widens the ideas on every model, and the teleological persona narrows them.}
 \label{fig:conditions}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.46\textwidth}\centering
 \includegraphics[width=\linewidth]{figs/fig5_warmup.pdf}
-\caption{Players today score a little above people tested before ChatGPT, and models' scores do not follow their bridges. Grey band: published scores before ChatGPT (mean $\pm$ one standard deviation). Black: players today, diamond the mean. Models with no persona: base in blue, chat in orange.}
+\caption{Warm-up scores (Divergent Association Task) for people before ChatGPT, players today and models. Grey band: published scores before ChatGPT (mean $\pm$ one standard deviation). Black: players today, diamond the mean. Models with no persona: base in blue, chat in orange. Players today score a little above people tested before ChatGPT, and models' scores do not follow their bridges.}
 \label{fig:warmup}
 \end{minipage}
 \end{figure}
@@ -184,7 +184,7 @@ Direction behaves differently for people and models. For chat models the startin
 
 \subsection{The warm-up, before and after ChatGPT}
 
-The published scores for the Divergent Association Task, collected before ChatGPT, average 78.4 (standard deviation 6.4) \citep{olson2021}. Players today average 80.4 (standard deviation 9.1, 26 players), within the range of the published scores and slightly above their average (Figure~\ref{fig:warmup}). There is no sign of decline, although the samples differ. Models score between 57 and 88, and their scores do not follow how much of the map of ideas they reach: Qwen3 8B and 32B score 79 to 80 on single words and reach the least.
+The published scores for the Divergent Association Task, collected before ChatGPT, average 78.4 (standard deviation 6.4) \citep{olson2021}. Players today average 80.4 (standard deviation 9.1, 26 players), slightly above the published average (Figure~\ref{fig:warmup}), with no sign of decline, although the samples differ. Models score 57 to 88, unrelated to how much of the map of ideas they reach: Qwen3 8B and 32B score 79 to 80 and reach the least.
 
 \subsection{What no model reaches}
 \label{sec:blindspots}
@@ -194,18 +194,18 @@ Some human bridges stay far from all AI answers, even with every condition and t
 \section{Discussion}
 \label{sec:discussion}
 
-\textbf{Chat training narrows the voice first, and the ideas less.} Measured as written, the same model reaches almost none of the human map after chat training, mostly because of one shared way of speaking. With the voice removed, the larger and newer chat models still reach less of the ideas than people and base models, and they take the common connection more often, so the narrowing of ideas is real and much smaller than it first appears. The voice matters in its own right. A connection said in a person's own words carries something of that person, and when every answer arrives in the same voice, readers meet one way of thinking.
+\textbf{Chat training narrows the voice first, and the ideas less.} Measured as written, the same model reaches almost none of the human map after chat training, mostly because of one shared way of speaking. With the voice removed, the larger and newer chat models still reach less of the ideas than people and base models, and they take the common connection more often, so the narrowing of ideas is real and much smaller than it first appears. The voice matters in its own right. A connection in a person's own words carries something of that person; when every answer arrives in one voice, readers meet one way of thinking.
 
-\textbf{Measuring diversity needs the voice and the ideas apart.} The usual pipeline, embedding model answers and comparing them with human ones, gave a result that moved from almost nothing to more than half of the map once the voice was removed. Earlier work warned that diversity measures follow form \citep{tevet2021}, and here the form was most of the effect.
+\textbf{Measuring diversity needs the voice and the ideas apart.} The usual pipeline, comparing embeddings of model and human answers, moved from almost nothing to more than half of the map once the voice was removed. Earlier work warned that diversity measures follow form \citep{tevet2021}, and here the form was most of the effect.
 
-\textbf{Human ways of connecting help, in one case.} Creative framings change the voice of every model, and the ideas of only one: an ordinary life, drawn at random, widens the ideas on every model while keeping answers where people go. Reasoning styles built for investigating change the ideas little, or narrow them, which echoes false epistemic redundancy: framings that look different can leave the search in the same place \citep{gallego2026fer}. This part is partly circular, since the creative conditions borrow human styles and are measured against human answers.
+\textbf{Human ways of connecting help, in one case.} Creative framings change the voice of every model, and the ideas of only one: an ordinary life, drawn at random, widens the ideas on every model while keeping answers where people go. Reasoning styles built for investigating change the ideas little, or narrow them, which echoes false epistemic redundancy: framings that look different can leave the search in the same place \citep{gallego2026fer}.
 
-\textbf{From creativity to blind spots, and toward a harmonic interaction.} False epistemic redundancy looked at technical cases with a known, unusual answer. Both ask whether a model explores beyond the most expected answer, and running an ordinary life on those technical cases is a direct next step. A harmonic interaction would preserve what people do well, the personal, the sensory, the playful, each in its own voice, and enhance what machines can add, such as speed and breadth across disciplines. A tool could offer several voices, each from a different life or discipline, and training could value how widely a train of thought explores.
+\textbf{From creativity to blind spots, and toward a harmonic interaction.} False epistemic redundancy looked at technical cases with a known, unusual answer. Both ask whether a model explores beyond the most expected answer, and running an ordinary life on those technical cases is a direct next step. A harmonic interaction would preserve what people do well, the personal, the sensory, the playful, each in its own voice, and enhance what machines can add, such as breadth across disciplines. A tool could offer several voices, each from a different life or discipline, and training could value how widely a train of thought explores.
 
 \section{Future Work}
 \label{sec:future}
 
-Next steps: blind human judgments of whether two answers say the same thing \citep{tevet2021,zhang2025}, players from other fields and cultures, pairs with values at stake, and pairs that join concepts from two disciplines, such as entropy and trust, played by people from both fields and by models. The larger aim is the map of ideas (\href{https://mapideas.org}{mapideas.org}), where human and AI connections between concepts sit side by side, so that people can see the ground they cover together and where it stays open. The goal is to propose ways of working with AI that keep that space wide, and help disciplines meet where they rarely do, since much innovation happens there.
+Next steps: blind human judgments of whether two answers say the same thing \citep{tevet2021,zhang2025}, players from other fields and cultures, pairs with values at stake, and pairs that join concepts from two disciplines, such as entropy and trust. The larger aim is the map of ideas (\href{https://mapideas.org}{mapideas.org}), where human and AI connections sit side by side, so that people see the ground they cover together; from there, ways of working with AI that keep that space wide and help disciplines meet where they rarely do, since much innovation happens there.
 
 \bibliographystyle{unsrtnat}
 \begin{thebibliography}{99}
@@ -254,7 +254,7 @@ S.G.G.\ designed the study and the game, ran the experiments and analysis, and w
 \section{Limitations and Dual Use}
 \label{app:limits}
 
-\textbf{Limitations.} This is a small exploratory study, and its limits shape how far the results go. The human map comes from 21 players for the English core pairs, mostly engineers who use AI daily, recruited through AI safety communities, so every share reached is relative to a narrow human map. ``On the map'' measures closeness to what people wrote, which only stands in for making sense; blind human ratings are the next check. Model answers are much longer than human ones and wrapped in a shared voice. The cleaning that separates voice from ideas uses a short list of phrases written for this study; it drops a few sentences that also carry content, and the explaining register that remains is still partly style. Content words drawn from the start of a cleaned answer may miss a connection made later. With 21 players, the standard error on ideas reached is 0.04 to 0.14, so only the larger gaps are clear. Only open models were tested, mostly one family for size, and Falcon 7B failed to run. The creative conditions were designed after seeing the first answers, borrowing the styles of connecting, and are measured against the same kind of answers. Six pairs of simple ideas are a narrow task, and with two pairs per level of abstraction, level and pair cannot be fully separated. The warm-up comparison sets a small, specific sample against a published norm from a different population.
+\textbf{Limitations.} This is a small exploratory study, and its limits shape how far the results go. The result on creative conditions is partly circular, since they borrow human styles and are measured against human answers. The human map comes from 21 players for the English core pairs, mostly engineers who use AI daily, recruited through AI safety communities, so every share reached is relative to a narrow human map. ``On the map'' measures closeness to what people wrote, which only stands in for making sense; blind human ratings are the next check. Model answers are much longer than human ones and wrapped in a shared voice. The cleaning that separates voice from ideas uses a short list of phrases written for this study; it drops a few sentences that also carry content, and the explaining register that remains is still partly style. Content words drawn from the start of a cleaned answer may miss a connection made later. With 21 players, the standard error on ideas reached is 0.04 to 0.14, so only the larger gaps are clear. Only open models were tested, mostly one family for size, and Falcon 7B failed to run. The creative conditions were designed after seeing the first answers, borrowing the styles of connecting, and are measured against the same kind of answers. Six pairs of simple ideas are a narrow task, and with two pairs per level of abstraction, level and pair cannot be fully separated. The warm-up comparison sets a small, specific sample against a published norm from a different population.
 
 \textbf{Dual use.} A way to measure how much of a human map a model reaches could also become a training target for more varied and inventive models, which is a capability. The added risk seems small, since every measure here is already published and the new element is the human baseline. One risk is worth naming: if coverage became a target, models could learn to look diverse without becoming more useful. We offer these measures for tracking how models change, and keep them away from training.
 
@@ -313,7 +313,7 @@ a shadow / friendship & optional\\
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.8\textwidth]{figs/fig4_pairs_direction.pdf}
-\caption{Chat models give far fewer different answers than people on every pair, and both lean slightly toward the idea they start from. Left: different answers per answer for each pair (Vendi score over the number of answers), people and chat models. Right: pull of the starting idea, positive when answers sit closer to the idea they start from. Pairs grouped by level of abstraction.}
+\caption{How many different answers each pair gets, and how much answers lean toward the idea they start from. Left: different answers per answer for each pair (Vendi score over the number of answers), people and chat models. Right: pull of the starting idea, positive when answers sit closer to the idea they start from. Pairs grouped by level of abstraction. Chat models give far fewer different answers than people on every pair, and both lean slightly toward the idea they start from.}
 \label{fig:pairs}
 \end{figure}
 

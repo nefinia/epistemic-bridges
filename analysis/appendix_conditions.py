@@ -64,7 +64,7 @@ L.append("Model & " + " & ".join(r"\shortstack{" + c.replace(", ", r"\\") + "}" 
 for m in order:
     v = rob[rob["model"] == m].set_index("setting")["recall"]
     L.append(m + " & " + " & ".join(f"{v.get(c, float('nan')):.2f}" for c in cols) + r" \\")
-L.append(r"\bottomrule\end{tabular}\caption{Share of the human map reached, with no persona, with three embedding models.}\label{tab:robust}\end{table}")
+L.append(r"\bottomrule\end{tabular}\caption{Share of the human map reached, with no persona, with three embedding models, to check that the result does not depend on the embedding. Base models stay far above chat models with all three, and the newest and largest chat models stay lowest.}\label{tab:robust}\end{table}")
 (ROOT / "paper" / "appendix_conditions.tex").write_text("\n".join(L[:R0]) + "\n")
 (ROOT / "paper" / "appendix_robust.tex").write_text("\n".join(L[R0:]) + "\n")
 print("ok")
