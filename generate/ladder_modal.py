@@ -140,7 +140,7 @@ def _run(spec: dict, n: int, langs: list[str], conditions: str = "fer", temps: l
             every = {**CONDITIONS, **creative.FIXED}
             names = [c.strip() for c in conditions.split(",") if c.strip()]
             fixed = {c: every[c] for c in names if c in every}
-            sampled = [c for c in names if c in creative.SAMPLED or c.startswith(creative.COMBO_PREFIX) or c.startswith(creative.STYLE_PREFIX) or c.startswith(creative.LIFE_FER_PREFIX)]
+            sampled = [c for c in names if c in creative.SAMPLED or c.startswith(creative.COMBO_PREFIX) or c.startswith(creative.STYLE_PREFIX) or c.startswith(creative.LIFE_FER_PREFIX) or c.startswith(creative.WAY_PREFIX)]
 
     jobs = []   # (meta, system, user, n)
     for temp in temps:

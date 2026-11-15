@@ -98,6 +98,24 @@ STYLES = {
 }
 STYLE_PREFIX = "life_style+"
 
+# The four ways of reasoning of False Epistemic Redundancy, adapted from investigating a case to connecting
+# two ideas, each keeping its own epistemic stance. The life leads: "You are [life]. [way] Answer as yourself."
+WAYS = {
+    "causal_mechanist": ("In how you think, you are a causal mechanist. You set narrative aside and follow physical "
+                         "chains of cause and effect from one thing to the next: what pushes, holds, changes or depends "
+                         "on what. Every step of your connection must be a real mechanism."),
+    "analogical_thinker": ("In how you think, you are an analogical thinker. You do not take the two things literally. "
+                           "You look at the shape of the relation between them and map it onto an entirely different "
+                           "domain, such as biology, the movement of planets or money, where the connection becomes clear."),
+    "teleological_tmk": ("In how you think, you are a teleological analyst. You set mechanical causes aside and ask what "
+                         "each thing is for. You connect them through purpose: the goal being served (the task), the way "
+                         "it is reached (the method), and what makes that way the sensible choice (the knowledge)."),
+    "dialectical_siev": ("In how you think, you are a dialectical thinker. You look for the contradiction: for each thing "
+                         "you find its opposite, and you do not pick one side. Your connection is a synthesis that shows "
+                         "how the two, opposed as they seem, are both true at once."),
+}
+WAY_PREFIX = "life_way+"
+
 # The life leads and the False Epistemic Redundancy persona follows, verbatim except for its opening
 # "You are", which becomes "In how you think, you are". "life_fer+causal_mechanist" and so on.
 LIFE_FER_PREFIX = "life_fer+"
@@ -109,6 +127,8 @@ COMBO_PREFIX = "ordinary_life+"
 
 def sample(condition: str, rng: random.Random, personas: dict | None = None) -> str:
     """The system prompt for one answer of a sampled condition."""
+    if condition.startswith(WAY_PREFIX):
+        return f"You are {rng.choice(LIVES)}. {WAYS[condition[len(WAY_PREFIX):]]} Answer as yourself, in your own words."
     if condition.startswith(LIFE_FER_PREFIX):
         persona = (personas or {})[condition[len(LIFE_FER_PREFIX):]]
         assert persona.startswith("You are ")
