@@ -1,0 +1,11 @@
+model,kind,cr_words,cr_pos,on_map_ideas,map_reached_ideas,share_with_content,name
+people,people,2.2475555555555555,4.149363697253851,0.8100042087542088,0.8126944444444444,0.9827586206896551,people
+CohereLabs/tiny-aya-base | aya_steer:baseline,base,2.3306831725020345,4.099650809284161,0.7182735690235691,0.7663518518518518,0.925,CohereLabs/tiny-aya-base | aya_steer:baseline
+CohereLabs/tiny-aya-global | aya_steer:baseline,chat,2.8008561239297673,4.669126485076797,0.6854789562289563,0.6515555555555556,1.0,CohereLabs/tiny-aya-global | aya_steer:baseline
+CohereLabs/tiny-aya-global | aya_steer:life_0.25,chat,2.567130076126366,4.588454741514156,0.4684031986531987,0.19937962962962966,1.0,CohereLabs/tiny-aya-global | aya_steer:life_0.25
+CohereLabs/tiny-aya-global | aya_steer:life_0.5,chat,3.7178382863742296,7.369378103958849,0.26598232323232324,0.03589814814814815,1.0,CohereLabs/tiny-aya-global | aya_steer:life_0.5
+CohereLabs/tiny-aya-global | aya_steer:life_1,chat,3.0225915869965254,7.973541210189353,0.38087373737373736,0.0006944444444444445,1.0,CohereLabs/tiny-aya-global | aya_steer:life_1
+CohereLabs/tiny-aya-global | aya_steer:ordinary_life,chat,2.5049352536278287,4.570048790990992,0.6148417508417509,0.8047500000000002,1.0,CohereLabs/tiny-aya-global | aya_steer:ordinary_life
+CohereLabs/tiny-aya-global | aya_steer:voice_0.25,chat,2.6393561341216025,4.473828048460491,0.7059107744107744,0.7344166666666667,1.0,CohereLabs/tiny-aya-global | aya_steer:voice_0.25
+CohereLabs/tiny-aya-global | aya_steer:voice_0.5,chat,2.5073332077216297,4.331725999793734,0.6912491582491582,0.8294814814814816,1.0,CohereLabs/tiny-aya-global | aya_steer:voice_0.5
+CohereLabs/tiny-aya-global | aya_steer:voice_1,chat,2.4198121058432287,4.270178005498764,0.5914242424242424,0.6588611111111112,1.0,CohereLabs/tiny-aya-global | aya_steer:voice_1
