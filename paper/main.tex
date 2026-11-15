@@ -164,27 +164,14 @@ On Qwen2.5 7B, raising the temperature to 1.6 reaches 85\% of the map of ideas, 
 
 \begin{figure}[!htb]
 \centering
-\begin{minipage}[t]{0.5\textwidth}\centering
-\includegraphics[width=0.86\linewidth]{figs/fig3_conditions.pdf}
+\includegraphics[width=0.48\textwidth]{figs/fig3_conditions.pdf}
 \caption{How each persona and creative condition changes ideas and voice, against the same model with no persona (zero). Left: places reached on the map of ideas, right is wider. Right: repetition of the voice, left is more varied. Dot, mean over models; bar, range; blue, reasoning personas; orange, creative conditions. Every creative condition makes the voice more varied; only an ordinary life widens the ideas on every model, and the teleological persona narrows them.}
 \label{fig:conditions}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.46\textwidth}\centering
-\includegraphics[width=\linewidth]{figs/fig5_warmup.pdf}
-\caption{Warm-up scores (Divergent Association Task) for people before ChatGPT, players today and models. Grey band: published scores before ChatGPT (mean $\pm$ one standard deviation). Black: players today, diamond the mean. Models with no persona: base in blue, chat in orange. Players today score a little above people tested before ChatGPT, and models' scores do not follow their bridges.}
-\label{fig:warmup}
-\end{minipage}
 \end{figure}
 
-\subsection{Concrete and abstract pairs, and the direction of the arrow}
+\subsection{Pairs, direction and the warm-up}
 
-The pairs were chosen at three levels of abstraction and shown in both directions. Level matters less than expected (Figure~\ref{fig:pairs} in Appendix~\ref{app:pairsdir}). People give about as many different answers for abstract pairs (0.42 per answer) as for concrete ones (0.45 to 0.49), and chat models stay low everywhere (0.14 to 0.18, partly their shared voice). What lowers diversity is a strong shared hub. For spider and melody, 60\% of people's answers pass through a web or a nursery rhyme and their diversity is the lowest (0.35), and for the same pair, and for bee and mirror through a reflection, about 90\% of the chat models' answers take the hub.
-
-Direction behaves differently for people and models. For chat models the starting idea changes the answer in 47 of 72 cases, by about 1.8 times the shift expected by chance; part of this may be the voice, since chat answers open by naming where they start. Base models show it in only 2 of 18 cases, and for people no pair shows a shift beyond chance, although with eight to eleven answers per direction a small effect would be hard to see.
-
-\subsection{The warm-up, before and after ChatGPT}
-
-The published scores for the Divergent Association Task, collected before ChatGPT, average 78.4 (standard deviation 6.4) \citep{olson2021}. Players today average 80.4 (standard deviation 9.1, 26 players), slightly above the published average (Figure~\ref{fig:warmup}), with no sign of decline, although the samples differ. Models score 57 to 88, unrelated to how much of the map of ideas they reach: Qwen3 8B and 32B score 79 to 80 and reach the least.
+Level of abstraction matters less than a strong shared hub: for spider and melody, 60\% of people's answers pass through a web or a nursery rhyme, and about 90\% of chat answers do. The starting idea changes chat answers in 47 of 72 cases, and people's in none beyond chance (Appendix~\ref{app:pairsdir}). On the warm-up, players today score slightly above people tested before ChatGPT (80.4 against 78.4), and models' scores do not follow their bridges (Appendix~\ref{app:warmup}).
 
 \subsection{What no model reaches}
 \label{sec:blindspots}
@@ -194,7 +181,7 @@ Some human bridges stay far from all AI answers, even with every condition and t
 \section{Discussion}
 \label{sec:discussion}
 
-\textbf{Chat training narrows the voice first, and the ideas less.} Measured as written, the same model reaches almost none of the human map after chat training, mostly because of one shared way of speaking. With the voice removed, the larger and newer chat models still reach less of the ideas than people and base models, and they take the common connection more often, so the narrowing of ideas is real and much smaller than it first appears. The voice matters in its own right. A connection in a person's own words carries something of that person; when every answer arrives in one voice, readers meet one way of thinking.
+\textbf{Chat training narrows the voice first, and the ideas less.} Most of the gap measured as written is one shared way of speaking; the narrowing of ideas is real and much smaller than it first appears. The voice matters in its own right. A connection in a person's own words carries something of that person; when every answer arrives in one voice, readers meet one way of thinking.
 
 \textbf{Measuring diversity needs the voice and the ideas apart.} The usual pipeline, comparing embeddings of model and human answers, moved from almost nothing to more than half of the map once the voice was removed. Earlier work warned that diversity measures follow form \citep{tevet2021}, and here the form was most of the effect.
 
@@ -310,11 +297,27 @@ a shadow / friendship & optional\\
 \section{Pairs and Direction}
 \label{app:pairsdir}
 
+The pairs were chosen at three levels of abstraction and shown in both directions. Level matters less than expected (Figure~\ref{fig:pairs}). People give about as many different answers for abstract pairs (0.42 per answer) as for concrete ones (0.45 to 0.49), and chat models stay low everywhere (0.14 to 0.18, partly their shared voice). What lowers diversity is a strong shared hub. For spider and melody, 60\% of people's answers pass through a web or a nursery rhyme and their diversity is the lowest (0.35), and for the same pair, and for bee and mirror through a reflection, about 90\% of the chat models' answers take the hub.
+
+Direction behaves differently for people and models. For chat models the starting idea changes the answer in 47 of 72 cases, by about 1.8 times the shift expected by chance; part of this may be the voice, since chat answers open by naming where they start. Base models show it in only 2 of 18 cases, and for people no pair shows a shift beyond chance, although with eight to eleven answers per direction a small effect would be hard to see.
+
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.8\textwidth]{figs/fig4_pairs_direction.pdf}
 \caption{How many different answers each pair gets, and how much answers lean toward the idea they start from. Left: different answers per answer for each pair (Vendi score over the number of answers), people and chat models. Right: pull of the starting idea, positive when answers sit closer to the idea they start from. Pairs grouped by level of abstraction. Chat models give far fewer different answers than people on every pair, and both lean slightly toward the idea they start from.}
 \label{fig:pairs}
+\end{figure}
+
+\section{The Warm-up, Before and After ChatGPT}
+\label{app:warmup}
+
+The published scores for the Divergent Association Task, collected before ChatGPT, average 78.4 (standard deviation 6.4) \citep{olson2021}. Players today average 80.4 (standard deviation 9.1, 26 players), slightly above the published average (Figure~\ref{fig:warmup}), with no sign of decline, although the samples differ. Models score 57 to 88, unrelated to how much of the map of ideas they reach: Qwen3 8B and 32B score 79 to 80 and reach the least. For players, a higher warm-up score goes with bridges farther from the other players' bridges (Spearman 0.33 over 21 players, not significant).
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.5\textwidth]{figs/fig5_warmup.pdf}
+\caption{Warm-up scores (Divergent Association Task) for people before ChatGPT, players today and models. Grey band: published scores before ChatGPT (mean $\pm$ one standard deviation). Black: players today, diamond the mean. Models with no persona: base in blue, chat in orange. Players today score a little above people tested before ChatGPT, and models' scores do not follow their bridges.}
+\label{fig:warmup}
 \end{figure}
 
 \section{Prompts, Personas and Settings}
@@ -337,7 +340,6 @@ To give a feel for the answers behind the numbers, here is one answer per condit
 
 With the three languages together (116 English, 19 Spanish and 2 French answers), measured with the multilingual embedding model and with the same mix of languages for models as for players, the order is the same: the base models reach 71\% to 76\% of the map, Qwen2.5 7B 5\% after chat training, Qwen2.5 14B 2\% and Qwen3 8B 1\%. Small chat models reach more in this setting (up to 62\% for Qwen2.5 0.5B), partly because their Spanish and French answers are often broken or switch to English, and such text spreads widely in the space of meaning.
 
-For players, a higher warm-up score goes with bridges farther from the other players' bridges (Spearman 0.33 over 21 players, not significant).
 
 \section*{LLM Usage Statement}
 Claude helped write the game before the sprint, and was used throughout the sprint to scope the question, to write the generation pipeline and the analysis code, to design the creative conditions with the author, to draft and revise this paper, and to produce the figures. No language model graded or scored any answer; all measures are computed from embeddings and the human answers. The AI bridge that players can request inside the game was written by Claude Opus 5.5 before the study. Every number in this paper comes from the analysis scripts in the repository and was checked against their output.
