@@ -184,7 +184,7 @@ def main() -> None:
     handles, labels = axes[1].get_legend_handles_labels()
     fig.legend(handles, labels, frameon=False, fontsize=8, loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0.0))
     fig.tight_layout(rect=(0, 0.05, 1, 1))
-    fig.savefig(figs / "fig3_conditions.pdf"); fig.savefig(figs / "fig3_conditions.svg")
+    # Figure 2 in the paper is drawn by fig_conditions_map.py; this two-panel version is kept for the website
     for name, col in (("fig3a", "ideas"), ("fig3b", "voice")):
         f1, a1 = plt.subplots(figsize=(4.2, 0.25 * len(rows) + 1.5)); cond_panel(a1, col, legend=True)
         f1.tight_layout(); f1.savefig(web / f"{name}.svg"); plt.close(f1)
