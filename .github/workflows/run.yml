@@ -38,7 +38,8 @@ jobs:
           python-version: "3.12"
       - run: pip install modal
       - name: Run on Modal
-        run: modal run generate/ladder_modal.py $RUN_ARGS
+        run: |
+          if [[ "$RUN_ARGS" == steer* ]]; then modal run steer/steer_modal.py; else modal run generate/ladder_modal.py $RUN_ARGS; fi
       - name: Bring the results into the repo
         run: |
           mkdir -p data/ai
