@@ -34,6 +34,12 @@ for k, v in creative.FIXED.items():
 L.append(r"\item[\textbf{ordinary life}.] \small ``You are [one sketch, drawn at random for each answer]. Answer as yourself, in your own words.''")
 L.append(r"\item[\textbf{random constraint}.] \small One sentence drawn at random for each answer from the list below.")
 L.append(r"\end{description}")
+L.append(r"\subsection*{An ordinary life with a way of reasoning}")
+L.append(r"The four reasoning personas, adapted to connecting ideas and each kept to its own stance, were given to an ordinary life drawn at random for each answer: ``You are [life]. [way of reasoning] Answer as yourself, in your own words.''")
+L.append(r"\begin{description}[leftmargin=0pt, itemsep=0.4em]")
+for k, v in creative.WAYS.items():
+    L.append(rf"\item[\textbf{{{tex(k.split('_')[0])}}}.] \small {tex(v)}")
+L.append(r"\end{description}")
 L.append(r"\noindent\textbf{The 30 ordinary lives.} \small " + "; ".join(tex(x) for x in creative.LIVES) + ".")
 L.append("")
 L.append(r"\noindent\textbf{The 12 constraints.} \small " + " ".join(tex(x) for x in creative.CONSTRAINTS))

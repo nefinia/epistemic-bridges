@@ -130,17 +130,17 @@ def main() -> None:
     d.to_csv(ROOT / "results" / "paper" / "voice_content_deltas.csv", index=False)
     s = d.groupby(["run", "cond"]).agg(ideas=("d_ideas", "mean"), lo=("d_ideas", "min"), hi=("d_ideas", "max"),
                                        voice=("d_voice", "mean"), vlo=("d_voice", "min"), vhi=("d_voice", "max")).reset_index()
-    s = s.sort_values("ideas")
+    s = s[s["run"].isin(["fer", "creative", "lifeway"])].sort_values("ideas")   # other framings are in the appendix
     y = np.arange(len(s))
-    colors = [BLUE if r == "fer" else AQUA if r == "combo" else ORANGE for r in s["run"]]
-    names = s["cond"].str.replace("_", " ").str.replace(" siev", "").str.replace(" tmk", "").str.replace("ordinary life+", "life + ")
+    colors = [BLUE if r == "fer" else AQUA if r == "lifeway" else ORANGE for r in s["run"]]
+    names = s["cond"].str.replace("_", " ").str.replace(" siev", "").str.replace(" tmk", "").str.replace("ordinary life+", "life + ").str.replace("life way+", "life + ")
     PANELS = {"ideas": ("lo", "hi", "Ideas: change in recall", "\u2190 narrower    wider \u2192"),
               "voice": ("vlo", "vhi", "Voice: repetition", "\u2190 more varied    more repetitive \u2192")}
 
     def cond_panel(ax, col, labels=True, legend=False):
         lo, hi, title, xlabel = PANELS[col]
         ax.hlines(y, s[lo], s[hi], color=GRID, linewidth=3)
-        dots(ax, s[col], y, color=colors, s=28, zorder=3, edgecolor="white", linewidth=1, marker=["s" if r == "fer" else "D" if r == "combo" else "o" for r in s["run"]])
+        dots(ax, s[col], y, color=colors, s=28, zorder=3, edgecolor="white", linewidth=1, marker=["s" if r == "fer" else "D" if r == "lifeway" else "o" for r in s["run"]])
         ax.axvline(0, color=MUTED, linewidth=0.8)
         ax.set_title(title, fontsize=9, color=INK)
         ax.grid(axis="y", visible=False)
@@ -150,16 +150,16 @@ def main() -> None:
             ax.set_yticklabels(names)
         if legend:
             dots(ax, [], [], color=BLUE, marker="s", label="Reasoning (FER)"); dots(ax, [], [], color=ORANGE, label="Creative")
-            if (s["run"] == "combo").any():
-                dots(ax, [], [], color=AQUA, marker="D", label="Reasoning + ordinary life")
+            if (s["run"] == "lifeway").any():
+                dots(ax, [], [], color=AQUA, marker="D", label="Ordinary life + reasoning")
             ax.legend(frameon=False, fontsize=7.5, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2)
 
     fig, axes = plt.subplots(1, 2, figsize=(5.2, 0.17 * len(s) + 1.1), sharey=True)
     cond_panel(axes[0], "ideas"); cond_panel(axes[1], "voice", labels=False)
     axes[0].tick_params(axis="y", labelsize=8); axes[0].tick_params(axis="x", labelsize=8); axes[1].tick_params(axis="x", labelsize=8)
     dots(axes[1], [], [], color=BLUE, marker="s", label="Reasoning (FER)"); dots(axes[1], [], [], color=ORANGE, label="Creative")
-    if (s["run"] == "combo").any():
-        dots(axes[1], [], [], color=AQUA, marker="D", label="Reasoning + ordinary life")
+    if (s["run"] == "lifeway").any():
+        dots(axes[1], [], [], color=AQUA, marker="D", label="Ordinary life + reasoning")
     handles, labels = axes[1].get_legend_handles_labels()
     fig.legend(handles, labels, frameon=False, fontsize=8, loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0.0))
     fig.tight_layout(rect=(0, 0.05, 1, 1))
