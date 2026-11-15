@@ -137,35 +137,56 @@ def main() -> None:
     PANELS = {"ideas": ("lo", "hi", "Ideas: change in recall", "\u2190 narrower    wider \u2192"),
               "voice": ("vlo", "vhi", "Voice: repetition", "\u2190 more varied    more repetitive \u2192")}
 
+    # Compact layout: each reasoning persona is one row, alone (blue square) and held by an ordinary life
+    # (green diamond), joined by a line; the creative conditions follow, one row each.
+    fer = s[s["run"] == "fer"].set_index("cond")
+    way = s[s["run"] == "lifeway"].assign(cond=lambda d: d["cond"].str.replace("life_way+", "", regex=False)).set_index("cond")
+    cre = s[s["run"] == "creative"].sort_values("ideas")
+    pnames = {c: c.replace("_", " ").replace(" siev", "").replace(" tmk", "") for c in fer.index}
+    porder = sorted(fer.index, key=lambda c: way.loc[c, "ideas"] if c in way.index else fer.loc[c, "ideas"])
+    rows = [("cre", c) for c in cre["cond"]] + [("per", c) for c in porder]
+    rows = rows[::-1]
+    yy = np.arange(len(rows))[::-1]
+    gap = len(rows) - len(porder) - 0.5
+
     def cond_panel(ax, col, labels=True, legend=False):
         lo, hi, title, xlabel = PANELS[col]
-        ax.hlines(y, s[lo], s[hi], color=GRID, linewidth=3)
-        dots(ax, s[col], y, color=colors, s=28, zorder=3, edgecolor="white", linewidth=1, marker=["s" if r == "fer" else "D" if r == "lifeway" else "o" for r in s["run"]])
+        for yi, (kind, c) in zip(yy, rows):
+            if kind == "cre":
+                r = cre.set_index("cond").loc[c]
+                ax.hlines(yi, r[lo], r[hi], color=GRID, linewidth=3)
+                dots(ax, [r[col]], [yi], color=ORANGE, s=26, zorder=3, edgecolor="white", linewidth=1)
+            else:
+                a = fer.loc[c, col]
+                dots(ax, [a], [yi], color=BLUE, marker="s", s=26, zorder=3, edgecolor="white", linewidth=1)
+                if c in way.index:
+                    b = way.loc[c, col]
+                    ax.annotate("", xy=(b, yi), xytext=(a, yi), arrowprops=dict(arrowstyle="-", color=AQUA, lw=1.2), zorder=2)
+                    dots(ax, [b], [yi], color=AQUA, marker="D", s=26, zorder=3, edgecolor="white", linewidth=1)
+        ax.axhline(gap, color=GRID, linewidth=1)
         ax.axvline(0, color=MUTED, linewidth=0.8)
         ax.set_title(title, fontsize=9, color=INK)
         ax.grid(axis="y", visible=False)
         ax.set_xlabel(xlabel, fontsize=8, color=MUTED)
-        ax.set_yticks(y)
+        ax.set_yticks(yy)
         if labels:
-            ax.set_yticklabels(names)
+            ax.set_yticklabels([c.replace("_", " ") if k == "cre" else pnames[c] for k, c in rows])
         if legend:
-            dots(ax, [], [], color=BLUE, marker="s", label="Reasoning (FER)"); dots(ax, [], [], color=ORANGE, label="Creative")
-            if (s["run"] == "lifeway").any():
-                dots(ax, [], [], color=AQUA, marker="D", label="Ordinary life + reasoning")
+            dots(ax, [], [], color=BLUE, marker="s", label="Reasoning persona"); dots(ax, [], [], color=AQUA, marker="D", label="held by an ordinary life")
+            dots(ax, [], [], color=ORANGE, label="Creative")
             ax.legend(frameon=False, fontsize=7.5, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2)
 
-    fig, axes = plt.subplots(1, 2, figsize=(5.2, 0.17 * len(s) + 1.1), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(5.2, 0.16 * len(rows) + 1.1), sharey=True)
     cond_panel(axes[0], "ideas"); cond_panel(axes[1], "voice", labels=False)
     axes[0].tick_params(axis="y", labelsize=8); axes[0].tick_params(axis="x", labelsize=8); axes[1].tick_params(axis="x", labelsize=8)
-    dots(axes[1], [], [], color=BLUE, marker="s", label="Reasoning (FER)"); dots(axes[1], [], [], color=ORANGE, label="Creative")
-    if (s["run"] == "lifeway").any():
-        dots(axes[1], [], [], color=AQUA, marker="D", label="Ordinary life + reasoning")
+    dots(axes[1], [], [], color=BLUE, marker="s", label="Reasoning persona"); dots(axes[1], [], [], color=AQUA, marker="D", label="held by an ordinary life")
+    dots(axes[1], [], [], color=ORANGE, label="Creative")
     handles, labels = axes[1].get_legend_handles_labels()
     fig.legend(handles, labels, frameon=False, fontsize=8, loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0.0))
     fig.tight_layout(rect=(0, 0.05, 1, 1))
     fig.savefig(figs / "fig3_conditions.pdf"); fig.savefig(figs / "fig3_conditions.svg")
     for name, col in (("fig3a", "ideas"), ("fig3b", "voice")):
-        f1, a1 = plt.subplots(figsize=(4.2, 0.25 * len(s) + 1.5)); cond_panel(a1, col, legend=True)
+        f1, a1 = plt.subplots(figsize=(4.2, 0.25 * len(rows) + 1.5)); cond_panel(a1, col, legend=True)
         f1.tight_layout(); f1.savefig(web / f"{name}.svg"); plt.close(f1)
 
 

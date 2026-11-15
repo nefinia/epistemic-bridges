@@ -115,7 +115,7 @@ The largest uncertainty comes from the players: leaving out one at a time gives 
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.88\textwidth]{figs/fig1_money.pdf}
+\includegraphics[width=0.82\textwidth]{figs/fig1_money.pdf}
 \caption{Every model with no persona on the human map of ideas, with the voice removed. Across, recall: the share of the human map that a model's answers reach. Up, precision: the share of its answers that land on the human map, as in earlier precision-recall plots \citep{kynkaanniemi2019,lebronnec2024}, here with people on the same plane. Color: how much the model's voice repeats its sentence patterns, from varied (light) to repetitive (dark). Squares, base models; circles, chat models; each label gives the year of the model. Star and black lines: people, half of the players against the other half, with one standard error over players as grey bands. No model reaches people, comes near them on both counts, or goes beyond them. Older base models reach as far as people by scattering, with a varied voice; the newest chat models land on the map but reach the least, with the most repetitive voice. Appendix~\ref{app:models} gives the numbers, model by model.}
 \label{fig:money}
 \end{figure}
@@ -124,14 +124,14 @@ The largest uncertainty comes from the players: leaving out one at a time gives 
 
 Measured apart, the conditions mostly change the voice (Figure~\ref{fig:conditions}, right): every creative condition makes the sentence patterns less repetitive, while the reasoning personas leave the voice about as it is. In ideas, most conditions help some models and hurt others (Figure~\ref{fig:conditions}, left). Only an ordinary life drawn at random widens the ideas on all five models, raising recall by 16 points on average (11 to 23). On the newest models some creative framings narrow the ideas, as if the framing itself became the hub: with a story, Qwen2.5 7B has a recall of 32\%. Among the reasoning personas, the teleological analyst, which explains everything through purpose, narrows the ideas on every model, lowering recall by 36 points on average.
 
-A way of reasoning can be held by a person. Given to an ordinary life drawn at random, the teleological analyst, which narrows the ideas by 36 points on its own, widens them by 9 on all five models, and the causal mechanist and the dialectical thinker by 8 to 9 (Figure~\ref{fig:conditions}, green). The life alone still reaches furthest (recall 0.76 on average, against 0.69 with a way of reasoning), while the combination lands on the map more often (precision 0.67 against 0.62), so both sit about as close to people; the other ways of combining them tried do no better (Appendix~\ref{app:robust}).
+A way of reasoning can be held by a person. Given to an ordinary life drawn at random, the teleological analyst, which narrows the ideas by 36 points on its own, widens them by 9 on all five models, and the causal mechanist and the dialectical thinker by 8 to 9 (Figure~\ref{fig:conditions}, green). The life alone still reaches furthest (recall 0.76 on average, against 0.69 with a way of reasoning), while the combination lands on the map more often (precision 0.67 against 0.62), so both sit about as close to people (Appendix~\ref{app:robust}).
 
 On Qwen2.5 7B, temperature 1.6 gives a recall of 85\% with a precision of 57\% (39\% at 2.0), and an ordinary life 72\% with 70\%: randomness spreads the answers away from where people go, and an ordinary life moves them toward places people go.
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.8\textwidth]{figs/fig3_conditions.pdf}
-\caption{How each persona and creative condition changes ideas and voice, against the same model with no persona (zero). Left: recall on the map of ideas, right is wider. Right: repetition of the voice, left is more varied. Dot, mean over models; bar, range; blue squares, reasoning personas; orange circles, creative conditions; green diamonds, an ordinary life holding a reasoning style. Every creative condition makes the voice more varied; only an ordinary life widens the ideas on every model, the teleological persona narrows them, and held by an ordinary life it widens them.}
+\includegraphics[width=0.72\textwidth]{figs/fig3_conditions.pdf}
+\caption{How each persona and creative condition changes ideas and voice, against the same model with no persona (zero). Left: recall on the map of ideas, right is wider. Right: repetition of the voice, left is more varied. Dot, mean over models; bar, range; top four rows, each reasoning persona alone (blue squares) and held by an ordinary life (green diamonds); below, the creative conditions (orange circles). Every creative condition makes the voice more varied; only an ordinary life widens the ideas on every model, and it turns every reasoning persona toward wider ideas.}
 \label{fig:conditions}
 \end{figure}
 
@@ -166,7 +166,7 @@ Some human bridges stay far from all AI answers, even with every condition and t
 \section{Conclusion and Future Work}
 \label{sec:future}
 
-Measured as written, chat models seem to leave almost all of the human map of connections unreached, and most of that gap is one shared assistant voice. With the voice removed, the larger and newer chat models still reach less of the ideas than people and take the common connection more often, and only an ordinary life, drawn at random, widens the ideas on every model. Diversity in AI is best measured with the voice and the ideas apart, against the ground people actually cover.
+Measured as written, chat models seem to leave almost all of the human map of connections unreached, and most of that gap is one shared assistant voice. With the voice removed, the larger and newer chat models still reach less of the ideas than people, and only an ordinary life, drawn at random, widens the ideas on every model. Diversity in AI is best measured with the voice and the ideas apart, against the ground people actually cover.
 
 Next steps: blind human judgments of whether two answers say the same thing \citep{tevet2021,zhang2025}, players from other fields and cultures, pairs with values at stake, and pairs that join concepts from two disciplines, such as entropy and trust. False epistemic redundancy asked whether a model explores beyond the most expected answer in technical cases with a known, unusual answer \citep{gallego2026fer}, and running an ordinary life on those cases is a direct next step. The larger aim is the map of ideas (\href{https://mapideas.org}{mapideas.org}), where human and AI connections sit side by side, so that people see the ground they cover together; from there, ways of working with AI that keep that space wide and help disciplines meet where they rarely do, since much innovation happens there. Such a harmonic interaction would preserve what people do well, the personal, the sensory, the playful, each in its own voice, and add what machines can bring, such as breadth across disciplines.
 
@@ -174,7 +174,7 @@ Next steps: blind human judgments of whether two answers say the same thing \cit
 The repository \url{https://github.com/nefinia/epistemic-bridges} holds the pairs, personas, code, figures and all AI answers. The game is live at \url{https://mapideas.org/bridges}, with its code at \url{https://github.com/nefinia/themap}. The game, the reasoning personas, the Modal server and the clustering settings from false epistemic redundancy existed before the sprint started on 13 November, as did 6 of the 145 bridges, from one player; everything else was made during it.
 
 \section*{Author Contributions and Acknowledgements}
-S.G.G.\ designed the study and the game, ran the experiments and analysis, and wrote the paper with Claude (see LLM Usage Statement). Thanks to everyone who played Bridges and left feedback.
+S.G.G.\ designed the study and the game, ran the experiments and analysis, and wrote the paper with Claude (see LLM Usage Statement). Thanks to everyone who played Bridges.
 
 \bibliographystyle{unsrtnat}
 \begin{thebibliography}{99}
