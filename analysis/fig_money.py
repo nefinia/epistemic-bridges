@@ -31,7 +31,6 @@ def draw(ax, fig, plain, p, jk, label_size=6.8):
     cmap = LinearSegmentedColormap.from_list("voice", ["#f7d9c4", "#eb6834", "#7a2408"])
     norm = Normalize(vmin=3.6, vmax=6.0)
     ex, ey = jk.loc["people", X + "_jk"], jk.loc["people", Y + "_jk"]
-    ax.fill_between([p[X], 1.0], p[Y], 1.0, color="#efede8", zorder=0, lw=0)
     ax.axvspan(p[X] - ex, p[X] + ex, color=GRID, alpha=0.6, zorder=0, lw=0)
     ax.axhspan(p[Y] - ey, p[Y] + ey, color=GRID, alpha=0.6, zorder=0, lw=0)
     ax.axvline(p[X], color=INK, lw=0.8, zorder=1)
