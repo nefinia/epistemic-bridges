@@ -160,7 +160,7 @@ The largest uncertainty comes from the players: leaving out one at a time gives 
 
 Measured apart, the conditions mostly change the voice (Figure~\ref{fig:conditions}, right): every creative condition makes the sentence patterns less repetitive, while the reasoning personas leave the voice about as it is. In ideas, most conditions help some models and hurt others (Figure~\ref{fig:conditions}, left). Only an ordinary life drawn at random widens the ideas on all five models, by 16 points on average (11 to 23). On the newest models some creative framings narrow the ideas, as if the framing itself became the hub: with a story, Qwen2.5 7B reaches 32\% of the map of ideas. Among the reasoning personas, the teleological analyst, which explains everything through purpose, narrows the ideas on every model, by 36 points on average.
 
-Randomness gives a different shape. On Qwen2.5 7B, raising the temperature to 1.6 reaches 85\% of the map of ideas, more than any persona, while the share of answers on the map falls to 57\%, and to 39\% at 2.0. An ordinary life reaches 72\% with 70\% of its answers on the map. Randomness spreads the answers, including away from where people go; an ordinary life moves them toward places people go.
+On Qwen2.5 7B, raising the temperature to 1.6 reaches 85\% of the map of ideas, more than any persona, while the share of answers on the map falls to 57\%, and to 39\% at 2.0. An ordinary life reaches 72\% with 70\% of its answers on the map. Randomness spreads the answers, including away from where people go; an ordinary life moves them toward places people go.
 
 \begin{figure}[!htb]
 \centering
@@ -194,7 +194,7 @@ Some human bridges stay far from all AI answers, even with every condition and t
 \section{Discussion}
 \label{sec:discussion}
 
-\textbf{Chat training narrows the voice first, and the ideas less.} Measured as written, the same model reaches almost none of the human map after chat training. Most of that is one shared way of speaking. With the voice removed, the larger and newer chat models still reach less of the ideas than people and base models, and they take the common connection more often, so the narrowing of ideas is real and much smaller than it first appears. The voice matters in its own right. A connection said in a person's own words carries something of that person, and when every answer arrives in the same voice, readers meet one way of thinking, however varied the content underneath.
+\textbf{Chat training narrows the voice first, and the ideas less.} Measured as written, the same model reaches almost none of the human map after chat training, mostly because of one shared way of speaking. With the voice removed, the larger and newer chat models still reach less of the ideas than people and base models, and they take the common connection more often, so the narrowing of ideas is real and much smaller than it first appears. The voice matters in its own right. A connection said in a person's own words carries something of that person, and when every answer arrives in the same voice, readers meet one way of thinking.
 
 \textbf{Measuring diversity needs the voice and the ideas apart.} The usual pipeline, embedding model answers and comparing them with human ones, gave a result that moved from almost nothing to more than half of the map once the voice was removed. Earlier work warned that diversity measures follow form \citep{tevet2021}, and here the form was most of the effect.
 
@@ -205,7 +205,7 @@ Some human bridges stay far from all AI answers, even with every condition and t
 \section{Future Work}
 \label{sec:future}
 
-Next steps: blind human judgments of whether two answers say the same thing \citep{tevet2021,zhang2025}, players from other fields and cultures, and pairs with values at stake.
+Next steps: blind human judgments of whether two answers say the same thing \citep{tevet2021,zhang2025}, players from other fields and cultures, and pairs with values at stake. The larger aim is the map of ideas (\href{https://mapideas.org}{mapideas.org}), where human and AI connections between concepts sit side by side, so that people can see the ground they cover together and where it stays open. From there, the goal is to propose ways of working with AI that keep that space wide, and widen it where they can.
 
 \section*{Data and Code Availability}
 The pairs, personas, generation code, analysis code, figures and all AI answers are available at \url{https://github.com/nefinia/epistemic-bridges}. The game is live at \url{https://mapideas.org/bridges}, and its code is at \url{https://github.com/nefinia/themap}. The game, together with the reasoning personas, the Modal server and the clustering settings from false epistemic redundancy, existed before the sprint; the model runs, creative conditions, measures, analysis and this paper were made during it.
