@@ -66,42 +66,46 @@ def main() -> None:
     jk_path = ROOT / "results" / "paper" / "players_uncertainty.csv"
     jk = pd.read_csv(jk_path, index_col=0) if jk_path.exists() else None
 
-    # One row per group, the same rows in both panels, sorted by the share of the map of ideas reached.
+    # One row per model, ordered by year and size, the same rows in every panel. People are the shaded band:
+    # their value with one standard error over players on each side.
     key = f"{FOCUS} | creative:ordinary_life"
-    rows = pd.concat([res[res["model"] == "people"], plain, res[res["model"] == key]])
-    rows = rows.sort_values("map_reached_ideas").reset_index(drop=True)
+    meta = pd.read_csv(ROOT / "results" / "paper" / "models_baseline.csv").set_index("model")
+    rows = pd.concat([plain, res[res["model"] == key]]).copy()
+    rows["year"] = [meta.loc[m.split(" | ")[0], "year"] for m in rows["model"]]
+    rows["size"] = [meta.loc[m.split(" | ")[0], "size_b"] + (0.02 if m == key else 0.01 if m == FOCUS else 0.03 if "OLMo" in m else 0) for m in rows["model"]]
+    rows = rows.sort_values(["year", "size"]).reset_index(drop=True)
     yy = np.arange(len(rows))
 
     def look(m, kind):
-        if m == "people":
-            return INK, "*", 70
         if m == key:
             return AQUA, "o", 34
         return (BLUE, "s", 30) if kind == "base" else (ORANGE, "o", 30)
 
-    def label(m, n):
-        if m == "people":
-            return "People"
+    def label(m, n, year):
         if m == key:
             return "Qwen2.5 7B, ordinary life"
-        return n.replace(" base", " (base)")
+        return f"{n.replace(' base', ' (base)')}, {int(year)}"
 
     def row_panel(ax, col, xlabel, title, err=None, labels=True):
+        pv = g.loc["people", col]
+        pe = jk.loc["people", f"{col}_jk"] if jk is not None and "people" in jk.index else 0
+        ax.axvspan(pv - pe, pv + pe, color=GRID, alpha=0.9, zorder=0, lw=0)
+        ax.axvline(pv, color=INK, linewidth=1, zorder=1)
         for yi, (_, r) in zip(yy, rows.iterrows()):
             c, mk, sz = look(r["model"], r["kind"])
             if err is not None and r["model"] in err.index:
                 e = err.loc[r["model"], f"{col}_jk"]
-                ax.hlines(yi, r[col] - e, r[col] + e, color=GRID, linewidth=2.5, zorder=1)
+                ax.hlines(yi, r[col] - e, r[col] + e, color=c, alpha=0.35, linewidth=1.5, zorder=2)
             dots(ax, [r[col]], [yi], color=c, marker=mk, s=sz, zorder=3)
-        ax.axvline(g.loc["people", col], color=INK, linewidth=0.8, linestyle=(0, (2, 2)))
         ax.set_yticks(yy)
         if labels:
-            ax.set_yticklabels([label(m, n) for m, n in zip(rows["model"], rows["name"])], fontsize=7.5)
+            ax.set_yticklabels([label(m, n, y) for m, n, y in zip(rows["model"], rows["name"], rows["year"])], fontsize=7.5)
         else:
             ax.tick_params(labelleft=False)
         ax.set_xlabel(xlabel); ax.set_title(title, fontsize=9, color=INK)
         ax.grid(axis="y", visible=False)
-        ax.set_ylim(-0.7, len(rows) - 0.3)
+        ax.set_ylim(len(rows) - 0.3, -1.6)
+        ax.text(pv, -1.1, "people", ha="center", va="center", fontsize=7.5, color=INK)
 
     def ideas_panel(ax, labels=True):
         row_panel(ax, "map_reached_ideas", "Share of the human\nmap of ideas reached", "Ideas: recall", err=jk, labels=labels)
@@ -110,7 +114,7 @@ def main() -> None:
         row_panel(ax, "on_map_ideas", "Share of answers\non the human map", "Ideas: precision", err=jk, labels=labels)
 
     def voice_panel(av, labels=True):
-        row_panel(av, "cr_pos", "Repetition of\nsentence patterns", "Voice", labels=labels)
+        row_panel(av, "cr_pos", "Repetition of\nsentence patterns", "Voice", err=jk, labels=labels)
 
     fig, (ax, ao, av) = plt.subplots(1, 3, figsize=(6.5, 3.9), sharey=True)
     ideas_panel(ax); onmap_panel(ao, labels=False); voice_panel(av, labels=False)

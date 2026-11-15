@@ -74,7 +74,7 @@ The game was shared during the sprint through AI safety communities and personal
 \subsection{Models and conditions}
 \label{sec:models}
 
-The same pairs, in the same words, then went to 15 open models (Table~\ref{tab:models}), run with vLLM on Modal. Two are base models, GPT-2 XL (2019) and GPT-J 6B (2021). A base model is trained only to continue text it has read, so it simply carries on from the prompt. Chat models go through a second stage of training, here called \emph{chat training} (instruction tuning and learning from human preferences), which teaches them to answer as a helpful assistant, with the kind of clear, safe and sensible answer that people rate highly. The chat models range from 2023 to 2025, mostly around 7 billion parameters, together with the Qwen2.5 family from 0.5 to 14 billion parameters and the base Qwen2.5 7B, so that size and chat training can each be seen on their own. Two larger 2025 models, Qwen3 32B and OpenAI's open gpt-oss 20B, answered in English with no persona, keeping only gpt-oss's final answer after its reasoning.
+The same pairs, in the same words, then went to 15 open models (Table~\ref{tab:models} in Appendix~\ref{app:models}), run with vLLM on Modal. Two are base models, GPT-2 XL (2019) and GPT-J 6B (2021). A base model is trained only to continue text it has read, so it simply carries on from the prompt. Chat models go through a second stage of training, here called \emph{chat training} (instruction tuning and learning from human preferences), which teaches them to answer as a helpful assistant, with the kind of clear, safe and sensible answer that people rate highly. The chat models range from 2023 to 2025, mostly around 7 billion parameters, together with the Qwen2.5 family from 0.5 to 14 billion parameters and the base Qwen2.5 7B, so that size and chat training can each be seen on their own. Two larger 2025 models, Qwen3 32B and OpenAI's open gpt-oss 20B, answered in English with no persona, keeping only gpt-oss's final answer after its reasoning.
 
 Each model first answered every pair, direction and language 10 times with no persona. Chat models then answered again with the four reasoning personas from false epistemic redundancy \citep{gallego2026fer}, each built on a documented weakness in model reasoning: a causal mechanist \citep{ullman2023}, an analogical thinker \citep{lewis2024}, a teleological analyst \citep{goh2026} and a dialectical thinker \citep{abbasloo2025}. Because those personas were built for investigating, five chat models also answered with twelve creative conditions, built from the ways players connected ideas and from earlier work on prompting for diversity \citep{deng2026,meincke2024}: five ways of connecting (association, story, memory, senses, wordplay), three moods (playful, dreamy, a child's eyes), an ordinary life drawn at random from 30 short sketches, a small random constraint, and thinking step by step. Finally, two models answered with no persona at six temperatures from 0.4 to 2.0. All texts given to the models are in Appendix~\ref{app:prompts}, and sample answers are in Appendix~\ref{app:examples}.
 
@@ -99,45 +99,14 @@ Recall and precision are computed with as many answers from a group as there are
 \section{Results}
 \label{sec:results}
 
-\begin{table}[!htb]
-\centering\footnotesize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{0.8}
-\begin{tabular}{lrrrrrrrrr}
-\toprule
- & & & & & \multicolumn{2}{c}{As written} & \multicolumn{2}{c}{Ideas} & \\
-\cmidrule(lr){6-7}\cmidrule(lr){8-9}
-Model & Year & Size (B) & Words & Hub & Precision & Recall & Precision & Recall & Voice \\
-\midrule
-People (21 players) & & & 11 & 0.28 & 0.66 & 0.66 & 0.82 & 0.81 & 4.1 \\
-\midrule
-GPT-2 (base) & 2019 & 1.5 & 14 & 0.06 & 0.39 & 0.63 & 0.59 & 0.85 & 3.8 \\
-GPT-J (base) & 2021 & 6 & 16 & 0.06 & 0.35 & 0.60 & 0.55 & 0.81 & 3.7 \\
-Zephyr & 2023 & 7 & 124 & 0.43 & 0.55 & 0.06 & 0.74 & 0.71 & 4.9 \\
-Vicuna & 2023 & 7 & 104 & 0.47 & 0.68 & 0.19 & 0.76 & 0.69 & 5.4 \\
-Qwen2.5 & 2024 & 0.5 & 170 & 0.24 & 0.24 & 0.37 & 0.56 & 0.70 & 4.7 \\
-Qwen2.5 & 2024 & 1.5 & 168 & 0.42 & 0.31 & 0.20 & 0.61 & 0.79 & 4.8 \\
-Qwen2.5 & 2024 & 3 & 172 & 0.46 & 0.30 & 0.10 & 0.74 & 0.71 & 5.0 \\
-Phi-3 mini & 2024 & 3.8 & 142 & 0.58 & 0.52 & 0.26 & 0.63 & 0.73 & 4.8 \\
-Qwen2.5 (base) & 2024 & 7 & 34 & 0.35 & 0.66 & 0.49 & 0.70 & 0.76 & 4.4 \\
-Qwen2.5 & 2024 & 7 & 172 & 0.57 & 0.49 & 0.00 & 0.78 & 0.59 & 5.7 \\
-OLMo 2 & 2024 & 7 & 172 & 0.56 & 0.44 & 0.06 & 0.70 & 0.55 & 4.6 \\
-Qwen2.5 & 2024 & 14 & 174 & 0.55 & 0.46 & 0.00 & 0.80 & 0.58 & 5.4 \\
-Qwen3 & 2025 & 8 & 155 & 0.61 & 0.67 & 0.01 & 0.83 & 0.47 & 5.9 \\
-gpt-oss & 2025 & 21 & 176 & 0.54 & 0.31 & 0.22 & 0.74 & 0.70 & 4.6 \\
-Qwen3 & 2025 & 32 & 92 & 0.57 & 0.83 & 0.02 & 0.86 & 0.49 & 4.6 \\
-\bottomrule
-\end{tabular}
-\caption{How much of the human map each model reaches, as written and with the voice removed, and how much its voice repeats. Models with no persona, English, temperature 1.0. Words: median length of the full answer. Hub: share of answers taking the most common human bridge. As written: precision, the share of answers on the human map, and recall, the share of the map reached; answers in full. Ideas: the same with the voice removed and content words only. Voice: repetition of sentence patterns (compression ratio; higher is more repetitive). People: half of the players against the other half. Ideas and voice are means of 11 runs (Section~\ref{sec:voiceideas}). As written, chat models reach almost none of the map; without the voice they still reach less than people, and repeat more.}
-\label{tab:models}
-\end{table}
-
 \subsection{As written, chat models seem to close the map}
 
-The first step measures the answers as they come, in full (Table~\ref{tab:models}). GPT-2 and GPT-J reach about 60\% of the human map (recall), yet only a third of their answers land on it (precision): coverage through noise, the typewriting monkeys of the introduction. Chat models reach much less. The clearest case keeps everything else the same: Qwen2.5 7B has a recall of 49\% before chat training and almost none after, and the larger and newer chat models 0\% to 2\%. This held with other embedding models and with all three languages together (Appendix~\ref{app:robust}).
+The first step measures the answers as they come, in full (Table~\ref{tab:models} in Appendix~\ref{app:models}). GPT-2 and GPT-J reach about 60\% of the human map (recall), yet only a third of their answers land on it (precision): coverage through noise, the typewriting monkeys of the introduction. Chat models reach much less. The clearest case keeps everything else the same: Qwen2.5 7B has a recall of 49\% before chat training and almost none after, and the larger and newer chat models 0\% to 2\%. This held with other embedding models and with all three languages together (Appendix~\ref{app:robust}).
 
 \subsection{Voice or ideas}
 \label{sec:voiceideas}
 
-A look at what is being measured changes the picture. A typical chat answer, from Qwen2.5 7B, begins: ``While the transition from a bee to a mirror may seem inexplicably bizarre on the surface, we can creatively construct a connection through a series of steps\ldots''. Most chat answers carry this kind of announcement, numbered steps and a closing summary, so they all land on the same spot. Chat training gives the models a voice, and the voice is shared: at the same length and number of answers, the sentence patterns of every chat model repeat more than people's (4.6 to 5.9 against 4.1 in Table~\ref{tab:models}), most of all for Qwen3 8B and the Qwen2.5 models from 7 to 14 billion parameters, while base models repeat less than people (3.7 to 4.4).
+A look at what is being measured changes the picture. A typical chat answer, from Qwen2.5 7B, begins: ``While the transition from a bee to a mirror may seem inexplicably bizarre on the surface, we can creatively construct a connection through a series of steps\ldots''. Most chat answers carry this kind of announcement, numbered steps and a closing summary, so they all land on the same spot. Chat training gives the models a voice, and the voice is shared: at the same length and number of answers, the sentence patterns of every chat model repeat more than people's (4.6 to 5.9 against 4.1, Figure~\ref{fig:money}, right), most of all for Qwen3 8B and the Qwen2.5 models from 7 to 14 billion parameters, while base models repeat less than people (3.7 to 4.4).
 
 With the voice removed from every answer in the same way, the gap in ideas is much smaller (Figure~\ref{fig:money}). Half of the players reach 81\% of the other half's map of ideas (recall), with 82\% of their answers on it (precision). The base models have a recall of 76\% to 85\% with a lower precision (55\% to 70\%), and the older and smaller chat models a recall of 69\% to 79\%. The larger and newer chat models reach less: recall 59\% for Qwen2.5 7B, 58\% for Qwen2.5 14B, 55\% for OLMo 2, 49\% for Qwen3 32B and 47\% for Qwen3 8B, with the highest precision (up to 86\%). gpt-oss 20B is the exception, at 70\%. On the same 7B model, chat training moves recall from 76\% to 59\% and the voice from 4.4 to 5.7. The hub rate, which needs no embeddings, points the same way: chat models from 3.8 billion parameters up take the most common bridge in 43\% to 61\% of their answers, people in 28\%.
 
@@ -146,7 +115,7 @@ The largest uncertainty comes from the players: leaving out one at a time gives 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{figs/fig0_voice_ideas.pdf}
-\caption{How far each model reaches on the map of ideas, where its answers land, and how much its voice repeats. Rows: models with no persona, sorted by reach; People, half of the players against the other half; dotted line, people. Left: recall, the share of the human map of ideas reached, with the voice removed. Middle: precision, the share of answers that land on the human map. Right: repetition of sentence patterns. Squares, base models; circles, chat models; green, Qwen2.5 7B asked to answer as an ordinary life; grey bars, standard error over players. People have a high recall and a high precision. GPT-2 and GPT-J reach as far by scattering, with a lower precision. The larger and newer chat models have the highest precision, the lowest recall, and repeat their voice most.}
+\caption{How far each model reaches on the map of ideas, where its answers land, and how much its voice repeats. One row per model with no persona, from the oldest to the newest, and the same rows in all three panels. Left: recall, the share of the human map of ideas reached, with the voice removed. Middle: precision, the share of answers that land on the human map. Right: repetition of sentence patterns. Black line and grey band: people, half of the players against the other half, with one standard error over players on each side. Squares, base models; circles, chat models; green, Qwen2.5 7B asked to answer as an ordinary life; thin bars, standard error over players. People have a high recall and a high precision. GPT-2 and GPT-J reach as far by scattering, with a lower precision. The larger and newer chat models have the highest precision, the lowest recall, and repeat their voice most.}
 \label{fig:money}
 \end{figure}
 
@@ -242,6 +211,40 @@ S.G.G.\ designed the study and the game, ran the experiments and analysis, and w
 \textbf{Dual use.} A way to measure how much of a human map a model reaches could also become a training target for more varied and inventive models, which is a capability. The added risk seems small, since every measure here is already published and the new element is the human baseline. One risk is worth naming: if coverage became a target, models could learn to look diverse without becoming more useful. We offer these measures for tracking how models change, and keep them away from training.
 
 \textbf{Ethics and privacy.} Players took part anonymously after a consent screen. No name, IP address or location is stored, and page visits are counted only as daily totals per country. Voice answers are transcribed and never stored. Player answers are kept private.
+
+\section{Results by Model}
+\label{app:models}
+
+\begin{table}[h]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{0.8}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+ & & & & & \multicolumn{2}{c}{As written} & \multicolumn{2}{c}{Ideas} & \\
+\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+Model & Year & Size (B) & Words & Hub & Precision & Recall & Precision & Recall & Voice \\
+\midrule
+People (21 players) & & & 11 & 0.28 & 0.66 & 0.66 & 0.82 & 0.81 & 4.1 \\
+\midrule
+GPT-2 (base) & 2019 & 1.5 & 14 & 0.06 & 0.39 & 0.63 & 0.59 & 0.85 & 3.8 \\
+GPT-J (base) & 2021 & 6 & 16 & 0.06 & 0.35 & 0.60 & 0.55 & 0.81 & 3.7 \\
+Zephyr & 2023 & 7 & 124 & 0.43 & 0.55 & 0.06 & 0.74 & 0.71 & 4.9 \\
+Vicuna & 2023 & 7 & 104 & 0.47 & 0.68 & 0.19 & 0.76 & 0.69 & 5.4 \\
+Qwen2.5 & 2024 & 0.5 & 170 & 0.24 & 0.24 & 0.37 & 0.56 & 0.70 & 4.7 \\
+Qwen2.5 & 2024 & 1.5 & 168 & 0.42 & 0.31 & 0.20 & 0.61 & 0.79 & 4.8 \\
+Qwen2.5 & 2024 & 3 & 172 & 0.46 & 0.30 & 0.10 & 0.74 & 0.71 & 5.0 \\
+Phi-3 mini & 2024 & 3.8 & 142 & 0.58 & 0.52 & 0.26 & 0.63 & 0.73 & 4.8 \\
+Qwen2.5 (base) & 2024 & 7 & 34 & 0.35 & 0.66 & 0.49 & 0.70 & 0.76 & 4.4 \\
+Qwen2.5 & 2024 & 7 & 172 & 0.57 & 0.49 & 0.00 & 0.78 & 0.59 & 5.7 \\
+OLMo 2 & 2024 & 7 & 172 & 0.56 & 0.44 & 0.06 & 0.70 & 0.55 & 4.6 \\
+Qwen2.5 & 2024 & 14 & 174 & 0.55 & 0.46 & 0.00 & 0.80 & 0.58 & 5.4 \\
+Qwen3 & 2025 & 8 & 155 & 0.61 & 0.67 & 0.01 & 0.83 & 0.47 & 5.9 \\
+gpt-oss & 2025 & 21 & 176 & 0.54 & 0.31 & 0.22 & 0.74 & 0.70 & 4.6 \\
+Qwen3 & 2025 & 32 & 92 & 0.57 & 0.83 & 0.02 & 0.86 & 0.49 & 4.6 \\
+\bottomrule
+\end{tabular}
+\caption{How much of the human map each model reaches, as written and with the voice removed, and how much its voice repeats. Models with no persona, English, temperature 1.0. Words: median length of the full answer. Hub: share of answers taking the most common human bridge. As written: precision, the share of answers on the human map, and recall, the share of the map reached; answers in full. Ideas: the same with the voice removed and content words only. Voice: repetition of sentence patterns (compression ratio; higher is more repetitive). People: half of the players against the other half. Ideas and voice are means of 11 runs (Section~\ref{sec:voiceideas}). As written, chat models reach almost none of the map; without the voice they still reach less than people, and repeat more.}
+\label{tab:models}
+\end{table}
 
 \section{The Pairs}
 \label{app:pairs}
