@@ -100,7 +100,7 @@ No language model grades any answer. All measures come from placing answers in a
 \item[\textbf{Warm-up score.}] The Divergent Association Task score \citep{olson2021}: the average distance between the first seven valid words of the warm-up, with the published GloVe word vectors, times 100.
 \end{description}
 
-Map reached and on the map are computed with as many answers from a group as there are human answers for that pair, averaged over 30 random draws and then over the six pairs, since a bigger group would reach more just by being bigger. The two numbers also answer the reverse question, where the models draw the map and people are placed on it. The share of human answers that land on a model's map is exactly that model's map reached, and the share of a model's map that people reach is exactly its share on the human map. The answers as written were also checked with two other embedding models and with their first 40 or 15 words (Appendix~\ref{app:robust}).
+Map reached and on the map are computed with as many answers from a group as there are human answers for that pair, averaged over 30 random draws and then over the six pairs, since a bigger group would reach more just by being bigger. The two numbers also answer the reverse question, where the models draw the map and people are placed on it. The share of human answers that land on a model's map is exactly that model's map reached, and the share of a model's map that people reach is exactly its share on the human map. The answers as written were also checked with two other embedding models (Appendix~\ref{app:robust}).
 
 \section{Results}
 \label{sec:results}
@@ -138,7 +138,7 @@ Qwen3 & 2025 & 32 & 92 & 0.57 & 0.83 & 0.02 & 0.86 & 0.49 & 4.6 \\
 
 \subsection{As written, chat models seem to close the map}
 
-The first step measures the answers as they come, in full (Table~\ref{tab:models}). GPT-2 and GPT-J reach about 60\% of the human map, yet only a third of their answers land on it: coverage through noise, like monkeys at typewriters. Chat models reach much less. The clearest case keeps everything else the same: Qwen2.5 7B reaches 49\% of the map before chat training and almost none after, and the larger and newer chat models reach 0\% to 2\%. This held with the first 40 or 15 words, other embedding models and all three languages together (Appendix~\ref{app:robust}).
+The first step measures the answers as they come, in full (Table~\ref{tab:models}). GPT-2 and GPT-J reach about 60\% of the human map, yet only a third of their answers land on it: coverage through noise, like monkeys at typewriters. Chat models reach much less. The clearest case keeps everything else the same: Qwen2.5 7B reaches 49\% of the map before chat training and almost none after, and the larger and newer chat models reach 0\% to 2\%. This held with other embedding models and with all three languages together (Appendix~\ref{app:robust}).
 
 \subsection{Voice or ideas}
 \label{sec:voiceideas}
@@ -326,7 +326,7 @@ a shadow / friendship & optional\\
 \section{Sample AI Bridges}
 \label{app:examples}
 
-To give a feel for the answers behind the numbers, here is one answer per condition for the pair salt $\to$ a clock, drawn at random and cut to its first 40 words. All AI answers are in the repository.
+To give a feel for the answers behind the numbers, here is one answer per condition for the pair salt $\to$ a clock, drawn at random and shortened for space. All AI answers are in the repository.
 
 \input{appendix_examples}
 
@@ -336,7 +336,7 @@ To give a feel for the answers behind the numbers, here is one answer per condit
 
 \textbf{Removing the voice.} Formatting (bold, headings, list numbers and bullets) is removed first. Then every sentence that contains one of these phrases is dropped: \emph{here's, here is, let's, let us, this gap, one way, one possible, a possible, to get / go / move / travel / bridge / connect / link / create / draw / find / make, seemingly, may seem, might seem, at first glance, unrelated, conceptual leap / bridge / link, creative connection / link / leap / bridge, we can, we could, I would, I'd, could be bridged / connected / linked, the connection / link / bridge / journey / path between / from, in summary, in conclusion, in essence, in short, in this way, this way / journey / path / connection / sequence / chain}, and sentences starting with \emph{thus, so, overall} or \emph{ultimately}. The same rule is applied to people and models. Content words are nouns, verbs and adjectives (NLTK tagger and WordNet lemmas), leaving out stop words, the two ideas of the pair and words that only name the task (connect, link, bridge, idea, path, way, step and a few common verbs). With the cleaning and each model answer cut to a player's length, but without reducing answers to content words, models reach 27\% to 53\% of the human map, and Qwen2.5 7B reaches no less after chat training (46\%) than before (37\%): the first words of a cleaned chat answer often start an explanation, so the step to content words matters.
 
-With the three languages together (116 English, 19 Spanish and 2 French answers, first 40 words), measured with the multilingual embedding model and with the same mix of languages for models as for players, the order is the same: the base models reach 71\% to 74\% of the map, Qwen2.5 7B 9\% after chat training, Qwen3 8B 6\% and Qwen2.5 14B 1\%. Small chat models reach more in this setting (up to 64\% for Qwen2.5 0.5B), partly because their Spanish and French answers are often broken or switch to English, and such text spreads widely in the space of meaning.
+With the three languages together (116 English, 19 Spanish and 2 French answers), measured with the multilingual embedding model and with the same mix of languages for models as for players, the order is the same: the base models reach 71\% to 76\% of the map, Qwen2.5 7B 5\% after chat training, Qwen2.5 14B 2\% and Qwen3 8B 1\%. Small chat models reach more in this setting (up to 62\% for Qwen2.5 0.5B), partly because their Spanish and French answers are often broken or switch to English, and such text spreads widely in the space of meaning.
 
 For players, a higher warm-up score goes with bridges farther from the other players' bridges (Spearman 0.33 over 21 players, not significant).
 

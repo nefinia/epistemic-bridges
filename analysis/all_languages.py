@@ -4,7 +4,7 @@ Players answered in their own language, and the models answered the same pairs i
 language. Here all human answers form the map, measured with a multilingual embedding
 model, and each model is placed on it with the same mix of languages as the players
 (for each pair, as many answers in each language as the players gave). Core pairs,
-no persona, answers read between their two ideas and cut to 40 words.
+no persona, answers read in full between their two ideas.
 
     python analysis/all_languages.py --humans data/human_bridges.json --tools /path/to/tools
 """
@@ -42,7 +42,7 @@ def main() -> None:
     df = pd.concat([h, a], ignore_index=True)
     df["final"] = df["final"].fillna("").astype(str)
     df = df[df["final"].str.strip() != ""].reset_index(drop=True)
-    text = df["from"] + " " + df["final"].apply(lambda s: " ".join(re.findall(r"\S+", s)[:40])) + " " + df["to"]
+    text = df["from"] + " " + df["final"] + " " + df["to"]
     from sentence_transformers import SentenceTransformer
     E = SentenceTransformer(str(args.tools / "paraphrase-multilingual-MiniLM-L12-v2")).encode(
         text.tolist(), normalize_embeddings=True, batch_size=128)

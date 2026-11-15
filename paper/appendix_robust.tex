@@ -1,20 +1,20 @@
 \section{Robustness}\label{app:robust}
-The answers as written are read in full, between their two ideas, with all-MiniLM-L6-v2. Table~\ref{tab:robust} repeats the share of the map reached with the first 40 or 15 words and with two other embedding models. In every setting the base models stay far above the chat models, and the newest and largest chat models stay lowest.
-\begin{table}[h]\centering\small\begin{tabular}{lrrrrr}\toprule
-Model & \shortstack{MiniLM\\full answer\\with ideas} & \shortstack{MiniLM\\40 words\\with ideas} & \shortstack{MiniLM\\15 words} & \shortstack{BGE small\\full answer\\with ideas} & \shortstack{Multilingual MiniLM\\full answer\\with ideas} \\ \midrule
-GPT-2 XL & 0.61 & 0.64 & 0.83 & 0.59 & 0.67 \\
-GPT-J 6B & 0.59 & 0.59 & 0.94 & 0.61 & 0.68 \\
-Zephyr 7B & 0.06 & 0.18 & 0.18 & 0.12 & 0.16 \\
-Vicuna 7B & 0.20 & 0.20 & 0.20 & 0.34 & 0.38 \\
-Phi-3 mini & 0.24 & 0.25 & 0.26 & 0.24 & 0.25 \\
-OLMo 2 7B & 0.06 & 0.12 & 0.12 & 0.01 & 0.07 \\
-Qwen2.5 0.5B & 0.36 & 0.30 & 0.09 & 0.36 & 0.34 \\
-Qwen2.5 1.5B & 0.20 & 0.23 & 0.18 & 0.26 & 0.30 \\
-Qwen2.5 3B & 0.09 & 0.11 & 0.02 & 0.01 & 0.02 \\
-Qwen2.5 7B base & 0.49 & 0.47 & 0.45 & 0.70 & 0.74 \\
-Qwen2.5 7B & 0.00 & 0.04 & 0.04 & 0.00 & 0.00 \\
-Qwen2.5 14B & 0.00 & 0.02 & 0.00 & 0.00 & 0.01 \\
-Qwen3 8B & 0.01 & 0.00 & 0.06 & 0.00 & 0.00 \\
-gpt-oss 20B & 0.22 & 0.22 & 0.04 & 0.05 & 0.13 \\
-Qwen3 32B & 0.02 & 0.08 & 0.14 & 0.05 & 0.07 \\
-\bottomrule\end{tabular}\caption{Share of the human map reached, with no persona, in five settings.}\label{tab:robust}\end{table}
+The answers as written are read in full, between their two ideas, with all-MiniLM-L6-v2. Table~\ref{tab:robust} repeats the share of the map reached with two other embedding models. In every setting the base models stay far above the chat models, and the newest and largest chat models stay lowest.
+\begin{table}[h]\centering\small\begin{tabular}{lrrr}\toprule
+Model & \shortstack{MiniLM\\full answer\\with ideas} & \shortstack{BGE small\\full answer\\with ideas} & \shortstack{Multilingual MiniLM\\full answer\\with ideas} \\ \midrule
+GPT-2 XL & 0.61 & 0.59 & 0.67 \\
+GPT-J 6B & 0.59 & 0.61 & 0.68 \\
+Zephyr 7B & 0.06 & 0.12 & 0.16 \\
+Vicuna 7B & 0.20 & 0.34 & 0.38 \\
+Phi-3 mini & 0.24 & 0.24 & 0.25 \\
+OLMo 2 7B & 0.06 & 0.01 & 0.07 \\
+Qwen2.5 0.5B & 0.36 & 0.36 & 0.34 \\
+Qwen2.5 1.5B & 0.20 & 0.26 & 0.30 \\
+Qwen2.5 3B & 0.09 & 0.01 & 0.02 \\
+Qwen2.5 7B base & 0.49 & 0.70 & 0.74 \\
+Qwen2.5 7B & 0.00 & 0.00 & 0.00 \\
+Qwen2.5 14B & 0.00 & 0.00 & 0.01 \\
+Qwen3 8B & 0.01 & 0.00 & 0.00 \\
+gpt-oss 20B & 0.22 & 0.05 & 0.13 \\
+Qwen3 32B & 0.02 & 0.05 & 0.07 \\
+\bottomrule\end{tabular}\caption{Share of the human map reached, with no persona, with three embedding models.}\label{tab:robust}\end{table}
