@@ -24,10 +24,9 @@ L.append(r"Base models received the same text followed by ``Answer:'', to be con
 L.append(r"\subsection*{Generation settings}")
 L.append(r"vLLM 0.21 on one NVIDIA L40S GPU per model (Modal), temperature 1.0 unless stated, top-$p$ 1.0, at most 220 new tokens (320 for step by step, whose answer was read from a final line starting with ``Bridge:''), 10 answers per pair, direction, language and condition. Thinking mode was switched off for Qwen3. Chat models received the persona as a system message; where a model's chat template had no system role, the persona was placed before the question. Vicuna 7B had no chat template and received a plain ``USER: \dots\ ASSISTANT:'' format.")
 L.append(r"\subsection*{Reasoning personas (from false epistemic redundancy \citep{gallego2026fer})}")
-L.append(r"\begin{description}[leftmargin=0pt, itemsep=0.4em]")
-for k, v in PERSONAS.items():
-    L.append(rf"\item[\textbf{{{tex(k.replace('_', ' '))}}}.] \small {tex(v)}")
-L.append(r"\end{description}")
+L.append(r"Four personas, each a paragraph given as a system message and reused verbatim; the full texts are in \texttt{personas/personas.py} in the repository. "
+         r"\emph{Causal mechanist}: follows physical cause and effect. \emph{Analogical thinker}: maps the relation onto a different domain. "
+         r"\emph{Teleological analyst}: asks what purpose links the two. \emph{Dialectical thinker}: looks for the contradiction and its synthesis.")
 L.append(r"\subsection*{Creative conditions}")
 L.append(r"\begin{description}[leftmargin=0pt, itemsep=0.4em]")
 for k, v in creative.FIXED.items():

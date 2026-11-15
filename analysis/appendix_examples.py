@@ -8,12 +8,7 @@ PICKS = [("GPT-2 XL (2019, base)", "openai-community/gpt2-xl", "baseline", "fer"
          ("Qwen2.5 7B base", "Qwen/Qwen2.5-7B", "baseline", "fer", 1.0),
          ("Qwen2.5 7B chat", "Qwen/Qwen2.5-7B-Instruct", "baseline", "fer", 1.0),
          ("Qwen3 8B (2025)", "Qwen/Qwen3-8B", "baseline", "fer", 1.0),
-         ("Qwen2.5 7B, causal mechanist", "Qwen/Qwen2.5-7B-Instruct", "causal_mechanist", "fer", 1.0),
          ("Qwen2.5 7B, ordinary life", "Qwen/Qwen2.5-7B-Instruct", "ordinary_life", "creative", 1.0),
-         ("Qwen2.5 7B, memory", "Qwen/Qwen2.5-7B-Instruct", "memory", "creative", 1.0),
-         ("Qwen2.5 7B, playful", "Qwen/Qwen2.5-7B-Instruct", "playful", "creative", 1.0),
-         ("Qwen2.5 7B, wordplay", "Qwen/Qwen2.5-7B-Instruct", "wordplay", "creative", 1.0),
-         ("Qwen2.5 7B, step by step", "Qwen/Qwen2.5-7B-Instruct", "step_by_step", "creative", 1.0),
          ("Qwen2.5 7B, temperature 2.0", "Qwen/Qwen2.5-7B-Instruct", "baseline", "temps", 2.0)]
 
 def tex(s):

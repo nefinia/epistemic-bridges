@@ -265,46 +265,23 @@ Qwen3 & 2025 & 32 & 92 & 0.57 & 0.83 & 0.02 & 0.86 & 0.49 & 4.6 \\
 \section{The Pairs}
 \label{app:pairs}
 
-All pairs in the game, in English. Every player saw the six core pairs, each in one direction; the optional pairs came after them, for players who chose to keep going, taking turns between the levels and favouring the pairs with the fewest answers so far. The models answered the core pairs.
+All pairs in the game, in English. Every player saw the six core pairs, each in one direction; the optional pairs came after them, for players who chose to keep going, taking turns between the levels and favouring the pairs with the fewest answers so far. The models answered the core pairs, shown in bold.
 
 \begin{center}\footnotesize
-\begin{tabular}{ll}
+\begin{tabular}{lll}
 \toprule
-Pair & Set\\
+\emph{two concrete ideas} & \emph{concrete and abstract} & \emph{two abstract ideas}\\
 \midrule
-\multicolumn{2}{l}{\emph{two concrete ideas}}\\
-a bee / a mirror & core\\
-salt / a clock & core\\
-a snail / a map & optional\\
-a needle / a cloud & optional\\
-an egg / a door & optional\\
-honey / a knife & optional\\
-a stone / a letter & optional\\
-a rope / the moon & optional\\
-a fish / a basket & optional\\
-a tooth / rain & optional\\
-\multicolumn{2}{l}{\emph{concrete and abstract}}\\
-a river / a secret & core\\
-a spider / a melody & core\\
-a seed / trust & optional\\
-bread / luck & optional\\
-sand / waiting & optional\\
-a cup / silence & optional\\
-a bird / the past & optional\\
-a tree / a journey & optional\\
-an ant / a promise & optional\\
-wind / childhood & optional\\
-\multicolumn{2}{l}{\emph{two abstract ideas}}\\
-forgetting / a festival & core\\
-distance / a habit & core\\
-luck / balance & optional\\
-friendship / a harvest & optional\\
-waiting / an echo & optional\\
-the past / silence & optional\\
-childhood / a promise & optional\\
-memory / a journey & optional\\
-trust / a shadow & optional\\
-a shadow / friendship & optional\\
+\textbf{a bee / a mirror} & \textbf{a river / a secret} & \textbf{forgetting / a festival}\\
+\textbf{salt / a clock} & \textbf{a spider / a melody} & \textbf{distance / a habit}\\
+a snail / a map & a seed / trust & luck / balance\\
+a needle / a cloud & bread / luck & friendship / a harvest\\
+an egg / a door & sand / waiting & waiting / an echo\\
+honey / a knife & a cup / silence & the past / silence\\
+a stone / a letter & a bird / the past & childhood / a promise\\
+a rope / the moon & a tree / a journey & memory / a journey\\
+a fish / a basket & an ant / a promise & trust / a shadow\\
+a tooth / rain & wind / childhood & a shadow / friendship\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -318,7 +295,7 @@ The pairs were chosen at three levels of abstraction and shown in both direction
 
 Direction behaves differently for people and models (Figure~\ref{fig:direction}). For chat models the order of the two words changes the answer in 46 of 72 cases as written, about 1.6 times the shift expected by chance, and in 41 with the voice removed (1.4 times), so the effect goes beyond the opening lines that name where they start. With the voice removed, the content words of chat answers also lean toward the first word on every pair (0.06 to 0.14), while those of people and base models sit about midway ($-0.08$ to 0.03): chat models tend to stay with the word they begin from. Base models show a shift in 2 of 18 cases as written and in none with the voice removed. For people one pair of six crosses the line, about what chance gives with six tests, and with eight to eleven answers per direction a small effect would be hard to see.
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figs/fig4_pairs_diversity.pdf}
 \caption{How varied the answers to each pair are: different answers per answer (Vendi score over the number of answers), people and chat models, as written (left) and with the voice removed in the same way for both (right). The levels of the two panels cannot be compared with each other, since answers as written name the two words of the pair; within each panel, people and chat models are measured alike. As written, chat models give about a third as many different answers as people on every pair; with the voice removed most of that gap closes.}
@@ -330,7 +307,7 @@ Direction behaves differently for people and models (Figure~\ref{fig:direction})
 
 The warm-up score is the Divergent Association Task score \citep{olson2021}: the average distance between the first seven valid words of the warm-up, with the published GloVe word vectors, times 100. The published scores for the Divergent Association Task, collected before ChatGPT, average 78.4 (standard deviation 6.4) \citep{olson2021}. Players today average 80.4 (standard deviation 9.1, 26 players), slightly above the published average (Figure~\ref{fig:warmup}), with no sign of decline, although the samples differ. Models score 57 to 88, unrelated to their recall on the map of ideas: Qwen3 8B and 32B score 79 to 80 and have the lowest recall. For players, a higher warm-up score goes with bridges farther from the other players' bridges (Spearman 0.33 over 21 players, not significant).
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.74\textwidth]{figs/fig5_warmup.pdf}
 \caption{Warm-up scores (Divergent Association Task) for people before ChatGPT, players today and models. Grey band: published scores before ChatGPT (mean $\pm$ one standard deviation). Black: players today, diamond the mean. Models with no persona: base as blue squares, chat as orange circles. Players today score a little above people tested before ChatGPT, and models' scores do not follow their bridges.}
