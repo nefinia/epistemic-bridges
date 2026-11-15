@@ -11,8 +11,8 @@ without the two ideas, so word order cannot create a difference:
 - direction shift: distance between the centre of a->b answers and the centre of b->a
   answers, compared with the same distance after shuffling the direction labels
   (permutation test, 2000 shuffles);
-- anchoring: how much closer an answer sits to the idea it starts from than to the idea it
-  ends at (cosine similarity to the start word minus similarity to the end word).
+- anchoring (pull of the first word): how much closer an answer sits to the word the arrow starts
+  from than to the word it ends at (cosine similarity to the start word minus similarity to the end word).
 
     python analysis/levels_directions.py --humans data/human_bridges.json --tools /path/to/tools
 """
@@ -181,22 +181,17 @@ def figure(written, ideas):
                          "hatch.linewidth": 0.8})
     order = ["c1", "c2", "c3", "c4", "c5", "c6"]
     names = ["bee\nmirror", "salt\nclock", "river\nsecret", "spider\nmelody", "forgetting\nfestival", "distance\nhabit"]
+    short = ["bee / mirror", "salt / clock", "river / secret", "spider / melody", "forgetting / festival", "distance / habit"]
     lw, li = written[0].set_index("pair").loc[order], ideas[0].set_index("pair").loc[order]
     x = np.arange(len(order))
 
-    def diversity_panel(ax):
-        # Levels differ between the two versions (answers as written name the two ideas), so each version is shown
-        # relative to people measured the same way: 1 means as varied as people.
-        for k, (lv, face, edge, hatch, label) in enumerate(((lw, ORANGE, ORANGE, None, "As written"),
-                                                          (li, "white", ORANGE, "////", "Voice removed"))):
-            ax.bar(x - 0.2 + 0.4 * k, lv["chat_different"] / lv["people_different"], width=0.38, color=face, edgecolor=edge,
-                   linewidth=0 if hatch is None else 1, hatch=hatch, label=label)
-        ax.axhline(1, color=INK, linewidth=1, linestyle=(0, (3, 2)))
-        ax.text(-0.45, 1.02, "people", ha="left", va="bottom", fontsize=8, color=INK)
-        ax.set_ylabel("Chat models' diversity\nas a share of people's"); ax.set_title("Diversity by pair", fontsize=9, color=INK)
-        ax.legend(frameon=False, fontsize=8, loc="upper left", ncol=2); ax.grid(axis="x", visible=False)
-        ax.set_ylim(0, 1.45); ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0, 1.25])
-        finish(ax)
+    def diversity_panel(ax, lv, title):
+        ax.bar(x - 0.2, lv["people_different"], width=0.38, color=INK, label="People")
+        ax.bar(x + 0.2, lv["chat_different"], width=0.38, color=ORANGE, label="Chat models (mean)")
+        ax.set_title(title, fontsize=9, color=INK); ax.grid(axis="x", visible=False)
+        ax.set_ylim(0, 1.0)
+        ax.set_xticks(x); ax.set_xticklabels(short, fontsize=7.5, rotation=35, ha="right", rotation_mode="anchor")
+        ax.axvline(1.5, color=GRID, linewidth=1); ax.axvline(3.5, color=GRID, linewidth=1)
 
     def pull_panel(ax):
         for kind, color, name, off, mk in (("people", INK, "People", -0.25, "D"), ("base", BLUE, "Base models", 0.0, "s"), ("chat", ORANGE, "Chat models", 0.25, "o")):
@@ -205,7 +200,7 @@ def figure(written, ideas):
             dots(ax, x + off + 0.06, ideas[1].loc[kind].reindex(order).values, color="white", marker=mk, s=30, edgecolor=color,
                  linewidth=1.3, label=name + ", voice removed", zorder=3)
         ax.axhline(0, color=MUTED, linewidth=0.8)
-        ax.set_ylabel("Closer to the\nstarting idea (+)"); ax.set_title("Pull of the starting idea", fontsize=9, color=INK)
+        ax.set_ylabel("Closer to the\nfirst word (+)"); ax.set_title("Pull of the first word, where the arrow starts (bee in bee \u2192 mirror)", fontsize=9, color=INK)
         lo, hi = ax.get_ylim(); ax.set_ylim(lo, hi + 0.6 * (hi - lo))
         ax.legend(frameon=False, fontsize=7.5, loc="upper center", ncol=3); ax.grid(axis="x", visible=False)
         finish(ax)
@@ -216,14 +211,23 @@ def figure(written, ideas):
             ax.text(i0, -0.3, lab, transform=ax.get_xaxis_transform(), ha="center", va="top", fontsize=7.5, color=MUTED)
         ax.axvline(1.5, color=GRID, linewidth=1); ax.axvline(3.5, color=GRID, linewidth=1)
 
-    fig, axes = plt.subplots(2, 1, figsize=(6.5, 6.2))
-    diversity_panel(axes[0]); pull_panel(axes[1])
+    fig = plt.figure(figsize=(6.5, 6.6))
+    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1.1])
+    a1, a2, a3 = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, :])
+    diversity_panel(a1, lw, "Diversity by pair, as written"); diversity_panel(a2, li, "Diversity by pair, voice removed")
+    a1.set_ylabel("Different answers\nper answer")
+    a1.legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
+    pull_panel(a3)
     fig.tight_layout()
     figs = ROOT / "paper" / "figs"
     fig.savefig(figs / "fig4_pairs_direction.pdf"); fig.savefig(figs / "fig4_pairs_direction.svg")
     (figs / "web").mkdir(exist_ok=True)
-    for name, panel, size in (("fig4a", diversity_panel, (4.6, 3.8)), ("fig4b", pull_panel, (4.6, 4.0))):
-        f1, a1 = plt.subplots(figsize=size); panel(a1); f1.tight_layout(); f1.savefig(figs / "web" / f"{name}.svg"); plt.close(f1)
+    f1, (b1, b2) = plt.subplots(2, 1, figsize=(4.6, 5.6))
+    diversity_panel(b1, lw, "Diversity by pair, as written"); diversity_panel(b2, li, "Diversity by pair, voice removed")
+    b1.set_ylabel("Different answers per answer"); b2.set_ylabel("Different answers per answer")
+    b1.legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
+    f1.tight_layout(); f1.savefig(figs / "web" / "fig4a.svg"); plt.close(f1)
+    f1, b3 = plt.subplots(figsize=(4.6, 4.0)); pull_panel(b3); f1.tight_layout(); f1.savefig(figs / "web" / "fig4b.svg"); plt.close(f1)
 
 
 if __name__ == "__main__":
