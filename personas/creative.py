@@ -88,6 +88,16 @@ SAMPLED = ("ordinary_life", "random_constraint")
 CREATIVE_CONDITIONS = list(FIXED) + list(SAMPLED)
 
 
+# The same four ways of reasoning as False Epistemic Redundancy, written as plain habits of mind for an
+# ordinary life: the life leads, the style is how that person tends to think. "life_style+causal" and so on.
+STYLES = {
+    "causal": "You tend to think in causes: what makes what happen.",
+    "analogical": "You tend to think in analogies: you see one thing in the shape of another.",
+    "purpose": "You tend to think about purposes: what something is for.",
+    "tension": "You tend to think in tensions: what pulls against what, and what comes out of it.",
+}
+STYLE_PREFIX = "life_style+"
+
 # A reasoning persona from False Epistemic Redundancy, held by an ordinary life drawn at random:
 # "ordinary_life+causal_mechanist" and so on. The persona text comes first and stays verbatim.
 COMBO_PREFIX = "ordinary_life+"
@@ -95,6 +105,8 @@ COMBO_PREFIX = "ordinary_life+"
 
 def sample(condition: str, rng: random.Random, personas: dict | None = None) -> str:
     """The system prompt for one answer of a sampled condition."""
+    if condition.startswith(STYLE_PREFIX):
+        return f"You are {rng.choice(LIVES)}. {STYLES[condition[len(STYLE_PREFIX):]]} Answer as yourself, in your own words."
     if condition.startswith(COMBO_PREFIX):
         persona = (personas or {})[condition[len(COMBO_PREFIX):]]
         return (f"{persona}\n\nYou are also {rng.choice(LIVES)}, and you bring your own life and what you know "
