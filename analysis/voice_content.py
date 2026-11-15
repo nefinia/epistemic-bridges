@@ -63,6 +63,8 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0, help="seed for the draws and the cut of content words")
     ap.add_argument("--drop-player", default="", help="leave this player out (for the leave-one-out check)")
     ap.add_argument("--plain", action="store_true", help="only models with no persona")
+    ap.add_argument("--runs", default="", help="only these runs, comma separated (for a quick look at one run)")
+    ap.add_argument("--out", default="", help="file name for the results, in results/paper")
     args = ap.parse_args()
 
     import nltk
@@ -79,6 +81,8 @@ def main() -> None:
     run = a["run"].fillna("fer")
     a = a[(a["task"] == "bridge") & (a["lang"] == "en") & (a["set"] == "core")
           & run.isin(["fer", "creative", "temps", "combo", "lifefer", "lifeway", "steer"])]
+    if args.runs:
+        a = a[a["run"].fillna("fer").isin(args.runs.split(","))]
     if args.plain:
         a = a[(a["run"].fillna("fer") == "fer") & (a["condition"] == "baseline")]
     df = pd.concat([h, a], ignore_index=True)
@@ -171,7 +175,7 @@ def main() -> None:
     res["name"] = [NAMES.get(m.split(" | ")[0], m.split(" | ")[0]) + (" | " + m.split(" | ")[1] if " | " in m else "") for m in res["model"]]
     out = ROOT / "results" / "paper"
     out.mkdir(parents=True, exist_ok=True)
-    name = f"voice_content_drop_{args.drop_player}.csv" if args.drop_player else f"voice_content_seed{args.seed}.csv"
+    name = args.out or (f"voice_content_drop_{args.drop_player}.csv" if args.drop_player else f"voice_content_seed{args.seed}.csv")
     res.to_csv(out / name, index=False)
     print(res[["name", "kind", "cr_words", "cr_pos", "on_map_ideas", "map_reached_ideas", "share_with_content"]].round(2).to_string(index=False))
 
