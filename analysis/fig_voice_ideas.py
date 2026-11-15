@@ -66,76 +66,60 @@ def main() -> None:
     jk_path = ROOT / "results" / "paper" / "players_uncertainty.csv"
     jk = pd.read_csv(jk_path, index_col=0) if jk_path.exists() else None
 
-    def ideas_panel(ax):
-        from adjustText import adjust_text
-        from matplotlib.lines import Line2D
-        for kind, color, mk in (("base", BLUE, "s"), ("chat", ORANGE, "o")):
-            sub = plain[plain["kind"] == kind]
-            if jk is not None:
-                for _, r in sub.iterrows():
-                    if r["model"] in jk.index:
-                        ax.errorbar(r[X], r[Y], xerr=jk.loc[r["model"], "map_reached_ideas_jk"], fmt="none", ecolor=GRID,
-                                    elinewidth=1.2, zorder=1)
-            dots(ax, sub[X], sub[Y], s=34, color=color, marker=mk, edgecolor="white", linewidth=1, zorder=3)
+    # One row per group, the same rows in both panels, sorted by the share of the map of ideas reached.
+    key = f"{FOCUS} | creative:ordinary_life"
+    rows = pd.concat([res[res["model"] == "people"], plain, res[res["model"] == key]])
+    rows = rows.sort_values("map_reached_ideas").reset_index(drop=True)
+    yy = np.arange(len(rows))
 
-        def arrow(a, b, color):
-            ax.annotate("", xy=(g.loc[b, X], g.loc[b, Y]), xytext=(g.loc[a, X], g.loc[a, Y]),
-                        arrowprops=dict(arrowstyle="-|>", color=color, lw=1.5, shrinkA=6, shrinkB=6, mutation_scale=10), zorder=4)
+    def look(m, kind):
+        if m == "people":
+            return INK, "*", 70
+        if m == key:
+            return AQUA, "o", 34
+        return (BLUE, "s", 30) if kind == "base" else (ORANGE, "o", 30)
 
-        key = f"{FOCUS} | creative:ordinary_life"
-        arrow(BASE, FOCUS, ORANGE)
-        arrow(FOCUS, key, AQUA)
-        dots(ax, [g.loc[key, X]], [g.loc[key, Y]], s=40, color=AQUA, edgecolor="white", linewidth=1.2, zorder=5)
-        p = g.loc["people"]
-        dots(ax, [p[X]], [p[Y]], s=170, marker="*", color=INK, zorder=6)
-        texts = []
-        for _, r in plain.iterrows():
-            if r["model"] == BASE:
-                continue
-            name = "Qwen2.5 7B (chat)" if r["model"] == FOCUS else r["name"]
-            texts.append(ax.text(r[X], r[Y], name, fontsize=7, color=MUTED))
-        fixed = [ax.annotate("Qwen2.5 7B (base)", (g.loc[BASE, X], g.loc[BASE, Y]), xytext=(6, -3), textcoords="offset points",
-                             fontsize=7, color=MUTED, va="top"),
-                 ax.annotate("Qwen2.5 7B,\nordinary life", (g.loc[key, X], g.loc[key, Y]), xytext=(-5, -4), textcoords="offset points",
-                             fontsize=7.5, color=INK, ha="right", va="top"),
-                 ax.annotate("people", (p[X], p[Y]), xytext=(7, 2), textcoords="offset points", fontsize=8.5, color=INK)]
-        pts_x = list(plain[X]) + [g.loc[key, X], p[X]]
-        pts_y = list(plain[Y]) + [g.loc[key, Y], p[Y]]
-        adjust_text(texts, x=pts_x, y=pts_y, objects=fixed, ax=ax, expand=(1.3, 1.6),
-                    arrowprops=dict(arrowstyle="-", color=FAINT, lw=0.6))
-        ax.set_xlabel("Share of the human map of ideas reached")
-        ax.set_ylabel("Share of answers on the human map")
-        ax.set_title("Ideas (voice removed)", fontsize=9, color=INK)
-        handles = [Line2D([], [], linestyle="none", marker="s", markersize=6, color=BLUE, label="Base model"),
-                   Line2D([], [], linestyle="none", marker="o", markersize=6, color=ORANGE, label="Chat model"),
-                   Line2D([], [], color=ORANGE, lw=1.5, label="chat training (same 7B model)"),
-                   Line2D([], [], color=AQUA, lw=1.5, label="asked to answer as an ordinary life"),
-                   Line2D([], [], color=GRID, lw=2, label="standard error over players")]
-        ax.legend(handles=handles, frameon=False, fontsize=7.5, loc="upper left", bbox_to_anchor=(-0.18, -0.16), ncol=2, columnspacing=1.2)
+    def label(m, n):
+        if m == "people":
+            return "People"
+        if m == key:
+            return "Qwen2.5 7B, ordinary life"
+        return n.replace(" base", " (base)")
 
-    def voice_panel(av):
-        v = pd.concat([res[res["model"] == "people"], plain]).sort_values("cr_pos")
-        y = np.arange(len(v))
-        cols = [INK if k == "people" else BLUE if k == "base" else ORANGE for k in v["kind"]]
-        av.hlines(y, 3.2, v["cr_pos"], color=GRID, linewidth=1)
-        dots(av, v["cr_pos"], y, color=cols, s=26, zorder=3,
-             marker=["*" if k == "people" else "s" if k == "base" else "o" for k in v["kind"]])
-        av.axvline(g.loc["people", "cr_pos"], color=INK, linewidth=0.8, linestyle=(0, (2, 2)))
-        av.set_yticks(y)
-        av.set_yticklabels(["People" if m == "people" else n.replace(" base", " (base)") for m, n in zip(v["model"], v["name"])], fontsize=7.5)
-        av.set_xlim(3.2, max(5.8, float(v["cr_pos"].max()) + 0.2))
-        av.set_xlabel("Repetition of\nsentence patterns")
-        av.set_title("Voice", fontsize=9, color=INK)
-        av.grid(axis="y", visible=False)
+    def row_panel(ax, col, xlabel, title, err=None, labels=True):
+        for yi, (_, r) in zip(yy, rows.iterrows()):
+            c, mk, sz = look(r["model"], r["kind"])
+            if err is not None and r["model"] in err.index:
+                e = err.loc[r["model"], f"{col}_jk"]
+                ax.hlines(yi, r[col] - e, r[col] + e, color=GRID, linewidth=2.5, zorder=1)
+            dots(ax, [r[col]], [yi], color=c, marker=mk, s=sz, zorder=3)
+        ax.axvline(g.loc["people", col], color=INK, linewidth=0.8, linestyle=(0, (2, 2)))
+        ax.set_yticks(yy)
+        if labels:
+            ax.set_yticklabels([label(m, n) for m, n in zip(rows["model"], rows["name"])], fontsize=7.5)
+        else:
+            ax.tick_params(labelleft=False)
+        ax.set_xlabel(xlabel); ax.set_title(title, fontsize=9, color=INK)
+        ax.grid(axis="y", visible=False)
+        ax.set_ylim(-0.7, len(rows) - 0.3)
 
-    fig, (ax, av) = plt.subplots(1, 2, figsize=(6.5, 4.5), gridspec_kw={"width_ratios": [1.6, 1]})
-    ideas_panel(ax); voice_panel(av)
+    def ideas_panel(ax, labels=True):
+        row_panel(ax, "map_reached_ideas", "Share of the human\nmap of ideas reached", "Ideas: how far they reach", err=jk, labels=labels)
+
+    def onmap_panel(ax, labels=True):
+        row_panel(ax, "on_map_ideas", "Share of answers\non the human map", "Ideas: where they land", err=jk, labels=labels)
+
+    def voice_panel(av, labels=True):
+        row_panel(av, "cr_pos", "Repetition of\nsentence patterns", "Voice", labels=labels)
+
+    fig, (ax, ao, av) = plt.subplots(1, 3, figsize=(6.5, 4.3), sharey=True)
+    ideas_panel(ax); onmap_panel(ao, labels=False); voice_panel(av, labels=False)
     fig.tight_layout()
     fig.savefig(figs / "fig0_voice_ideas.pdf"); fig.savefig(figs / "fig0_voice_ideas.svg")
     web = figs / "web"
     web.mkdir(exist_ok=True)
-    for name, panel, size in (("fig0a", ideas_panel, (5.0, 5.2)), ("fig0b", voice_panel, (4.2, 4.6))):
-        f1, a1 = plt.subplots(figsize=size); panel(a1); f1.tight_layout(); f1.savefig(web / f"{name}.svg"); plt.close(f1)
+    for name, panel in (("fig0a", ideas_panel), ("fig0c", onmap_panel), ("fig0b", voice_panel)):
+        f1, a1 = plt.subplots(figsize=(4.6, 4.4)); panel(a1); f1.tight_layout(); f1.savefig(web / f"{name}.svg"); plt.close(f1)
 
     # Figure 2: change from no persona, ideas and voice
     d = deltas(res)
