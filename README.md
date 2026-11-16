@@ -30,7 +30,7 @@ This follows [False Epistemic Redundancy](https://apartresearch.com/project/fals
 - English, French, Spanish, Italian and German; typed or spoken.
 - No names, no cookies, no IP addresses. Privacy: [mapideas.org/bridges/privacy](https://mapideas.org/bridges/privacy)
 
-The game's code lives in [nefinia/themap](https://github.com/nefinia/themap/tree/main/bridges).
+The game's code lives in [nefinia/mapideas](https://github.com/nefinia/mapideas/tree/main/bridges).
 
 ## The AI side
 
@@ -93,7 +93,7 @@ python analysis/fig_money.py
 
 ## What existed before the sprint
 
-- The Bridges game itself, built before the sprint started on 13 November 2026. Its code is in [nefinia/themap](https://github.com/nefinia/themap/tree/main/bridges). Players have played it since 25 October; 6 of the 145 bridges in the paper, from one player, came before the sprint.
+- The Bridges game itself, built before the sprint started on 13 November 2026. Its code is in [nefinia/mapideas](https://github.com/nefinia/mapideas/tree/main/bridges). Players have played it since 25 October; 6 of the 145 bridges in the paper, from one player, came before the sprint.
 - From False Epistemic Redundancy: the four personas (written by Anya Habana), the Modal server, and the clustering and distance settings used in the analysis.
 
 Everything else in this repo was written during the sprint.
